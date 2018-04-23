@@ -42,6 +42,37 @@ class MyMap extends React.Component {
         this.setState({data: result});
     }
 
+    parseReports(reports, self) {
+      var i;
+      for (i = 0; i < reports.length; i++) {
+        let x = Number(reports[i]['coordinates']['latitude'])
+        let y = Number(reports[i]['coordinates']['longitude'])
+        let date = reports[i]['created_on'].split("T")
+        let marker = new google.maps.Marker({
+            position: {lat: x, lng: y},
+            map: this.map,
+            data: [{
+                med: 'Fecha',
+                //String(Math.trunc(Number(date[1])))
+                res: date[0] + " " + date[1]
+            },
+                {
+                    med: 'Coordenadas',
+                    res: "Lat: " + String(x) + " " + "Long: " + String(y)
+                },
+                {
+                    med: 'Intensidad',
+                    res: reports[i]['intensity']
+                }]
+        });
+        marker.addListener('click', function() {
+            self.handleChange(marker);
+        });
+      }
+
+
+    }
+
     componentDidMount() {
 
 
@@ -53,9 +84,6 @@ class MyMap extends React.Component {
         //   console.log('Request failed', error)
         // });
 
-        fetch("http://172.17.71.14:7171/web/reports/")
-            .then(response => response.json())
-            .then(jsondata => console.log(jsondata))
 
         // fetch("http://172.17.71.14:7171/web/reports/", {mode: 'no-cors'})
         //   .then(response => response.json())
@@ -64,95 +92,98 @@ class MyMap extends React.Component {
         let self = this;
         loadScript("https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDAJ_Owgdoqi5hbxwxUdDLCGAeCnzbVVy8", function() {
             self.map = new google.maps.Map(self.refs.map, {
-                center: {lat: -33.4569400, lng: -70.6482700},
+                center: {lat: 0, lng: 0},
                 zoom: 8,
                 mapTypeId: google.maps.MapTypeId.HYBRID});
 
-            let marker = new google.maps.Marker({
-                position: {lat: -33.4569400, lng: -70.6482700},
-                map: self.map,
-                data: [{
-                    med: 'Fecha',
-                    res: "pasado mañana"
-                },
-                    {
-                        med: 'Coordenadas',
-                        res: "lat: -33.4569400, lng: -70.6482700"
-                    },
-                    {
-                        med: 'Intensidad',
-                        res: 8
-                    }]
-            });
+            // let marker = new google.maps.Marker({
+            //     position: {lat: -33.4569400, lng: -70.6482700},
+        fetch("http://172.17.71.14:7171/web/reports/")
+        .then(response => response.json())
+        .then(reports => self.parseReports(reports, self))
+            //     map: self.map,
+            //     data: [{
+            //         med: 'Fecha',
+            //         res: "pasado mañana"
+            //     },
+            //         {
+            //             med: 'Coordenadas',
+            //             res: "lat: -33.4569400, lng: -70.6482700"
+            //         },
+            //         {
+            //             med: 'Intensidad',
+            //             res: 8
+            //         }]
+            // });
 
-            let markerOne = new google.maps.Marker({
-                position: {lat: -35.253481406187326, lng: -71.38916015375003},
-                map: self.map,
-                data: [{
-                    med: 'Fecha',
-                    res: 'hoy'
-                },
-                    {
-                        med: 'Coordenadas',
-                        res: "lat: -35.253481406187326, lng: -71.38916015375003"
-                    },
-                    {
-                        med: 'Intensidad',
-                        res: 5
-                    }]
-            });
-
-            let markerTwo = new google.maps.Marker({
-                position: {lat: -28.157991686294604, lng: -70.51025390375003},
-                map: self.map,
-                data: [{
-                    med: 'Fecha',
-                    res: 'oka'
-                },
-                    {
-                        med: 'Coordenadas',
-                        res: "lat: -28.157991686294604, lng: -70.51025390375003"
-                    },
-                    {
-                        med: 'Intensidad',
-                        res: 2
-                    }]
-            });
-
-            let markerThree = new google.maps.Marker({
-                position: {lat: -23.65334324379797, lng: -68.48876952875003},
-                map: self.map,
-                data: [{
-                    med: 'Fecha',
-                    res: 'ayer'
-                },
-                    {
-                        med: 'Coordenadas',
-                        res: "lat: -23.65334324379797, lng: -68.48876952875003"
-                    },
-                    {
-                        med: 'Intensidad',
-                        res: 12
-                    }]
-            });
+            // let markerOne = new google.maps.Marker({
+            //     position: {lat: -35.253481406187326, lng: -71.38916015375003},
+            //     map: self.map,
+            //     data: [{
+            //         med: 'Fecha',
+            //         res: 'hoy'
+            //     },
+            //         {
+            //             med: 'Coordenadas',
+            //             res: "lat: -35.253481406187326, lng: -71.38916015375003"
+            //         },
+            //         {
+            //             med: 'Intensidad',
+            //             res: 5
+            //         }]
+            // });
+            //
+            // let markerTwo = new google.maps.Marker({
+            //     position: {lat: -28.157991686294604, lng: -70.51025390375003},
+            //     map: self.map,
+            //     data: [{
+            //         med: 'Fecha',
+            //         res: 'oka'
+            //     },
+            //         {
+            //             med: 'Coordenadas',
+            //             res: "lat: -28.157991686294604, lng: -70.51025390375003"
+            //         },
+            //         {
+            //             med: 'Intensidad',
+            //             res: 2
+            //         }]
+            // });
+            //
+            // let markerThree = new google.maps.Marker({
+            //     position: {lat: -23.65334324379797, lng: -68.48876952875003},
+            //     map: self.map,
+            //     data: [{
+            //         med: 'Fecha',
+            //         res: 'ayer'
+            //     },
+            //         {
+            //             med: 'Coordenadas',
+            //             res: "lat: -23.65334324379797, lng: -68.48876952875003"
+            //         },
+            //         {
+            //             med: 'Intensidad',
+            //             res: 12
+            //         }]
+            // });
 
             // marker.addListener('click', self.handleChange(marker));
             // markerOne.addListener('click', self.handleChange(markerOne));
             // markerTwo.addListener('click', self.handleChange(markerTwo));
             // markerThree.addListener('click', self.handleChange(markerThree));
 
-            marker.addListener('click', function() {
-                self.handleChange(marker);
-            });
-            markerOne.addListener('click', function() {
-                self.handleChange(markerOne);
-            });
-            markerTwo.addListener('click', function() {
-                self.handleChange(markerTwo);
-            });
-            markerThree.addListener('click', function() {
-                self.handleChange(markerThree);
-            });
+            // marker.addListener('click', function() {
+            //     self.handleChange(marker);
+            // });
+            // markerOne.addListener('click', function() {
+            //     self.handleChange(markerOne);
+            // });
+            // markerTwo.addListener('click', function() {
+            //     self.handleChange(markerTwo);
+            // });
+            // markerThree.addListener('click', function() {
+            //     self.handleChange(markerThree);
+            // });
 
         });
     }
