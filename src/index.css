@@ -38,6 +38,10 @@ ol, ul {
   color: white;
 }
 
+.bold-font {
+  font-weight: bold;
+}
+
 .square:focus {
   outline: none;
 }

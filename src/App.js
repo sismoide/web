@@ -4,6 +4,12 @@ import {
     NavLink,
     HashRouter
 } from "react-router-dom";
+import {
+    Nav,
+    Navbar,
+    NavItem
+} from "react-bootstrap";
+import FontAwesome from 'react-fontawesome';
 import MyMap from "./Map";
 import TableView from "./TableView";
 
@@ -13,11 +19,20 @@ class App extends Component {
             <HashRouter>
                 <div>
                     <h1 className='header-background'>Sismoide</h1>
-
-                    <ul className="header">
-                        <li><NavLink to="/">Inicio</NavLink></li>
-                        <li><NavLink to="/tableView">Datos tabulados</NavLink></li>
-                    </ul>
+                    <Navbar>
+                        <Navbar.Header>
+                            <Navbar.Brand>
+                                <NavLink to="/">
+                                    <div className='bold-font'>Inicio</div>
+                                </NavLink>
+                            </Navbar.Brand>
+                        </Navbar.Header>
+                        <Nav>
+                            <NavItem>
+                                <NavLink style={{textDecoration: 'none'}} to="/tableView">Datos tabulados</NavLink>
+                            </NavItem>
+                        </Nav>
+                    </Navbar>
                     <div className="content">
                         <Route exact path="/" component={MyMap}/>
                         <Route path="/tableView" component={TableView}/>

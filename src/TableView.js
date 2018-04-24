@@ -38,6 +38,8 @@ class TableView extends Component {
                     </form>
                 </div>
                 <ol>
+                </ol>
+                <ol>
                     <ReportTable filter = {this.state.value}/>
                 </ol>
             </div>
