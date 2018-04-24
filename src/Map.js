@@ -92,7 +92,7 @@ class MyMap extends React.Component {
         let self = this;
         loadScript("https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDAJ_Owgdoqi5hbxwxUdDLCGAeCnzbVVy8", function() {
             self.map = new google.maps.Map(self.refs.map, {
-                center: {lat: 0, lng: 0},
+                center: {lat: -33.4, lng: -70.6},
                 zoom: 8,
                 mapTypeId: google.maps.MapTypeId.HYBRID});
 
