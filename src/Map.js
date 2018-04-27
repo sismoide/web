@@ -42,6 +42,12 @@ class MyMap extends React.Component {
         this.setState({data: result});
     }
 
+    handleWS(data) {
+      console.log(data)
+      let result = JSON.parse(data);
+      this.setState({count: this.state.count + result.movement});
+    }
+
     parseReports(reports, self) {
       var i;
       for (i = 0; i < reports.length; i++) {
@@ -74,8 +80,42 @@ class MyMap extends React.Component {
     }
 
     componentDidMount() {
+      // console.log(1)
+      // const WebSocket = require('ws');
+      // console.log(2)
+      // const ws = new WebSocket('ws://demos.kaazing.com/echo');
+      // console.log(3)
+      // ws.on('open', function open() {
+      //   ws.send('something');
+      // });
+      // console.log(4)
+      // ws.on('message', function incoming(data) {
+      //   console.log(data);
+      // });
+      // console.log(5)
 
+      const WebSocket = require('ws');
 
+      const ws = new WebSocket('ws://demos.kaazing.com/echo', {
+        origin: 'https://www.websocket.org/echo.html'
+      });
+
+      ws.on('open', function open() {
+        console.log('connected');
+        ws.send(Date.now());
+      });
+
+      ws.on('close', function close() {
+        console.log('disconnected');
+      });
+
+      ws.on('message', function incoming(data) {
+        console.log(`Roundtrip time: ${Date.now() - data} ms`);
+
+        setTimeout(function timeout() {
+          ws.send(Date.now());
+        }, 500);
+      });
         // fetch("http://172.17.71.14:7171/web/reports/", {mode: 'cors'})
         // // .then(response => response.json())
         // .then(function(response) {
@@ -87,7 +127,19 @@ class MyMap extends React.Component {
 
         // fetch("http://172.17.71.14:7171/web/reports/", {mode: 'no-cors'})
         //   .then(response => response.json())
-        //   .then(data => this.setState({ data: data }));
+        //   .then(da
+        // fetch("http://172.17.71.14:7171/web/reports/", {mode: 'cors'})
+        // // .then(response => response.json())
+        // .then(function(response) {
+        //   console.log(response.body);
+        // }).catch(function(error) {
+        //   console.log('Request failed', error)
+        // });
+
+
+        // fetch("http://172.17.71.14:7171/web/reports/", {mode: 'no-cors'})
+        //   .then(response => response.json())
+        //   .then(data => this.setState({ data: data }));ta => this.setState({ data: data }));
 
         let self = this;
         loadScript("https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDAJ_Owgdoqi5hbxwxUdDLCGAeCnzbVVy8", function() {
@@ -240,6 +292,8 @@ class MyMap extends React.Component {
                 <div className='centerStat'>
                     Estado: Normal
                 </div>
+                <Websocket url='ws://demos.kaazing.com/echo'
+                onMessage={this.handleWS.bind(this)}/>
             </div>
         )
     }
