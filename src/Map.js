@@ -100,7 +100,7 @@ class MyMap extends React.Component {
             //     position: {lat: -33.4569400, lng: -70.6482700},
         fetch("http://172.17.71.14:7171/web/reports/")
         .then(response => response.json())
-        .then(reports => self.parseReports(reports, self))
+        .then(reports => self.parseReports(reports, self));
             //     map: self.map,
             //     data: [{
             //         med: 'Fecha',
