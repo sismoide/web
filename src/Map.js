@@ -3,6 +3,8 @@ import ReactTable from 'react-table';
 import './index.css';
 import 'react-table/react-table.css'
 import Websocket from 'react-websocket';
+import createSocket from "sockette-component";
+
 /* global google */
 
 function loadScript(url, callback)
@@ -44,8 +46,10 @@ class MyMap extends React.Component {
 
     handleWS(data) {
       console.log(data)
-      let result = JSON.parse(data);
-      this.setState({count: this.state.count + result.movement});
+    }
+
+    handleOpen() {
+      console.log("opened")
     }
 
     parseReports(reports, self) {
@@ -80,6 +84,29 @@ class MyMap extends React.Component {
     }
 
     componentDidMount() {
+
+
+      // const io = require('socket.io')();
+
+      //
+      // const Sockette = require('sockette');
+      //
+      // const ws = new Sockette('ws://localhost:8001', {
+      //   timeout: 5e3,
+      //   maxAttempts: 10,
+      //   onopen: e => console.log('Connected!', e),
+      //   onmessage: e => console.log('Received:', e),
+      //   onreconnect: e => console.log('Reconnecting...', e),
+      //   onmaximum: e => console.log('Stop Attempting!', e),
+      //   onclose: e => console.log('Closed!', e),
+      //   onerror: e => console.log('Error:', e)
+      // });
+      //
+      // ws.send('Hello, world!');
+      // ws.close(); // graceful shutdown
+
+
+
       // console.log(1)
       // const WebSocket = require('ws');
       // console.log(2)
@@ -94,28 +121,26 @@ class MyMap extends React.Component {
       // });
       // console.log(5)
 
-      const WebSocket = require('ws');
-
-      const ws = new WebSocket('ws://demos.kaazing.com/echo', {
-        origin: 'https://www.websocket.org/echo.html'
-      });
-
-      ws.on('open', function open() {
-        console.log('connected');
-        ws.send(Date.now());
-      });
-
-      ws.on('close', function close() {
-        console.log('disconnected');
-      });
-
-      ws.on('message', function incoming(data) {
-        console.log(`Roundtrip time: ${Date.now() - data} ms`);
-
-        setTimeout(function timeout() {
-          ws.send(Date.now());
-        }, 500);
-      });
+      // const WebSocket = require('ws');
+      //
+      // const ws = new WebSocket('ws://localhost:8001');
+      //
+      // ws.on('open', function open() {
+      //   console.log('connected');
+      //   ws.send(Date.now());
+      // });
+      //
+      // ws.on('close', function close() {
+      //   console.log('disconnected');
+      // });
+      //
+      // ws.on('message', function incoming(data) {
+      //   console.log(`Roundtrip time: ${Date.now() - data} ms`);
+      //
+      //   setTimeout(function timeout() {
+      //     ws.send(Date.now());
+      //   }, 500);
+      // });
         // fetch("http://172.17.71.14:7171/web/reports/", {mode: 'cors'})
         // // .then(response => response.json())
         // .then(function(response) {
@@ -292,7 +317,7 @@ class MyMap extends React.Component {
                 <div className='centerStat'>
                     Estado: Normal
                 </div>
-                <Websocket url='ws://demos.kaazing.com/echo'
+                <Websocket url='ws://localhost:8001' onOpen={this.handleOpen.bind(this)}
                 onMessage={this.handleWS.bind(this)}/>
             </div>
         )
