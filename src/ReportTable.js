@@ -3,6 +3,15 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css'
 
 class ReportTable extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {data: []};
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(newData) {
+        this.setState({data: newData});
+    }
 
     filterData(data){
         let filteredData = [];
@@ -41,6 +50,37 @@ class ReportTable extends Component {
             }
         }
         return filteredData
+    }
+
+    parseReports(reports) {
+        let newData = [];
+        let rowIntensity;
+        let date;
+        let latitude;
+
+        for (let i = 0; i < reports.length; i++) {
+            rowIntensity = Number(reports[i]['intensity']);
+            date = reports[i]['created_on'].split("T")[0] + " " + reports[i]['created_on'].split("T")[1];
+            latitude = reports[i]['coordinates']['latitude'];
+
+            let appendage = [{
+                int: rowIntensity,
+                fecha: date,
+                coord: latitude,
+                mag: 4.2,
+                damn: 420,
+            }];
+
+            newData.push(appendage[0]);
+        }
+
+        this.handleChange(newData);
+    }
+
+    componentDidMount() {
+        fetch("http://172.17.71.14:7171/web/reports/")
+            .then(response => response.json())
+            .then(reports => this.parseReports(reports));
     }
 
     render() {
@@ -167,9 +207,7 @@ class ReportTable extends Component {
             }
         ];
 
-        const data = [];
-
-        for (let i = 0; i < table.length; i++) {
+        /*for (let i = 0; i < table.length; i++) {
             let appendage = [{
                 int: table[i].intensity,
                 fecha: table[i].timestamp,
@@ -177,8 +215,8 @@ class ReportTable extends Component {
                 mag: table[i].magnitude,
                 damn: table[i].affected,
             }];
-            data.push(appendage[0]);
-        }
+            this.data.push(appendage[0]);
+        }*/
 
         const myColumns = [
             {
@@ -218,7 +256,7 @@ class ReportTable extends Component {
         return (
             <ReactTable
                 defaultPageSize={10}
-                data={this.filterData(data)}
+                data={this.filterData(this.state['data'])}
                 columns={myColumns}
             />
         );
