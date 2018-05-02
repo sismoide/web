@@ -54,19 +54,20 @@ class ReportTable extends Component {
 
     parseReports(reports) {
         let newData = [];
-        let rowIntensity;
-        let date;
-        let latitude;
+        let rowIntensity, date, longitude, latitude, coordinate;
 
         for (let i = 0; i < reports.length; i++) {
             rowIntensity = Number(reports[i]['intensity']);
-            date = reports[i]['created_on'].split("T")[0] + " " + reports[i]['created_on'].split("T")[1];
+            date = reports[i]['created_on'].split("T")[0] + " " +
+                   reports[i]['created_on'].split("T")[1].split(".")[0];
             latitude = reports[i]['coordinates']['latitude'];
+            longitude = reports[i]['coordinates']['longitude'];
+            coordinate = "Latitud: " + latitude + ", Longitud: " + longitude;
 
             let appendage = [{
                 int: rowIntensity,
                 fecha: date,
-                coord: latitude,
+                coord: coordinate,
                 mag: 4.2,
                 damn: 420,
             }];
