@@ -85,7 +85,7 @@ class ReportTable extends Component {
     }
 
     render() {
-        const table = [
+        /*const table = [
             {
                 "affected": 135048,
                 "coordinates": {

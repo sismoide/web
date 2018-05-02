@@ -68,7 +68,7 @@ class MyMap extends React.Component {
             },
                 {
                     med: 'Coordenadas',
-                    res: "Lat: " + String(x) + " " + "Long: " + String(y)
+                    res: "Lat: " + String(x) + " Long: " + String(y)
                 },
                 {
                     med: 'Intensidad',
