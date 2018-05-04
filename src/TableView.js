@@ -27,16 +27,22 @@ class TableView extends Component {
                 <h2>DATOS DE TODOS LOS REPORTES</h2>
                 <div>
                     <form>
-                        Filtrar por fecha:
-                        <select value={this.state.value} onChange={this.handleChange}>
-                            <option value="Todos">Todos</option>
-                            <option value="Últimas 24 horas">Últimas 24 horas</option>
-                            <option value="Última semana">Última semana</option>
-                            <option value="Último mes">Último mes</option>
-                            <option value="Últimos 6 meses">Últimos 6 meses</option>
-                        </select>
+                      <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-1 col-form-label">Filtrar por fecha:</label>
+                        <div class="col-sm-3">
+                          <select class="form-control" value={this.state.value} onChange={this.handleChange}>
+                              <option value="Todos">Todos</option>
+                              <option value="Últimas 24 horas">Últimas 24 horas</option>
+                              <option value="Última semana">Última semana</option>
+                              <option value="Último mes">Último mes</option>
+                              <option value="Últimos 6 meses">Últimos 6 meses</option>
+                          </select>
+                        </div>
+                      </div>
                     </form>
+
                 </div>
+
                 <ol>
                 </ol>
                 <ol>
