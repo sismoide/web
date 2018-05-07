@@ -1,6 +1,7 @@
 import React from 'react';
 import './index.css';
 import 'react-table/react-table.css'
+import {Checkbox, FormGroup} from 'react-bootstrap'
 
 /* global google */
 
@@ -34,27 +35,12 @@ class MyMap extends React.Component {
         this.setState({tableInfo: marker.data});
     }
 
-    //Aun sin utilizar
-    handleData(data) {
-        let result = JSON.parse(data);
-        console.log(result)
-        this.setState({data: result});
-    }
-
-    handleWS(data) {
-      console.log(data)
-    }
-
-    handleOpen() {
-      console.log("opened")
-    }
-
     parseReports(reports, self) {
-      var i;
+      let i;
       for (i = 0; i < reports.length; i++) {
-        let x = Number(reports[i]['coordinates']['latitude'])
-        let y = Number(reports[i]['coordinates']['longitude'])
-        let date = reports[i]['created_on'].split("T")
+        let x = Number(reports[i]['coordinates']['latitude']);
+        let y = Number(reports[i]['coordinates']['longitude']);
+        let date = reports[i]['created_on'].split("T");
         let marker = new google.maps.Marker({
             position: {lat: x, lng: y},
             map: this.map,
@@ -95,35 +81,6 @@ class MyMap extends React.Component {
     }
 
     render() {
-        const mapStyle = {height: 500,  border:'1px solid black' };
-        const testData = [];
-
-        testData.push({
-            med: 'Fecha',
-            res: 'hoy'
-        });
-
-        testData.push({
-            med: 'Coordenadas',
-            res: 'lat: -33.4569400, lng: -70.6482700'
-        });
-
-        testData.push({
-            med: 'Intensidad',
-            res: 8
-        });
-
-
-        const columns = [{
-            Header: 'Medición',
-            accessor: 'med',
-            sortable: false
-        }, {
-            Header: 'Reporte',
-            accessor: 'res',
-            sortable: false
-        }];
-
         return (
             <div class="container">
                 <div class="row">
@@ -131,7 +88,10 @@ class MyMap extends React.Component {
                         I should be a map!
                     </div>
                     <div class="col-sm-2">
-                        Colocar filtros aquí :3
+                        <FormGroup>
+                            <Checkbox>Círculos</Checkbox>{' '}
+                            <Checkbox>Cuadrados</Checkbox>
+                        </FormGroup>
                     </div>
                 </div>
 
@@ -145,6 +105,5 @@ class MyMap extends React.Component {
 
 
 // ========================================
-// <Websocket url='ws://172.17.71.14:7171/web/reportes/'
-// onMessage={this.handleData.bind(this)}/>
+
 export default MyMap;
