@@ -1,10 +1,35 @@
+html {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
+  height: 100%;
+  width: 100%;
 }
 
 ol, ul {
   padding-left: 30px;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+.row, .container, .col-sm-10, .col-sm-2{
+  height: 90%;
+}
+
+.row {
+  height: 100%;
+}
+
+.complete {
+  height: 100%;
+  width: 100%;
 }
 
 .board-row:after {

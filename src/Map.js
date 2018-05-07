@@ -1,9 +1,6 @@
 import React from 'react';
-import ReactTable from 'react-table';
 import './index.css';
 import 'react-table/react-table.css'
-import Websocket from 'react-websocket';
-import createSocket from "sockette-component";
 
 /* global google */
 
@@ -84,88 +81,6 @@ class MyMap extends React.Component {
     }
 
     componentDidMount() {
-
-
-      // const io = require('socket.io')();
-
-      //
-      // const Sockette = require('sockette');
-      //
-      // const ws = new Sockette('ws://localhost:8001', {
-      //   timeout: 5e3,
-      //   maxAttempts: 10,
-      //   onopen: e => console.log('Connected!', e),
-      //   onmessage: e => console.log('Received:', e),
-      //   onreconnect: e => console.log('Reconnecting...', e),
-      //   onmaximum: e => console.log('Stop Attempting!', e),
-      //   onclose: e => console.log('Closed!', e),
-      //   onerror: e => console.log('Error:', e)
-      // });
-      //
-      // ws.send('Hello, world!');
-      // ws.close(); // graceful shutdown
-
-
-
-      // console.log(1)
-      // const WebSocket = require('ws');
-      // console.log(2)
-      // const ws = new WebSocket('ws://demos.kaazing.com/echo');
-      // console.log(3)
-      // ws.on('open', function open() {
-      //   ws.send('something');
-      // });
-      // console.log(4)
-      // ws.on('message', function incoming(data) {
-      //   console.log(data);
-      // });
-      // console.log(5)
-
-      // const WebSocket = require('ws');
-      //
-      // const ws = new WebSocket('ws://localhost:8001');
-      //
-      // ws.on('open', function open() {
-      //   console.log('connected');
-      //   ws.send(Date.now());
-      // });
-      //
-      // ws.on('close', function close() {
-      //   console.log('disconnected');
-      // });
-      //
-      // ws.on('message', function incoming(data) {
-      //   console.log(`Roundtrip time: ${Date.now() - data} ms`);
-      //
-      //   setTimeout(function timeout() {
-      //     ws.send(Date.now());
-      //   }, 500);
-      // });
-        // fetch("http://172.17.71.14:7171/web/reports/", {mode: 'cors'})
-        // // .then(response => response.json())
-        // .then(function(response) {
-        //   console.log(response.body);
-        // }).catch(function(error) {
-        //   console.log('Request failed', error)
-        // });
-
-
-        // fetch("http://172.17.71.14:7171/web/reports/", {mode: 'no-cors'})
-        //   .then(response => response.json())
-        //   .then(da
-        // fetch("http://172.17.71.14:7171/web/reports/", {mode: 'cors'})
-        // // .then(response => response.json())
-        // .then(function(response) {
-        //   console.log(response.body);
-        // }).catch(function(error) {
-        //   console.log('Request failed', error)
-        // });
-
-
-        // fetch("http://172.17.71.14:7171/web/reports/", {mode: 'no-cors'})
-        //   .then(response => response.json())
-        //   .then(data => this.setState({ data: data }));ta => this.setState({ data: data }));
-
         let self = this;
         loadScript("https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDAJ_Owgdoqi5hbxwxUdDLCGAeCnzbVVy8", function() {
             self.map = new google.maps.Map(self.refs.map, {
@@ -173,100 +88,14 @@ class MyMap extends React.Component {
                 zoom: 8,
                 mapTypeId: google.maps.MapTypeId.HYBRID});
 
-            // let marker = new google.maps.Marker({
-            //     position: {lat: -33.4569400, lng: -70.6482700},
         fetch("http://172.17.71.14:7171/web/reports/")
         .then(response => response.json())
         .then(reports => self.parseReports(reports, self));
-            //     map: self.map,
-            //     data: [{
-            //         med: 'Fecha',
-            //         res: "pasado mañana"
-            //     },
-            //         {
-            //             med: 'Coordenadas',
-            //             res: "lat: -33.4569400, lng: -70.6482700"
-            //         },
-            //         {
-            //             med: 'Intensidad',
-            //             res: 8
-            //         }]
-            // });
-
-            // let markerOne = new google.maps.Marker({
-            //     position: {lat: -35.253481406187326, lng: -71.38916015375003},
-            //     map: self.map,
-            //     data: [{
-            //         med: 'Fecha',
-            //         res: 'hoy'
-            //     },
-            //         {
-            //             med: 'Coordenadas',
-            //             res: "lat: -35.253481406187326, lng: -71.38916015375003"
-            //         },
-            //         {
-            //             med: 'Intensidad',
-            //             res: 5
-            //         }]
-            // });
-            //
-            // let markerTwo = new google.maps.Marker({
-            //     position: {lat: -28.157991686294604, lng: -70.51025390375003},
-            //     map: self.map,
-            //     data: [{
-            //         med: 'Fecha',
-            //         res: 'oka'
-            //     },
-            //         {
-            //             med: 'Coordenadas',
-            //             res: "lat: -28.157991686294604, lng: -70.51025390375003"
-            //         },
-            //         {
-            //             med: 'Intensidad',
-            //             res: 2
-            //         }]
-            // });
-            //
-            // let markerThree = new google.maps.Marker({
-            //     position: {lat: -23.65334324379797, lng: -68.48876952875003},
-            //     map: self.map,
-            //     data: [{
-            //         med: 'Fecha',
-            //         res: 'ayer'
-            //     },
-            //         {
-            //             med: 'Coordenadas',
-            //             res: "lat: -23.65334324379797, lng: -68.48876952875003"
-            //         },
-            //         {
-            //             med: 'Intensidad',
-            //             res: 12
-            //         }]
-            // });
-
-            // marker.addListener('click', self.handleChange(marker));
-            // markerOne.addListener('click', self.handleChange(markerOne));
-            // markerTwo.addListener('click', self.handleChange(markerTwo));
-            // markerThree.addListener('click', self.handleChange(markerThree));
-
-            // marker.addListener('click', function() {
-            //     self.handleChange(marker);
-            // });
-            // markerOne.addListener('click', function() {
-            //     self.handleChange(markerOne);
-            // });
-            // markerTwo.addListener('click', function() {
-            //     self.handleChange(markerTwo);
-            // });
-            // markerThree.addListener('click', function() {
-            //     self.handleChange(markerThree);
-            // });
-
         });
     }
 
     render() {
-        const mapStyle = {width: 700, height: 500,  border:'1px solid black' };
+        const mapStyle = {height: 500,  border:'1px solid black' };
         const testData = [];
 
         testData.push({
@@ -296,29 +125,19 @@ class MyMap extends React.Component {
         }];
 
         return (
-            <div>
-
-                <ol>
-                </ol>
-                <div className='inline' ref="map" style={mapStyle}>
-                    I should be a map!
-                </div>
-                <ol>
-                    <div className='whiteSpaceSquare'>
+            <div class="container">
+                <div class="row">
+                    <div className="col-sm-10" ref="map">
+                        I should be a map!
                     </div>
-                </ol>
-                <ReactTable
-                    defaultPageSize={5}
-                    data={this.state.tableInfo}
-                    columns={columns}
-                />
-                <div className='whitespace-fromtop'>
+                    <div class="col-sm-2">
+                        Colocar filtros aquí :3
+                    </div>
                 </div>
-                <div className='centerStat'>
-                    Estado: Normal
+
+                <div class="row">
+                    Aquí pondremos una linea de tiempo o:
                 </div>
-                <Websocket url='ws://localhost:8001' onOpen={this.handleOpen.bind(this)}
-                onMessage={this.handleWS.bind(this)}/>
             </div>
         )
     }

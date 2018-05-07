@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import 'react-moment'
 import 'react-table/react-table.css'
 import ReportTable from "./ReportTable"
-// import Websocket from 'react-websocket';
 
 class TableView extends Component {
     constructor(props) {
@@ -54,25 +53,3 @@ class TableView extends Component {
 }
 
 export default TableView;
-
-/*
-<div className='inline'>
-    Fecha inicio: <Datetime
-    timeFormat={false}
-    dateFormat="YYYY/MM/DD"
-    defaultValue={myDate.setDate(myDate.getDate() - 36500)}
-    onChange={this.handleDate}
-/>
-</div>
-<ol>
-<div className='whiteSpaceSquare'>
-    </div>
-</ol>
-<div className='move-left'>
-    Fecha fin: <Datetime
-    timeFormat={false}
-    dateFormat="YYYY/MM/DD"
-    defaultValue={new Date()}
-/>
-    </div>
-    */

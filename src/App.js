@@ -12,12 +12,13 @@ import {
 import FontAwesome from 'react-fontawesome';
 import MyMap from "./Map";
 import TableView from "./TableView";
+import OptionalMap from "./OptionalMap"
 
 class App extends Component {
     render() {
         return (
             <HashRouter>
-                <div>
+                <div className="complete">
                     <h1 className='header-background'>Sismoide</h1>
                     <Navbar>
                         <Navbar.Header>
@@ -31,11 +32,15 @@ class App extends Component {
                             <NavItem>
                                 <NavLink style={{textDecoration: 'none'}} to="/tableView">Datos tabulados</NavLink>
                             </NavItem>
+                            <NavItem>
+                                <NavLink style={{textDecoration: 'none'}} to="/optionalView">Inicio antiguo</NavLink>
+                            </NavItem>
                         </Nav>
                     </Navbar>
-                    <div className="content">
+                    <div className="complete">
                         <Route exact path="/" component={MyMap}/>
                         <Route path="/tableView" component={TableView}/>
+                        <Route path="/optionalView" component={OptionalMap}/>
                     </div>
                 </div>
             </HashRouter>
