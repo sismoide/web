@@ -12,6 +12,9 @@ import {
 import FontAwesome from 'react-fontawesome';
 import MyMap from "./Map";
 import TableView from "./TableView";
+import Login from "./Login";
+
+
 
 class App extends Component {
     render() {
@@ -31,14 +34,19 @@ class App extends Component {
                             <NavItem>
                                 <NavLink style={{textDecoration: 'none'}} to="/tableView">Datos tabulados</NavLink>
                             </NavItem>
+                            <NavItem>
+                                <NavLink style={{textDecoration: 'none'}} to="/login">login</NavLink>
+                            </NavItem>
                         </Nav>
                     </Navbar>
                     <div className="content">
                         <Route exact path="/" component={MyMap}/>
                         <Route path="/tableView" component={TableView}/>
+                        <Route path="/login" exact component={Login} />
                     </div>
                 </div>
             </HashRouter>
+
         );
     }
 }

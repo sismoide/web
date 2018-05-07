@@ -3,8 +3,14 @@ import ReactTable from 'react-table';
 import './index.css';
 import 'react-table/react-table.css'
 import Websocket from 'react-websocket';
+import Sockette from 'sockette-component'
 import createSocket from "sockette-component";
+import { Component, createElement } from "react";
 
+const Socket = createSocket({
+  Component,
+  createElement
+});
 /* global google */
 
 function loadScript(url, callback)
@@ -28,8 +34,10 @@ class MyMap extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {data: [], tableInfo: []};
+        this.state = {data: [], tableInfo: [], socket: null};
+
         this.handleChange = this.handleChange.bind(this);
+
     }
 
     handleChange(marker) {
@@ -37,12 +45,29 @@ class MyMap extends React.Component {
         this.setState({tableInfo: marker.data});
     }
 
+    onOpen = ev => {
+      console.log("> Connected!", ev);
+    };
+
+    onMessage = ev => {
+      console.log("> Received:", ev.data);
+    };
+
+    onReconnect = ev => {
+      console.log("> Reconnecting...", ev);
+    };
+
+    sendMessage = _ => {
+      // WebSocket available in state!
+      this.stte.ws.send("Hello, world!");
+    };
+
     //Aun sin utilizar
-    handleData(data) {
-        let result = JSON.parse(data);
-        console.log(result)
-        this.setState({data: result});
-    }
+    // handleData(data) {
+    //     let result = JSON.parse(data);
+    //     console.log(result)
+    //     this.setState({data: result});
+    // }
 
     handleWS(data) {
       console.log(data)
@@ -68,7 +93,7 @@ class MyMap extends React.Component {
             },
                 {
                     med: 'Coordenadas',
-                    res: "Lat: " + String(x) + " Long: " + String(y)
+                    res: "Lat: " + String(x) + " " + "Long: " + String(y)
                 },
                 {
                     med: 'Intensidad',
@@ -317,15 +342,12 @@ class MyMap extends React.Component {
                 <div className='centerStat'>
                     Estado: Normal
                 </div>
-                <Websocket url='ws://localhost:8001' onOpen={this.handleOpen.bind(this)}
-                onMessage={this.handleWS.bind(this)}/>
+                  // <Websocket url='ws://localhost:8001' onOpen={this.handleOpen.bind(this)} onMessage={this.handleWS.bind(this)}/>
+
             </div>
         )
     }
 }
 
 
-// ========================================
-// <Websocket url='ws://172.17.71.14:7171/web/reportes/'
-// onMessage={this.handleData.bind(this)}/>
 export default MyMap;
