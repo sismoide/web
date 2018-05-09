@@ -2,7 +2,6 @@ import React from 'react';
 import ReactTable from 'react-table';
 import './index.css';
 import 'react-table/react-table.css'
-import Websocket from 'react-websocket';
 
 /* global google */
 

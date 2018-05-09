@@ -9,7 +9,6 @@ import {
     Navbar,
     NavItem
 } from "react-bootstrap";
-import FontAwesome from 'react-fontawesome';
 import MyMap from "./Map";
 import TableView from "./TableView";
 import OptionalMap from "./OptionalMap"
