@@ -12,6 +12,7 @@ import {
 import MyMap from "./Map";
 import TableView from "./TableView";
 import OptionalMap from "./OptionalMap"
+import Login from "./Login"
 
 class App extends Component {
     render() {
@@ -34,12 +35,16 @@ class App extends Component {
                             <NavItem>
                                 <NavLink style={{textDecoration: 'none'}} to="/optionalView">Inicio antiguo</NavLink>
                             </NavItem>
+                            <NavItem>
+                                <NavLink style={{textDecoration: 'none'}} to="/login">Login</NavLink>
+                            </NavItem>
                         </Nav>
                     </Navbar>
                     <div className="complete">
                         <Route exact path="/" component={MyMap}/>
                         <Route path="/tableView" component={TableView}/>
                         <Route path="/optionalView" component={OptionalMap}/>
+                        <Route path="/login" component={Login}/>
                     </div>
                 </div>
             </HashRouter>
