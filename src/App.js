@@ -35,16 +35,12 @@ class App extends Component {
                             <NavItem>
                                 <NavLink style={{textDecoration: 'none'}} to="/optionalView">Inicio antiguo</NavLink>
                             </NavItem>
-                            <NavItem>
-                                <NavLink style={{textDecoration: 'none'}} to="/login">Login</NavLink>
-                            </NavItem>
                         </Nav>
                     </Navbar>
                     <div className="complete">
                         <Route exact path="/" component={MyMap}/>
                         <Route path="/tableView" component={TableView}/>
                         <Route path="/optionalView" component={OptionalMap}/>
-                        <Route path="/login" component={Login}/>
                     </div>
                 </div>
             </HashRouter>

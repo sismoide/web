@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import "./Login.css";
+// import React from 'react';
+import ReactDOM from 'react-dom';
+import App from "./App"
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       username: "",
       password: "",
@@ -13,8 +15,7 @@ export default class Login extends Component {
   }
 
   validateForm() {
-    console.log(JSON.stringify(this.state));
-    return this.state.username.length > 0 && this.state.password.length > 0;
+        return this.state.username.length > 0 && this.state.password.length > 0;
   }
 
   handleChange = event => {
@@ -29,15 +30,26 @@ export default class Login extends Component {
       headers: {
         'accept': 'application/json',
         'Content-Type': 'application/json',
-        // 'Token' : '5e49fe3127c99e3917fd0f886dc3c96994f426ae'
       },
       body: JSON.stringify(this.state)
     })
-    .then(function(response){
-     return response.json();
-    })
+    .then(function(res) {
+    if (res.ok) {
+      return res.json();
+    } else {
+      return res.json()
+        .then(function(err) {
+          throw new Error("There's an error upstream and it says " + err.message);
+        });
+    }})
     .then(function(data){
-    console.log(data)
+    localStorage.setItem("token", data["token"]);
+    var text=localStorage.getItem("token");
+    console.log(text);
+    ReactDOM.render(
+        <App/>,
+        document.getElementById("root")
+    );
     });
   }
 
@@ -70,6 +82,7 @@ export default class Login extends Component {
           >
             Login
           </Button>
+
         </form>
       </div>
     );
