@@ -31,7 +31,7 @@ export default class Login extends Component {
         'Content-Type': 'application/json',
         // 'Token' : '5e49fe3127c99e3917fd0f886dc3c96994f426ae'
       },
-      body: JSON.stringify(this.data)
+      body: JSON.stringify(this.state)
     })
     .then(function(response){
      return response.json();
