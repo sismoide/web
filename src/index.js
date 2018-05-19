@@ -5,6 +5,6 @@ import './index.css';
 import Login from './Login'
 
 ReactDOM.render(
-    <Login/>,
+    <App/>,
     document.getElementById("root")
 );

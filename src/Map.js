@@ -2,7 +2,9 @@ import React from 'react';
 import './index.css';
 import 'react-table/react-table.css'
 import {Checkbox, FormGroup} from 'react-bootstrap'
-
+import 'react-input-range'
+import 'react-input-range/lib/css/index.css'
+import InputRange from 'react-input-range';
 /* global google */
 
 function loadScript(url, callback)
@@ -26,7 +28,7 @@ class MyMap extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {data: [], tableInfo: [], circles: []};
+        this.state = {data: [], tableInfo: [], circles: [], value: 5,};
         this.handleChange = this.handleChange.bind(this);
         this.drawCircles = this.drawCircles.bind(this);
         this.drawSquares = this.drawSquares.bind(this);
@@ -143,7 +145,12 @@ class MyMap extends React.Component {
                 </div>
 
                 <div>
-                    Aquí pondremos una linea de tiempo o:
+                <InputRange
+                  maxValue={20}
+                  minValue={0}
+                  formatLabel={value => `${value}cm`}
+                  value={this.state.value}
+                  onChange={value => this.setState({ value })}/>
                 </div>
             </div>
         )

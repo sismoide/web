@@ -25,6 +25,8 @@ export default class Login extends Component {
   };
 
   handleSubmit = event => {
+    event.preventDefault();
+
     fetch("http://172.17.71.14:7171/web/get_token", {
       method: "POST",
       headers: {
