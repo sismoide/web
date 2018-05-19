@@ -22,7 +22,7 @@ export default class Login extends Component {
     this.setState({
       [event.target.id]: event.target.value
     });
-  }
+  };
 
   handleSubmit = event => {
     fetch("http://172.17.71.14:7171/web/get_token", {
@@ -51,7 +51,7 @@ export default class Login extends Component {
         document.getElementById("root")
     );
     });
-  }
+  };
 
   render() {
     return (
