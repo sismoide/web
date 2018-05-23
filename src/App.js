@@ -12,7 +12,7 @@ import {
 import MyMap from "./Map";
 import TableView from "./TableView";
 import OptionalMap from "./OptionalMap"
-import Login from "./Login"
+//import Login from "./Login"
 
 class App extends Component {
     render() {

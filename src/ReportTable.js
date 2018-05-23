@@ -79,9 +79,15 @@ class ReportTable extends Component {
     }
 
     componentDidMount() {
-        fetch("http://172.17.71.14:7171/web/reports/")
-            .then(response => response.json())
-            .then(reports => this.parseReports(reports));
+
+        fetch("http://wangulen.dgf.uchile.cl:17014/web/reports/", {
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(reports => this.parseReports(reports));
     }
 
     render() {
