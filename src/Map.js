@@ -169,7 +169,6 @@ class MyMap extends React.Component {
 
     componentDidMount() {
         this.drawMap();
-        console.log("done");
 
     }
 
@@ -192,15 +191,17 @@ class MyMap extends React.Component {
                 </div>
 
                 <div>
-                <InputRange
-                ref={InputRange => {
-                      this.myInput = InputRange;
-                      }}
-                  maxValue={this.state.markers.length}
-                  minValue={0}
-                  formatLabel={value => `${value}cm`}
-                  value={this.state.value}
-                  onChange={value => this.setState({ value })}/>
+                  <div className= "col-sm-10">
+                  <InputRange
+                  ref={InputRange => {
+                        this.myInput = InputRange;
+                        }}
+                    maxValue={this.state.markers.length}
+                    minValue={0}
+                    formatLabel={value => `${value}cm`}
+                    value={this.state.value}
+                    onChange={value => this.setState({ value })}/>
+                    </div>
                 </div>
             </div>
         )
