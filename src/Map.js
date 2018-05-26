@@ -70,6 +70,32 @@ class MyMap extends React.Component {
         new google.maps.Rectangle(myRectangle);
     }
 
+    changeInput(){
+      let value = this.state.value;
+      let markerFilter = this.state.markers[value];
+      if (! markerFilter ){
+        let lastIndex = this.state.markers.length - 1
+        console.log(new Date(this.state.markers[lastIndex].data[0]['res']));
+        var filterDate = new Date(this.state.markers[lastIndex].data[0]['res']);
+      }
+      else {
+        console.log(new Date(this.state.markers[this.state.value].data[0]['res']));
+        var filterDate = new Date(this.state.markers[this.state.value].data[0]['res']);
+      }
+
+      for (var i = 0; i < this.state.markers.length; i++) {
+        let actualMarker = this.state.markers[i]
+        let actualDate = new Date(actualMarker.data[0]['res'])
+        if (actualDate < filterDate) {
+          actualMarker.setVisible(true);
+
+        }
+        else {
+          actualMarker.setVisible(false);
+        }
+      }
+    }
+
     parseReports(reports, self) {
       let i;
       let markers = [...this.state.markers];
@@ -148,9 +174,7 @@ class MyMap extends React.Component {
     }
 
     componentDidUpdate() {
-      console.log("update");
-      console.log(this.state.markers);
-      console.log(this.state.markers.length);
+      this.changeInput();
     }
 
     render() {
