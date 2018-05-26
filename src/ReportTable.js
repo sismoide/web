@@ -84,6 +84,7 @@ class ReportTable extends Component {
             headers: {
                 'accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': 'Token 9ceaf0b154d346e8b7adb6242774dc38d16155af'
             }
         })
         .then(response => response.json())

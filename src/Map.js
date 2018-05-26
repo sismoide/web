@@ -28,14 +28,14 @@ class MyMap extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {data: [], tableInfo: [], circles: [], value: 5,};
+        this.state = {data: [], tableInfo: [], circles: [], value: 5, markers : [], nMarkers : 0};
         this.handleChange = this.handleChange.bind(this);
         this.drawCircles = this.drawCircles.bind(this);
         this.drawSquares = this.drawSquares.bind(this);
     }
 
     handleChange(marker) {
-        this.setState({tableInfo: marker.data});
+        console.log(marker.data)
     }
 
     drawCircles() {
@@ -72,10 +72,15 @@ class MyMap extends React.Component {
 
     parseReports(reports, self) {
       let i;
+      let markers = [...this.state.markers];
       for (i = 0; i < reports.length; i++) {
         let x = Number(reports[i]['coordinates']['latitude']);
         let y = Number(reports[i]['coordinates']['longitude']);
         let date = reports[i]['created_on'].split("T");
+        let dateObj = new Date(reports[i]['created_on'])
+        console.log(reports[i]['created_on'])
+        console.log(date);
+        console.log(dateObj);
         let marker = new google.maps.Marker({
             position: {lat: x, lng: y},
             map: this.map,
@@ -93,6 +98,8 @@ class MyMap extends React.Component {
                     res: reports[i]['intensity']
                 }]
         });
+        markers.push(marker);
+        this.setState({markers});
         marker.addListener('click', function() {
             self.handleChange(marker);
         });
@@ -111,7 +118,15 @@ class MyMap extends React.Component {
                 zoom: 8,
                 mapTypeId: google.maps.MapTypeId.HYBRID});
 
-            fetch("http://172.17.71.14:7171/web/reports/")
+            fetch("http://wangulen.dgf.uchile.cl:17014/web/reports/", {
+              method: "GET",
+              headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization' : 'Token 9ceaf0b154d346e8b7adb6242774dc38d16155af'
+              },
+              body: JSON.stringify(this.state)
+            })
                 .then(response => response.json())
                 .then(reports => self.parseReports(reports, self));
 
@@ -128,6 +143,14 @@ class MyMap extends React.Component {
 
     componentDidMount() {
         this.drawMap();
+        console.log("done");
+
+    }
+
+    componentDidUpdate() {
+      console.log("update");
+      console.log(this.state.markers);
+      console.log(this.state.markers.length);
     }
 
     render() {
@@ -146,7 +169,10 @@ class MyMap extends React.Component {
 
                 <div>
                 <InputRange
-                  maxValue={20}
+                ref={InputRange => {
+                      this.myInput = InputRange;
+                      }}
+                  maxValue={this.state.markers.length}
                   minValue={0}
                   formatLabel={value => `${value}cm`}
                   value={this.state.value}
