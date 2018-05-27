@@ -62,28 +62,28 @@ class MyMap extends React.Component {
             fillOpacity: 0.35,
             map: this.map,
             bounds: {
-                north: -33.685,
-                south: -33.671,
-                east: -70.234,
-                west: -70.251
+                north: -33.0050000000,
+                south: -32.9600000000,
+                east: -69.9649330000,
+                west: -70.0189330000
             }
         };
         new google.maps.Rectangle(myRectangle);
     }
 
-    pushSquares(x, y) {
+    getNewSquare(a, b, c, d) {
         let myRectangle = {
             strokeColor: '#0000FF',
             strokeOpacity: 0.8,
             strokeWeight: 2,
             fillColor: '#0000FF',
-            fillOpacity: 0.35,
+            fillOpacity: 0.1,
             map: this.map,
             bounds: {
-                north: -33.685,
-                south: -33.671,
-                east: -70.234,
-                west: -70.251
+                north: a,
+                south: c,
+                east: d,
+                west: b
             }
         };
         new google.maps.Rectangle(myRectangle);
@@ -157,16 +157,21 @@ class MyMap extends React.Component {
     }
 
     parseQuadrants(quadrants) {
-        let i;
+        console.log(quadrants);
+
+        /*let i;
         let mySquares = [...this.state.squares];
+        let a, b, c, d;
         for (i = 0; i < quadrants.length; i++) {
-            let x = Number(quadrants[i]['latitude']);
-            let y = Number(quadrants[i]['longitude']);
-            let square = this.pushSquares(x, y);
+            a = Number(quadrants[i]['min_coordinates']['latitude']);
+            b = Number(quadrants[i]['min_coordinates']['longitude']);
+            c = Number(quadrants[i]['max_coordinates']['latitude']);
+            d = Number(quadrants[i]['max_coordinates']['longitude']);
+            let square = this.getNewSquare(a, b, c, d);
             mySquares.push(square);
 
             this.setState({mySquares});
-        }
+        }*/
     }
 
     drawMap() {
@@ -188,11 +193,12 @@ class MyMap extends React.Component {
             })
                 .then(response => response.json())
                 .then(reports => self.parseReports(reports, self));
-
-            fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrants?min_lat=-56.02757693295072&" +
-                "min_long=-79.84863281000003&" +
-                "max_lat=-17.299479662371382&" +
-                "max_long=-61.611328122500026", {
+                //"max_lat=-17.29&" +
+                //"max_long=-61.61/
+            fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrants?min_lat=-34.01&" +
+                "min_long=-70.02&" +
+                "max_lat=-33.1&" +
+                "max_long=-69.2", {
                 method: "GET",
                 headers: {
                     'accept': 'application/json',
