@@ -28,7 +28,8 @@ class MyMap extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {data: [], tableInfo: [], circles: [], value: 5, markers : [], nMarkers : 0};
+        this.state = {data: [], tableInfo: [], circles: [],
+                      value: 5, markers : [], nMarkers : 0, squares: []};
         this.handleChange = this.handleChange.bind(this);
         this.drawCircles = this.drawCircles.bind(this);
         this.drawSquares = this.drawSquares.bind(this);
@@ -68,6 +69,25 @@ class MyMap extends React.Component {
             }
         };
         new google.maps.Rectangle(myRectangle);
+    }
+
+    pushSquares(x, y) {
+        let myRectangle = {
+            strokeColor: '#0000FF',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#0000FF',
+            fillOpacity: 0.35,
+            map: this.map,
+            bounds: {
+                north: -33.685,
+                south: -33.671,
+                east: -70.234,
+                west: -70.251
+            }
+        };
+        new google.maps.Rectangle(myRectangle);
+        return myRectangle;
     }
 
     changeInput(){
@@ -136,8 +156,17 @@ class MyMap extends React.Component {
       }
     }
 
-    parseQuadrants(quadrants, self) {
-        console.log(quadrants);
+    parseQuadrants(quadrants) {
+        let i;
+        let mySquares = [...this.state.squares];
+        for (i = 0; i < quadrants.length; i++) {
+            let x = Number(quadrants[i]['latitude']);
+            let y = Number(quadrants[i]['longitude']);
+            let square = this.pushSquares(x, y);
+            mySquares.push(square);
+
+            this.setState({mySquares});
+        }
     }
 
     drawMap() {
@@ -173,7 +202,7 @@ class MyMap extends React.Component {
                 body: JSON.stringify(this.state)
             })
                 .then(response => response.json())
-                .then(quadrants => self.parseQuadrants(quadrants, self));
+                .then(reports => self.parseQuadrants(reports));
         });
     }
 
