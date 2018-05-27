@@ -72,24 +72,28 @@ class MyMap extends React.Component {
 
     changeInput(){
       let value = this.state.value;
+      let filterDate;
       let markerFilter = this.state.markers[value];
+
       if (! markerFilter ){
-        let lastIndex = this.state.markers.length - 1
-        console.log(new Date(this.state.markers[lastIndex].data[0]['res']));
-        var filterDate = new Date(this.state.markers[lastIndex].data[0]['res']);
-      }
-      else {
-        console.log(new Date(this.state.markers[this.state.value].data[0]['res']));
-        var filterDate = new Date(this.state.markers[this.state.value].data[0]['res']);
+        let lastIndex = this.state.markers.length - 1;
+        //console.log(new Date(this.state.markers[lastIndex].data[0]['res']));
+        filterDate = new Date(this.state.markers[lastIndex].data[0]['res']);
       }
 
-      for (var i = 0; i < this.state.markers.length; i++) {
-        let actualMarker = this.state.markers[i]
-        let actualDate = new Date(actualMarker.data[0]['res'])
+      else {
+        //console.log(new Date(this.state.markers[this.state.value].data[0]['res']));
+        filterDate = new Date(this.state.markers[this.state.value].data[0]['res']);
+      }
+
+      for (let i = 0; i < this.state.markers.length; i++) {
+        let actualMarker = this.state.markers[i];
+        let actualDate = new Date(actualMarker.data[0]['res']);
+
         if (actualDate < filterDate) {
           actualMarker.setVisible(true);
-
         }
+
         else {
           actualMarker.setVisible(false);
         }
@@ -103,10 +107,10 @@ class MyMap extends React.Component {
         let x = Number(reports[i]['coordinates']['latitude']);
         let y = Number(reports[i]['coordinates']['longitude']);
         let date = reports[i]['created_on'].split("T");
-        let dateObj = new Date(reports[i]['created_on'])
-        console.log(reports[i]['created_on'])
-        console.log(date);
-        console.log(dateObj);
+        //let dateObj = new Date(reports[i]['created_on'])
+        //console.log(reports[i]['created_on'])
+        //console.log(date);
+        //console.log(dateObj);
         let marker = new google.maps.Marker({
             position: {lat: x, lng: y},
             map: this.map,
@@ -156,12 +160,18 @@ class MyMap extends React.Component {
                 .then(response => response.json())
                 .then(reports => self.parseReports(reports, self));
 
-            //token: 9ceaf0b154d346e8b7adb6242774dc38d16155af
-
-            fetch("http://richter.dgf.uchile.cl:7171/map/quadrants?min_lat=-56.02757693295072&" +
+            fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrants?min_lat=-56.02757693295072&" +
                 "min_long=-79.84863281000003&" +
                 "max_lat=-17.299479662371382&" +
-                "max_long=-61.611328122500026")
+                "max_long=-61.611328122500026", {
+                method: "GET",
+                headers: {
+                    'accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Token 9ceaf0b154d346e8b7adb6242774dc38d16155af'
+                },
+                body: JSON.stringify(this.state)
+            })
                 .then(response => response.json())
                 .then(quadrants => self.parseQuadrants(quadrants, self));
         });
