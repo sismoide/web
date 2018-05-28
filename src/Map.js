@@ -304,7 +304,7 @@ class MyMap extends React.Component {
                         }}
                     maxValue={this.state.markers.length}
                     minValue={0}
-                    formatLabel={value => `${value}cm`}
+                    formatLabel={value => `${value} Reportes`}
                     value={this.state.value}
                     onChange={value => this.setState({ value })}/>
                     </div>
