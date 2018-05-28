@@ -105,7 +105,7 @@ class MyMap extends React.Component {
         let markers = [...this.state.markers];
         for (let i = 0; i < markers.length; i++) {
             if(this.rectangleContains(markers[i].getPosition().lat(),
-                markers[i].getPosition().lng(), a, b, c, d)) {
+                markers[i].getPosition().lng(), a, b, c, d) && markers[i].data[2]['res'] != null) {
                 total += markers[i].data[2]['res'];
                 amount += 1;
             }
