@@ -71,7 +71,57 @@ class MyMap extends React.Component {
         new google.maps.Rectangle(myRectangle);
     }
 
-    getNewSquare(a, b, c, d) {
+    closeAllInfoWindows() {
+        let squares = [...this.state.squares];
+        for (let i = 0; i < squares.length; i++) {
+            squares[i].infowindow.close();
+        }
+        this.setState({squares});
+    }
+
+    rectangleContains(x, y, a, b, c, d) {
+        if (x < a) return false;
+        if (x > c) return false;
+        if (y < b) return false;
+        if (y > d) return false;
+        return true;
+    }
+
+    countReports(a, b, c, d) {
+        let count = 0;
+        let markers = [...this.state.markers];
+        for (let i = 0; i < markers.length; i++) {
+            if(this.rectangleContains(markers[i].getPosition().lat(),
+                markers[i].getPosition().lng(), a, b, c, d)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    meanIntensity(a, b, c, d) {
+        let total = 0;
+        let amount = 0;
+        let markers = [...this.state.markers];
+        for (let i = 0; i < markers.length; i++) {
+            if(this.rectangleContains(markers[i].getPosition().lat(),
+                markers[i].getPosition().lng(), a, b, c, d)) {
+                total += markers[i].data[2]['res'];
+                amount += 1;
+            }
+        }
+
+        if (amount === 0) {
+            return 0;
+        }
+        return total / amount;
+    }
+
+     getNewSquare(n, p, a, b, c, d, self) {
+        let info = new google.maps.InfoWindow();
+        let new_lat = (a + c) / 2;
+        let new_lng = (b + d) / 2;
+        let centre = google.maps.LatLng(new_lat, new_lng);
         let myRectangle = {
             strokeColor: '#0000FF',
             strokeOpacity: 0.8,
@@ -79,6 +129,7 @@ class MyMap extends React.Component {
             fillColor: '#0000FF',
             fillOpacity: 0.1,
             map: this.map,
+            infowindow: info,
             bounds: {
                 north: a,
                 south: c,
@@ -86,8 +137,17 @@ class MyMap extends React.Component {
                 west: b
             }
         };
-        new google.maps.Rectangle(myRectangle);
-        return myRectangle;
+        let rectangle = new google.maps.Rectangle(myRectangle);
+        rectangle.addListener('click', function() {
+            info.setContent("<p>" + 'Cantidad de reportes: ' + n + "<br />" +
+                            'Intensidad promedio: ' + Math.round(p) + "</p>");
+            info.setPosition(rectangle.getBounds().getNorthEast());
+            info.open(this.map);
+        });
+        rectangle.addListener('mouseout', function() {
+            info.close();
+        });
+        return rectangle;
     }
 
     changeInput(){
@@ -156,10 +216,8 @@ class MyMap extends React.Component {
       }
     }
 
-    parseQuadrants(quadrants) {
-        console.log(quadrants);
-
-        /*let i;
+    parseQuadrants(quadrants, self) {
+        let i;
         let mySquares = [...this.state.squares];
         let a, b, c, d;
         for (i = 0; i < quadrants.length; i++) {
@@ -167,19 +225,22 @@ class MyMap extends React.Component {
             b = Number(quadrants[i]['min_coordinates']['longitude']);
             c = Number(quadrants[i]['max_coordinates']['latitude']);
             d = Number(quadrants[i]['max_coordinates']['longitude']);
-            let square = this.getNewSquare(a, b, c, d);
+            let num_reports = this.countReports(a, b, c, d);
+            let mean_int = this.meanIntensity(a, b, c, d);
+            let square = this.getNewSquare(num_reports, mean_int, a, b, c, d, self);
+            this.countReports(square);
             mySquares.push(square);
 
             this.setState({mySquares});
-        }*/
+        }
     }
 
     drawMap() {
         let self = this;
         loadScript("https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDAJ_Owgdoqi5hbxwxUdDLCGAeCnzbVVy8", function() {
             self.map = new google.maps.Map(self.refs.map, {
-                center: {lat: -33.4, lng: -70.6},
-                zoom: 8,
+                center: {lat: -33.5, lng: -70.63},
+                zoom: 10,
                 mapTypeId: google.maps.MapTypeId.HYBRID});
 
             fetch("http://wangulen.dgf.uchile.cl:17014/web/reports/", {
@@ -196,9 +257,9 @@ class MyMap extends React.Component {
                 //"max_lat=-17.29&" +
                 //"max_long=-61.61/
             fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrants?min_lat=-34.01&" +
-                "min_long=-70.02&" +
+                "min_long=-71.02&" +
                 "max_lat=-33.1&" +
-                "max_long=-69.2", {
+                "max_long=-70.2", {
                 method: "GET",
                 headers: {
                     'accept': 'application/json',
@@ -208,7 +269,7 @@ class MyMap extends React.Component {
                 body: JSON.stringify(this.state)
             })
                 .then(response => response.json())
-                .then(reports => self.parseQuadrants(reports));
+                .then(reports => self.parseQuadrants(reports, self));
         });
     }
 
@@ -229,8 +290,8 @@ class MyMap extends React.Component {
                     </div>
                     <div className="col-sm-2">
                         <FormGroup>
-                            <Checkbox onChange={this.drawCircles.bind(this)}>Círculos</Checkbox>{' '}
-                            <Checkbox onChange={this.drawSquares.bind(this)}>Cuadrados</Checkbox>
+                            <Checkbox onChange={this.drawCircles.bind(this)}>Hospitales</Checkbox>{' '}
+                            <Checkbox onChange={this.drawSquares.bind(this)}>Bomberos</Checkbox>
                         </FormGroup>
                     </div>
                 </div>
