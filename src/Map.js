@@ -170,7 +170,7 @@ class MyMap extends React.Component {
         let actualMarker = this.state.markers[i];
         let actualDate = new Date(actualMarker.data[0]['res']);
 
-        if (actualDate < filterDate) {
+        if (i < value) {
           actualMarker.setVisible(true);
         }
 
@@ -189,7 +189,7 @@ class MyMap extends React.Component {
         let date = reports[i]['created_on'].split("T");
         //let dateObj = new Date(reports[i]['created_on'])
         //console.log(reports[i]['created_on'])
-        //console.log(date);
+        console.log(date);
         //console.log(dateObj);
         let marker = new google.maps.Marker({
             position: {lat: x, lng: y},
@@ -208,8 +208,10 @@ class MyMap extends React.Component {
                     res: reports[i]['intensity']
                 }]
         });
+        marker.setVisible(true);
         markers.push(marker);
         this.setState({markers});
+        console.log(this.state.markers);
         marker.addListener('click', function() {
             self.handleChange(marker);
         });
