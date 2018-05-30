@@ -146,8 +146,8 @@ class MyMap extends React.Component {
         let rectangle = new google.maps.Rectangle(myRectangle);
         rectangle.addListener('click', function () {
             info.setPosition(centre);
-            info.setContent("<p>" + 'Cantidad de reportes: ' + n + "<br />" +
-                'Intensidad promedio: ' + Math.round(p) + "</p>");
+            info.setContent("<p>Cantidad de reportes: " + n +
+                "<br />Intensidad promedio: " + Math.round(p) + "</p>");
             info.open(this.map);
         });
 
