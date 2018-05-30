@@ -46,7 +46,7 @@ export default class Login extends Component {
     }})
     .then(function(data){
     localStorage.setItem("token", data["token"]);
-    var text=localStorage.getItem("token");
+    let text=localStorage.getItem("token");
     console.log(text);
     ReactDOM.render(
         <App/>,

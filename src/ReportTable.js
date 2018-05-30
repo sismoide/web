@@ -18,10 +18,7 @@ class ReportTable extends Component {
         let filterType = this.props.filter;
 
         function isInRange(date, range) {
-            if (Date.parse(date) > range) {
-                return true;
-            }
-            return false;
+            return Date.parse(date) > range;
         }
 
         for (let i = 0; i < data.length; i++) {
