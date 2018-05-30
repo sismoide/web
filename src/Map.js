@@ -5,10 +5,10 @@ import {Checkbox, FormGroup} from 'react-bootstrap'
 import 'react-input-range'
 import 'react-input-range/lib/css/index.css'
 import InputRange from 'react-input-range';
+
 /* global google */
 
-function loadScript(url, callback)
-{
+function loadScript(url, callback) {
     // Adding the script tag to the head as suggested before
     const head = document.getElementsByTagName('head')[0];
     const script = document.createElement('script');
@@ -28,8 +28,10 @@ class MyMap extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {data: [], tableInfo: [], circles: [],
-                      value: 5, markers : [], nMarkers : 0, squares: []};
+        this.state = {
+            data: [], tableInfo: [], circles: [],
+            value: 5, markers: [], nMarkers: 0, squares: []
+        };
         this.handleChange = this.handleChange.bind(this);
         this.drawCircles = this.drawCircles.bind(this);
         this.drawSquares = this.drawSquares.bind(this);
@@ -91,7 +93,9 @@ class MyMap extends React.Component {
         let count = 0;
         let markers = [...this.state.markers];
         for (let i = 0; i < markers.length; i++) {
-            if(this.rectangleContains(markers[i].getPosition().lat(),
+            /*console.log("Latitud: " + markers[i].getPosition().lat() + " Longitud: " + markers[i].getPosition().lng());
+            console.log(markers.data[0][2]['res']);*/
+            if (this.rectangleContains(markers[i].getPosition().lat(),
                 markers[i].getPosition().lng(), a, b, c, d)) {
                 count++;
             }
@@ -104,7 +108,7 @@ class MyMap extends React.Component {
         let amount = 0;
         let markers = [...this.state.markers];
         for (let i = 0; i < markers.length; i++) {
-            if(this.rectangleContains(markers[i].getPosition().lat(),
+            if (this.rectangleContains(markers[i].getPosition().lat(),
                 markers[i].getPosition().lng(), a, b, c, d) && markers[i].data[2]['res'] != null) {
                 total += markers[i].data[2]['res'];
                 amount += 1;
@@ -117,11 +121,12 @@ class MyMap extends React.Component {
         return total / amount;
     }
 
-     getNewSquare(n, p, a, b, c, d, self) {
+    getNewSquare(n, p, a, b, c, d, self) {
         let info = new google.maps.InfoWindow();
         let new_lat = (a + c) / 2;
         let new_lng = (b + d) / 2;
-        let centre = google.maps.LatLng(new_lat, new_lng);
+        let centre = {lat: new_lat, lng: new_lng};
+
         let myRectangle = {
             strokeColor: '#0000FF',
             strokeOpacity: 0.8,
@@ -137,85 +142,88 @@ class MyMap extends React.Component {
                 west: b
             }
         };
+
         let rectangle = new google.maps.Rectangle(myRectangle);
-        rectangle.addListener('click', function() {
+        rectangle.addListener('click', function () {
+            info.setPosition(centre);
             info.setContent("<p>" + 'Cantidad de reportes: ' + n + "<br />" +
-                            'Intensidad promedio: ' + Math.round(p) + "</p>");
-            info.setPosition(rectangle.getBounds().getNorthEast());
+                'Intensidad promedio: ' + Math.round(p) + "</p>");
             info.open(this.map);
         });
-        rectangle.addListener('mouseout', function() {
+
+        rectangle.addListener('mouseout', function () {
             info.close();
         });
         return rectangle;
     }
 
-    changeInput(){
-      let value = this.state.value;
-      let filterDate;
-      let markerFilter = this.state.markers[value];
+    changeInput() {
+        let value = this.state.value;
+        let filterDate;
+        let markerFilter = this.state.markers[value];
 
-      if (! markerFilter ){
-        let lastIndex = this.state.markers.length - 1;
-        //console.log(new Date(this.state.markers[lastIndex].data[0]['res']));
-        filterDate = new Date(this.state.markers[lastIndex].data[0]['res']);
-      }
-
-      else {
-        //console.log(new Date(this.state.markers[this.state.value].data[0]['res']));
-        filterDate = new Date(this.state.markers[this.state.value].data[0]['res']);
-      }
-
-      for (let i = 0; i < this.state.markers.length; i++) {
-        let actualMarker = this.state.markers[i];
-        let actualDate = new Date(actualMarker.data[0]['res']);
-
-        if (i < value) {
-          actualMarker.setVisible(true);
+        if (!markerFilter) {
+            let lastIndex = this.state.markers.length - 1;
+            //console.log(new Date(this.state.markers[lastIndex].data[0]['res']));
+            filterDate = new Date(this.state.markers[lastIndex].data[0]['res']);
         }
 
         else {
-          actualMarker.setVisible(false);
+            //console.log(new Date(this.state.markers[this.state.value].data[0]['res']));
+            filterDate = new Date(this.state.markers[this.state.value].data[0]['res']);
         }
-      }
+
+        for (let i = 0; i < this.state.markers.length; i++) {
+            let actualMarker = this.state.markers[i];
+            let actualDate = new Date(actualMarker.data[0]['res']);
+
+        if (actualDate < filterDate) {
+                actualMarker.setVisible(true);
+            }
+
+            if (i < value) {
+          actualMarker.setVisible(true);
+        }
+            else {
+                actualMarker.setVisible(false);
+            }
+        }
     }
 
     parseReports(reports, self) {
-      let i;
-      let markers = [...this.state.markers];
-      for (i = 0; i < reports.length; i++) {
-        let x = Number(reports[i]['coordinates']['latitude']);
-        let y = Number(reports[i]['coordinates']['longitude']);
-        let date = reports[i]['created_on'].split("T");
-        //let dateObj = new Date(reports[i]['created_on'])
-        //console.log(reports[i]['created_on'])
-        console.log(date);
-        //console.log(dateObj);
-        let marker = new google.maps.Marker({
-            position: {lat: x, lng: y},
-            map: this.map,
-            data: [{
-                med: 'Fecha',
-                //String(Math.trunc(Number(date[1])))
-                res: date[0] + " " + date[1]
-            },
-                {
-                    med: 'Coordenadas',
-                    res: "Lat: " + String(x) + " Long: " + String(y)
+        let i;
+        let markers = [...this.state.markers];
+        for (i = 0; i < reports.length; i++) {
+            let x = Number(reports[i]['coordinates']['latitude']);
+            let y = Number(reports[i]['coordinates']['longitude']);
+            let date = reports[i]['created_on'].split("T");
+            //let dateObj = new Date(reports[i]['created_on'])
+            //console.log(reports[i]['created_on'])
+            //console.log(date);
+            //console.log(dateObj);
+            let marker = new google.maps.Marker({
+                position: {lat: x, lng: y},
+                map: this.map,
+                data: [{
+                    med: 'Fecha',
+                    //String(Math.trunc(Number(date[1])))
+                    res: date[0] + " " + date[1]
                 },
-                {
-                    med: 'Intensidad',
-                    res: reports[i]['intensity']
-                }]
-        });
-        marker.setVisible(true);
-        markers.push(marker);
-        this.setState({markers});
-        console.log(this.state.markers);
-        marker.addListener('click', function() {
-            self.handleChange(marker);
-        });
-      }
+                    {
+                        med: 'Coordenadas',
+                        res: "Lat: " + String(x) + " Long: " + String(y)
+                    },
+                    {
+                        med: 'Intensidad',
+                        res: reports[i]['intensity']
+                    }]
+            });
+            markers.push(marker);
+            this.setState({markers});
+            marker.addListener('click', function () {
+                self.handleChange(marker);
+            });
+        }
     }
 
     parseQuadrants(quadrants, self) {
@@ -232,32 +240,31 @@ class MyMap extends React.Component {
             let square = this.getNewSquare(num_reports, mean_int, a, b, c, d, self);
             this.countReports(square);
             mySquares.push(square);
-
             this.setState({mySquares});
         }
     }
 
     drawMap() {
         let self = this;
-        loadScript("https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDAJ_Owgdoqi5hbxwxUdDLCGAeCnzbVVy8", function() {
+        loadScript("https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDAJ_Owgdoqi5hbxwxUdDLCGAeCnzbVVy8", function () {
             self.map = new google.maps.Map(self.refs.map, {
                 center: {lat: -33.5, lng: -70.63},
                 zoom: 10,
-                mapTypeId: google.maps.MapTypeId.HYBRID});
+                mapTypeId: google.maps.MapTypeId.HYBRID
+            });
 
             fetch("http://wangulen.dgf.uchile.cl:17014/web/reports/", {
-              method: "GET",
-              headers: {
-                'accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization' : 'Token 9ceaf0b154d346e8b7adb6242774dc38d16155af'
-              },
-              body: JSON.stringify(this.state)
+                method: "GET",
+                headers: {
+                    'accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Token 9ceaf0b154d346e8b7adb6242774dc38d16155af'
+                },
+                body: JSON.stringify(this.state)
             })
                 .then(response => response.json())
                 .then(reports => self.parseReports(reports, self));
-                //"max_lat=-17.29&" +
-                //"max_long=-61.61/
+
             fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrants?min_lat=-34.01&" +
                 "min_long=-71.02&" +
                 "max_lat=-33.1&" +
@@ -281,7 +288,7 @@ class MyMap extends React.Component {
     }
 
     componentDidUpdate() {
-      this.changeInput();
+        this.changeInput();
     }
 
     render() {
@@ -299,16 +306,16 @@ class MyMap extends React.Component {
                 </div>
 
                 <div>
-                  <div className= "col-sm-10">
-                  <InputRange
-                  ref={InputRange => {
-                        this.myInput = InputRange;
-                        }}
-                    maxValue={this.state.markers.length}
-                    minValue={0}
-                    formatLabel={value => `${value} Reportes`}
-                    value={this.state.value}
-                    onChange={value => this.setState({ value })}/>
+                    <div className="col-sm-10">
+                        <InputRange
+                            ref={InputRange => {
+                                this.myInput = InputRange;
+                            }}
+                            maxValue={this.state.markers.length}
+                            minValue={0}
+                            formatLabel={value => `${value} Reportes`}
+                            value={this.state.value}
+                            onChange={value => this.setState({value})}/>
                     </div>
                 </div>
             </div>
