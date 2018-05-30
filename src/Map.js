@@ -32,14 +32,14 @@ class MyMap extends React.Component {
             data: [], tableInfo: [], circles: [],
             value: 5, markers: [], nMarkers: 0, squares: []
         };
-        this.handleChange = this.handleChange.bind(this);
+        //this.handleChange = this.handleChange.bind(this);
         this.drawCircles = this.drawCircles.bind(this);
         this.drawSquares = this.drawSquares.bind(this);
     }
 
-    handleChange(marker) {
+    /*handleChange(marker) {
         console.log(marker.data)
-    }
+    }*/
 
     drawCircles() {
         let circleTwo = {
@@ -73,30 +73,23 @@ class MyMap extends React.Component {
         new google.maps.Rectangle(myRectangle);
     }
 
-    closeAllInfoWindows() {
+    /*closeAllInfoWindows() {
         let squares = [...this.state.squares];
         for (let i = 0; i < squares.length; i++) {
             squares[i].infowindow.close();
         }
         this.setState({squares});
-    }
-
-    rectangleContains(x, y, a, b, c, d) {
-        if (x < a) return false;
-        if (x > c) return false;
-        if (y < b) return false;
-        if (y > d) return false;
-        return true;
-    }
+    }*/
 
     countReports(a, b, c, d) {
         let count = 0;
         let markers = [...this.state.markers];
+        let x, y;
+
         for (let i = 0; i < markers.length; i++) {
-            /*console.log("Latitud: " + markers[i].getPosition().lat() + " Longitud: " + markers[i].getPosition().lng());
-            console.log(markers.data[0][2]['res']);*/
-            if (this.rectangleContains(markers[i].getPosition().lat(),
-                markers[i].getPosition().lng(), a, b, c, d)) {
+            x = markers[i].getPosition().lat();
+            y = markers[i].getPosition().lng();
+            if (!(x < a || x > c || y < b || y > d)) {
                 count++;
             }
         }
@@ -107,9 +100,12 @@ class MyMap extends React.Component {
         let total = 0;
         let amount = 0;
         let markers = [...this.state.markers];
+        let x, y;
+
         for (let i = 0; i < markers.length; i++) {
-            if (this.rectangleContains(markers[i].getPosition().lat(),
-                markers[i].getPosition().lng(), a, b, c, d) && markers[i].data[2]['res'] != null) {
+            x = markers[i].getPosition().lat();
+            y = markers[i].getPosition().lng();
+            if (!(x < a || x > c || y < b || y > d) && markers[i].data[2]['res'] != null) {
                 total += markers[i].data[2]['res'];
                 amount += 1;
             }
@@ -121,7 +117,7 @@ class MyMap extends React.Component {
         return total / amount;
     }
 
-    getNewSquare(n, p, a, b, c, d, self) {
+    getNewSquare(n, p, a, b, c, d) {
         let info = new google.maps.InfoWindow();
         let new_lat = (a + c) / 2;
         let new_lng = (b + d) / 2;
@@ -190,17 +186,14 @@ class MyMap extends React.Component {
         }
     }
 
-    parseReports(reports, self) {
+    parseReports(reports) {
         let i;
         let markers = [...this.state.markers];
         for (i = 0; i < reports.length; i++) {
             let x = Number(reports[i]['coordinates']['latitude']);
             let y = Number(reports[i]['coordinates']['longitude']);
             let date = reports[i]['created_on'].split("T");
-            //let dateObj = new Date(reports[i]['created_on'])
-            //console.log(reports[i]['created_on'])
-            //console.log(date);
-            //console.log(dateObj);
+
             let marker = new google.maps.Marker({
                 position: {lat: x, lng: y},
                 map: this.map,
@@ -218,15 +211,16 @@ class MyMap extends React.Component {
                         res: reports[i]['intensity']
                     }]
             });
+
             markers.push(marker);
             this.setState({markers});
-            marker.addListener('click', function () {
+            /*marker.addListener('click', function () {
                 self.handleChange(marker);
-            });
+            });*/
         }
     }
 
-    parseQuadrants(quadrants, self) {
+    parseQuadrants(quadrants) {
         let i;
         let mySquares = [...this.state.squares];
         let a, b, c, d;
@@ -237,7 +231,7 @@ class MyMap extends React.Component {
             d = Number(quadrants[i]['max_coordinates']['longitude']);
             let num_reports = this.countReports(a, b, c, d);
             let mean_int = this.meanIntensity(a, b, c, d);
-            let square = this.getNewSquare(num_reports, mean_int, a, b, c, d, self);
+            let square = this.getNewSquare(num_reports, mean_int, a, b, c, d);
             this.countReports(square);
             mySquares.push(square);
             this.setState({mySquares});
@@ -263,7 +257,7 @@ class MyMap extends React.Component {
                 body: JSON.stringify(this.state)
             })
                 .then(response => response.json())
-                .then(reports => self.parseReports(reports, self));
+                .then(reports => self.parseReports(reports));
 
             fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrants?min_lat=-34.01&" +
                 "min_long=-71.02&" +
@@ -278,7 +272,7 @@ class MyMap extends React.Component {
                 body: JSON.stringify(this.state)
             })
                 .then(response => response.json())
-                .then(reports => self.parseQuadrants(reports, self));
+                .then(reports => self.parseQuadrants(reports));
         });
     }
 
