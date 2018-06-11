@@ -29,8 +29,8 @@ class MyMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [], tableInfo: [], circles: [],
-            value: 5, markers: [], nMarkers: 0, squares: []
+            data: [], tableInfo: [], circles: [], oldValue: 5,
+            value: 0, markers: [], nMarkers: 0, squares: []
         };
         //this.handleChange = this.handleChange.bind(this);
         this.drawCircles = this.drawCircles.bind(this);
@@ -117,6 +117,40 @@ class MyMap extends React.Component {
         return total / amount;
     }
 
+    drawSquare(a, b, c, d) {
+        let info = new google.maps.InfoWindow();
+        let centre = {lat: (a + c) / 2, lng: (b + d) / 2};
+
+        let myRectangle = {
+            strokeColor: '#0000FF',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#0000FF',
+            fillOpacity: 0.1,
+            map: this.map,
+            infowindow: info,
+            bounds: {
+                north: a,
+                south: c,
+                east: d,
+                west: b
+            }
+        };
+
+        let rectangle = new google.maps.Rectangle(myRectangle);
+
+        rectangle.addListener('click', function () {
+            info.setPosition(centre);
+            info.setContent("<p>Cantidad de reportes: 0<br />Intensidad promedio: 0</p>");
+            info.open(this.map);
+        });
+
+        rectangle.addListener('mouseout', function () {
+            info.close();
+        });
+        return rectangle;
+    }
+
     getNewSquare(n, p, a, b, c, d) {
         let info = new google.maps.InfoWindow();
         let new_lat = (a + c) / 2;
@@ -154,6 +188,11 @@ class MyMap extends React.Component {
     }
 
     changeInput() {
+        //Importante dejar por si otro componente demora mucho en terminar para evitar errores.
+        if (this.state.markers.length === 0) {
+            return;
+        }
+
         let value = this.state.value;
         let filterDate;
         let markerFilter = this.state.markers[value];
@@ -187,6 +226,7 @@ class MyMap extends React.Component {
     }
 
     parseReports(reports) {
+        //console.log(reports);
         let i;
         let markers = [...this.state.markers];
         for (i = 0; i < reports.length; i++) {
@@ -213,15 +253,49 @@ class MyMap extends React.Component {
             });
 
             markers.push(marker);
-            this.setState({markers});
-            /*marker.addListener('click', function () {
-                self.handleChange(marker);
-            });*/
         }
+        this.setState({markers});
     }
 
-    parseQuadrants(quadrants) {
+    drawQuadrants(quadrants) {
+        let a, b, c ,d, i;
+        let squares = [...this.state.squares];
+
+        for (i = 0; i < quadrants.length; i++) {
+            a = Number(quadrants[i]['min_coordinates']['latitude']);
+            b = Number(quadrants[i]['min_coordinates']['longitude']);
+            c = Number(quadrants[i]['max_coordinates']['latitude']);
+            d = Number(quadrants[i]['max_coordinates']['longitude']);
+            let square = this.drawSquare(a, b, c, d);
+            squares.push(square);
+        }
+        this.setState({squares});
+    }
+
+    parseSquare() {
+        /*let num_reports = this.countReports(a, b, c, d);
+        let mean_int = this.meanIntensity(a, b, c, d);
+        let square = this.getNewSquare(num_reports, mean_int, a, b, c, d);
+        this.countReports(square);
+        mySquares.push(square);*/
+        let squares = [...this.state.squares];
+        let a, b, c, d, i;
+        for (i = 0; i < squares.length; i++) {
+            a = squares[i].getBounds().getNorthEast().lat();
+            b = squares[i].getBounds().getSouthWest().lng();
+            c = squares[i].getBounds().getSouthWest().lat();
+            d = squares[i].getBounds().getNorthEast().lng();
+            let reports = this.countReports(a, b, c, d);
+            let mean = this.meanIntensity(a, b, c, d);
+
+            google.maps.event.clearListeners(this.map, 'click');
+        }
+
+    }
+
+    parseQuadrants() {
         let i;
+        let quadrants = [...this.state.quadrants];
         let mySquares = [...this.state.squares];
         let a, b, c, d;
         for (i = 0; i < quadrants.length; i++) {
@@ -234,13 +308,13 @@ class MyMap extends React.Component {
             let square = this.getNewSquare(num_reports, mean_int, a, b, c, d);
             this.countReports(square);
             mySquares.push(square);
-            this.setState({mySquares});
         }
+        //this.setState({mySquares});
+        console.log("cuadrantes puestos D:")
     }
 
     drawMap() {
         let self = this;
-        loadScript("https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDAJ_Owgdoqi5hbxwxUdDLCGAeCnzbVVy8", function () {
             self.map = new google.maps.Map(self.refs.map, {
                 center: {lat: -33.5, lng: -70.63},
                 zoom: 10,
@@ -252,9 +326,8 @@ class MyMap extends React.Component {
                 headers: {
                     'accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization': 'Token 9ceaf0b154d346e8b7adb6242774dc38d16155af'
-                },
-                body: JSON.stringify(this.state)
+                    'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
+                }
             })
                 .then(response => response.json())
                 .then(reports => self.parseReports(reports));
@@ -267,22 +340,26 @@ class MyMap extends React.Component {
                 headers: {
                     'accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization': 'Token 9ceaf0b154d346e8b7adb6242774dc38d16155af'
-                },
-                body: JSON.stringify(this.state)
+                    'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
+                }
             })
                 .then(response => response.json())
-                .then(reports => self.parseQuadrants(reports));
-        });
+                //.then(reports => self.setState({quadrants: reports}));
+                .then(reports => self.drawQuadrants(reports));
     }
 
     componentDidMount() {
         this.drawMap();
+    }
 
+    shouldComponentUpdate() {
+        return true;
+        //return this.state.value !== this.state.oldValue;
     }
 
     componentDidUpdate() {
         this.changeInput();
+        this.parseSquare();
     }
 
     render() {
