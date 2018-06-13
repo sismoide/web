@@ -226,7 +226,7 @@ class MyMap extends React.Component {
     }
 
     parseReports(reports) {
-        //console.log(reports);
+        console.log(reports[0]);
         let i;
         let markers = [...this.state.markers];
         for (i = 0; i < reports.length; i++) {
