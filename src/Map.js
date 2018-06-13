@@ -30,7 +30,7 @@ class MyMap extends React.Component {
         super(props);
         this.state = {
             data: [], tableInfo: [], circles: [], oldValue: 5,
-            value: 0, markers: [], nMarkers: 0, squares: []
+            value: 10, markers: [], nMarkers: 0, squares: []
         };
         //this.handleChange = this.handleChange.bind(this);
         this.drawCircles = this.drawCircles.bind(this);
@@ -273,12 +273,8 @@ class MyMap extends React.Component {
     }
 
     parseSquare() {
-        /*let num_reports = this.countReports(a, b, c, d);
-        let mean_int = this.meanIntensity(a, b, c, d);
-        let square = this.getNewSquare(num_reports, mean_int, a, b, c, d);
-        this.countReports(square);
-        mySquares.push(square);*/
         let squares = [...this.state.squares];
+        let newInfo = new google.maps.InfoWindow();
         let a, b, c, d, i;
         for (i = 0; i < squares.length; i++) {
             a = squares[i].getBounds().getNorthEast().lat();
@@ -287,10 +283,19 @@ class MyMap extends React.Component {
             d = squares[i].getBounds().getNorthEast().lng();
             let reports = this.countReports(a, b, c, d);
             let mean = this.meanIntensity(a, b, c, d);
+            let centre = {lat: (a + c) / 2, lng: (b + d) / 2};
 
-            google.maps.event.clearListeners(this.map, 'click');
+            squares[i].addListener('click', function () {
+                newInfo.setPosition(centre);
+                newInfo.setContent("<p>Cantidad de reportes: " + reports +
+                    "<br />Intensidad promedio: " + Math.round(mean) + "</p>");
+                newInfo.open(this.map);
+            });
+
+            squares[i].addListener('mouseout', function () {
+                newInfo.close();
+            });
         }
-
     }
 
     parseQuadrants() {
