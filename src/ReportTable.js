@@ -73,11 +73,24 @@ class ReportTable extends Component {
         this.handleChange(newData);
     }
 
+    parseLink(delay) {
+        let current = new Date();
+        return current.getFullYear() + "-" +
+               (current.getMonth() + 1) + "-" +
+               current.getDate() + "T" +
+               current.getHours() + "%3A" +
+               current.getSeconds()
+    }
+
     componentDidMount() {
         let current = new Date();
+        console.log(this.parseLink(0));
 
-        fetch("http://wangulen.dgf.uchile.cl:17014/web/reports/?" +
-            "start=2018-06-12T00%3A00&end=2018-06-16T00%3A00", {
+        //Hay que parsear un link para mostrar datos de últimos 15 minutos en tabla!
+        let fetchLink = "http://wangulen.dgf.uchile.cl:17014/web/reports/?" +
+            "start=2018-06-09T00%3A00&end=2018-06-10T00%3A00";
+
+        fetch(fetchLink, {
             headers: {
                 'accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -173,38 +186,21 @@ class ReportTable extends Component {
         const myColumns = [
             {
                 Header: 'Datos de reportes',
+                width: 700,
                 columns: [
                     {
-                        //Header: 'Intensidad',
-                        Header: () => (
-                            <div
-                                style={{
-                                    textAlign: "left"
-                                }}>Intensidad</div>
-                        ),
+                        Header: 'Intensidad',
                         accessor: 'int',
-                        minWidth: 100
+                        width: 100
                     }, {
-                        //Header: 'Fecha de reporte',
-                        Header: () => (
-                            <div
-                                style={{
-                                    textAlign: "left"
-                                }}>Fecha de reporte</div>
-                        ),
+                        Header: 'Fecha de reporte',
                         accessor: 'fecha',
-                        minWidth: 200
+                        width: 300
                     }, {
-                        //Header: 'Coordenadas',
-                        Header: () => (
-                            <div
-                                style={{
-                                    textAlign: "left"
-                                }}>Coordenadas</div>
-                        ),
+                        Header: 'Coordenadas',
                         accessor: 'coord',
-                        minWidth: 500,
-                        sortable: false
+                        sortable: false,
+                        width: 800
                     }
                 ]
             }
