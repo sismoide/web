@@ -77,7 +77,7 @@ class ReportTable extends Component {
         let current = new Date();
 
         fetch("http://wangulen.dgf.uchile.cl:17014/web/reports/?" +
-            "start=2018-06-09T00%3A00&end=2018-06-10T00%3A00", {
+            "start=2018-06-12T00%3A00&end=2018-06-16T00%3A00", {
             headers: {
                 'accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -86,6 +86,76 @@ class ReportTable extends Component {
         })
         .then(response => response.json())
         .then(reports => this.parseReports(reports));
+    }
+
+    convertDataToCsv(d) {
+        let result, ctr, keys, columnDelimiter, lineDelimiter, data;
+
+        data = d || null;
+        if (data == null || !data.length) {
+            return null;
+        }
+
+        columnDelimiter = ',';
+        lineDelimiter = '\n';
+
+        keys = Object.keys(data[0]);
+
+        result = '';
+        result += 'Intensidad, Fecha de Reporte, Latitud, Longitud';
+        result += lineDelimiter;
+
+        data.forEach(function(item) {
+            ctr = 0;
+            keys.forEach(function(key) {
+
+                let thingToAdd = '';
+
+                if (ctr > 0) result += columnDelimiter;
+
+                if (key === 'coord') {
+                    let re = /Latitud: (-?\d{1,3}.\d{10}), Longitud: (-?\d{1,3}.\d{10})/;
+                    let lat = re.exec(item[key]);
+                    thingToAdd += lat[1] + columnDelimiter + lat[2];
+                }
+
+                else {
+                    thingToAdd += item[key];
+                }
+                result += thingToAdd;
+                ctr++;
+            });
+            result += lineDelimiter;
+        });
+        return result;
+    }
+
+    downloadAsCsv(d) {
+        let data, filename, link;
+        let csv = this.convertDataToCsv(d);
+        if (csv == null) return;
+
+        filename = 'reportes.csv';
+
+        let blob = new Blob([csv], {type: "text/csv;charset=utf-8;"});
+
+        if (navigator.msSaveBlob) {
+            navigator.msSaveBlob(blob, filename);
+        }
+        else {
+            link = document.createElement('a');
+            if(link.download !== undefined) {
+                let url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+            }
+        }
+
     }
 
     render() {
@@ -105,16 +175,35 @@ class ReportTable extends Component {
                 Header: 'Datos de reportes',
                 columns: [
                     {
-                        Header: 'Intensidad',
+                        //Header: 'Intensidad',
+                        Header: () => (
+                            <div
+                                style={{
+                                    textAlign: "left"
+                                }}>Intensidad</div>
+                        ),
                         accessor: 'int',
-                        width: 100
+                        minWidth: 100
                     }, {
-                        Header: 'Fecha de reporte',
+                        //Header: 'Fecha de reporte',
+                        Header: () => (
+                            <div
+                                style={{
+                                    textAlign: "left"
+                                }}>Fecha de reporte</div>
+                        ),
                         accessor: 'fecha',
-                        width: 200
+                        minWidth: 200
                     }, {
-                        Header: 'Coordenadas',
+                        //Header: 'Coordenadas',
+                        Header: () => (
+                            <div
+                                style={{
+                                    textAlign: "left"
+                                }}>Coordenadas</div>
+                        ),
                         accessor: 'coord',
+                        minWidth: 500,
                         sortable: false
                     }
                 ]
@@ -133,7 +222,16 @@ class ReportTable extends Component {
                 pageText={'Página'}
                 ofText={'de'}
                 rowsText={'filas'}
-            />
+            >
+                {(state, makeTable, instance) => {
+                    return (
+                        <div>
+                            {makeTable()}
+                            <button onClick={this.downloadAsCsv.bind(this, state.data)}>Descargar CSV</button>
+                        </div>
+                    );
+                }}
+            </ReactTable>
         );
     }
 }
