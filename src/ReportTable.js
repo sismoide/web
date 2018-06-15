@@ -75,6 +75,7 @@ class ReportTable extends Component {
 
     componentDidMount() {
         let current = new Date();
+        //Hay que parsear un link para mostrar datos de últimos 15 mnutos en tabla!
 
         fetch("http://wangulen.dgf.uchile.cl:17014/web/reports/?" +
             "start=2018-06-09T00%3A00&end=2018-06-10T00%3A00", {
@@ -103,6 +104,7 @@ class ReportTable extends Component {
         const myColumns = [
             {
                 Header: 'Datos de reportes',
+                width: 700,
                 columns: [
                     {
                         Header: 'Intensidad',
@@ -111,11 +113,12 @@ class ReportTable extends Component {
                     }, {
                         Header: 'Fecha de reporte',
                         accessor: 'fecha',
-                        width: 200
+                        width: 300
                     }, {
                         Header: 'Coordenadas',
                         accessor: 'coord',
-                        sortable: false
+                        sortable: false,
+                        width: 800
                     }
                 ]
             }

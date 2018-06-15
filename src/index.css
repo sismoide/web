@@ -103,6 +103,10 @@ ol, ul {
   text-align: center;
 }
 
+.rightText {
+  text-align: right;
+}
+
 .whitespace-fromtop {
   margin-top: 260px;
 }
