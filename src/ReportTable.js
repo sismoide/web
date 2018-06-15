@@ -73,12 +73,24 @@ class ReportTable extends Component {
         this.handleChange(newData);
     }
 
+    parseLink(delay) {
+        let current = new Date();
+        return current.getFullYear() + "-" +
+               (current.getMonth() + 1) + "-" +
+               current.getDate() + "T" +
+               current.getHours() + "%3A" +
+               current.getSeconds()
+    }
+
     componentDidMount() {
         let current = new Date();
-        //Hay que parsear un link para mostrar datos de últimos 15 mnutos en tabla!
+        console.log(this.parseLink(0));
 
-        fetch("http://wangulen.dgf.uchile.cl:17014/web/reports/?" +
-            "start=2018-06-09T00%3A00&end=2018-06-10T00%3A00", {
+        //Hay que parsear un link para mostrar datos de últimos 15 minutos en tabla!
+        let fetchLink = "http://wangulen.dgf.uchile.cl:17014/web/reports/?" +
+            "start=2018-06-09T00%3A00&end=2018-06-10T00%3A00";
+
+        fetch(fetchLink, {
             headers: {
                 'accept': 'application/json',
                 'Content-Type': 'application/json',
