@@ -76,7 +76,7 @@ class ReportTable extends Component {
     componentDidMount() {
         let current = new Date();
 
-        fetch("http://wangulen.dgf.uchile.cl:17014/web/reports?" +
+        fetch("http://wangulen.dgf.uchile.cl:17014/web/reports/?" +
             "start=2018-06-09T00%3A00&end=2018-06-10T00%3A00", {
             headers: {
                 'accept': 'application/json',
@@ -126,6 +126,13 @@ class ReportTable extends Component {
                 defaultPageSize={10}
                 data={this.filterData(this.state['data'])}
                 columns={myColumns}
+                previousText={'Anterior'}
+                nextText={'Siguiente'}
+                loadingText={'Cargando...'}
+                noDataText={'No se encontraron filas'}
+                pageText={'Página'}
+                ofText={'de'}
+                rowsText={'filas'}
             />
         );
     }
