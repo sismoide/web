@@ -302,6 +302,49 @@ class TimeMap extends React.Component {
         console.log("cuadrantes puestos D:")
     }
 
+    parseQuadrantReports(reports) {
+        console.log(reports);
+    }
+
+    //Delay viene en horas
+    parseLink(delay) {
+        let current = new Date();
+
+        current.setHours(current.getHours() - delay);
+
+        let minute, hour, day, month;
+
+        if (current.getMonth() < 9) {
+            month = "0" + (current.getMonth() + 1);
+        } else {
+            month = current.getMonth() + 1;
+        }
+
+        if (current.getDate() < 10) {
+            day = "0" + current.getDate();
+        } else {
+            day = current.getDate();
+        }
+
+        if (current.getHours() < 10) {
+            hour = "0" + current.getHours();
+        } else {
+            hour = current.getHours();
+        }
+
+        if (current.getMinutes() < 10) {
+            minute = "0" + current.getMinutes();
+        } else {
+            minute = current.getMinutes();
+        }
+
+        return current.getFullYear() + "-" +
+            month + "-" +
+            day + "T" +
+            hour + "%3A" +
+            minute
+    }
+
     drawMap() {
         let self = this;
         self.map = new google.maps.Map(self.refs.map, {
@@ -310,21 +353,13 @@ class TimeMap extends React.Component {
             mapTypeId: google.maps.MapTypeId.HYBRID
         });
 
-        /*fetch("http://wangulen.dgf.uchile.cl:17014/web/reports/", {
-            method: "GET",
-            headers: {
-                'accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
-            }
-        })
-            .then(response => response.json())
-            .then(reports => self.parseReports(reports));
-
-        fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrants?min_lat=-34.01&" +
+        fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
+            "min_lat=-34.01&" +
             "min_long=-71.02&" +
             "max_lat=-33.1&" +
-            "max_long=-70.2", {
+            "max_long=-70.2&" +
+            "start_timestamp=" + this.parseLink(5) +
+            "&end_timestamp=" + this.parseLink(0), {
             method: "GET",
             headers: {
                 'accept': 'application/json',
@@ -334,7 +369,7 @@ class TimeMap extends React.Component {
         })
             .then(response => response.json())
             //.then(reports => self.setState({quadrants: reports}));
-            .then(reports => self.drawQuadrants(reports));*/
+            .then(reports => self.parseQuadrantReports(reports));
     }
 
     componentDidMount() {
