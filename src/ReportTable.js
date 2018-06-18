@@ -75,20 +75,46 @@ class ReportTable extends Component {
 
     parseLink(delay) {
         let current = new Date();
+
+        current.setMinutes(current.getMinutes() - delay);
+
+        let minute, hour, day, month;
+
+        if (current.getMonth() < 9) {
+            month = "0" + (current.getMonth() + 1);
+        } else {
+            month = current.getMonth() + 1;
+        }
+
+        if (current.getDate() < 10) {
+            day = "0" + current.getDate();
+        } else {
+            day = current.getDate();
+        }
+
+        if (current.getHours() < 10) {
+            hour = "0" + current.getHours();
+        } else {
+            hour = current.getHours();
+        }
+
+        if (current.getMinutes() < 10) {
+            minute = "0" + current.getMinutes();
+        } else {
+            minute = current.getMinutes();
+        }
+
         return current.getFullYear() + "-" +
-               (current.getMonth() + 1) + "-" +
-               current.getDate() + "T" +
-               current.getHours() + "%3A" +
-               current.getSeconds()
+               month + "-" +
+               day + "T" +
+               hour + "%3A" +
+               minute
     }
 
     componentDidMount() {
-        let current = new Date();
-        console.log(this.parseLink(0));
-
-        //Hay que parsear un link para mostrar datos de últimos 15 minutos en tabla!
-        let fetchLink = "http://wangulen.dgf.uchile.cl:17014/web/reports/?" +
-            "start=2018-06-09T00%3A00&end=2018-06-10T00%3A00";
+        let fetchLink = "http://wangulen.dgf.uchile.cl:17014/web/reports/?start=" +
+                            this.parseLink(15) + "&end=" +
+                            this.parseLink(0);
 
         fetch(fetchLink, {
             headers: {
