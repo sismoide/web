@@ -19,8 +19,12 @@ ol, ul {
   width: 100%;
 }
 
-.row, .container, .col-sm-10, .col-sm-2{
+.row, .container, .col-sm-10{
   height: 90%;
+}
+
+.col-sm-2 {
+  width: 16%;
 }
 
 .row {
@@ -131,4 +135,8 @@ ol, ul {
 
 .move-left {
   margin-left: 300px;
+}
+
+.simbols {
+  border: 1px solid #222222;
 }
