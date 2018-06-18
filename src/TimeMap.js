@@ -10,6 +10,8 @@ import Water from 'react-icons/lib/fa/tint';
 
 
 /* global google */
+var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
+
 
 class TimeMap extends React.Component {
 
@@ -17,7 +19,8 @@ class TimeMap extends React.Component {
         super(props);
         this.state = {
             data: [], tableInfo: [], circles: [],
-            value: 0, markers: [], nMarkers: 0, squares: []
+            value: 0, markers: [], nMarkers: 0, squares: [],
+            timeLineFilter: [],
         };
     }
 
@@ -93,43 +96,58 @@ class TimeMap extends React.Component {
         return rectangle;
     }
 
+    dateToLabel(date){
+      if (date){
+      var string = date.toLocaleDateString('es-ES', options);
+      return string
+      }
+}
+
     changeInput() {
         //Importante dejar por si otro componente demora mucho en terminar para evitar errores.
-        if (this.state.markers.length === 0) {
+        if (this.state.squares.length === 0) {
             return;
         }
 
         let value = this.state.value;
         let filterDate;
-        let markerFilter = this.state.markers[value];
+        let dateFilter = this.state.timeLineFilter[value];
 
-        if (!markerFilter) {
-            let lastIndex = this.state.markers.length - 1;
+        if (!dateFilter) {
+            let lastIndex = this.state.timeLineFilter.length - 1;
             //console.log(new Date(this.state.markers[lastIndex].data[0]['res']));
-            filterDate = new Date(this.state.markers[lastIndex].data[0]['res']);
+            filterDate = this.state.timeLineFilter[lastIndex];
         }
 
         else {
             //console.log(new Date(this.state.markers[this.state.value].data[0]['res']));
-            filterDate = new Date(this.state.markers[this.state.value].data[0]['res']);
+            filterDate = this.state.timeLineFilter[this.state.value];
         }
+        var nActive = 0;
 
-        for (let i = 0; i < this.state.markers.length; i++) {
-            let actualMarker = this.state.markers[i];
-            let actualDate = new Date(actualMarker.data[0]['res']);
+        for (let i = 0; i < this.state.squares.length; i++) {
+            let actualSquare = this.state.squares[i];
+            let actualDate = new Date(actualSquare.data[0]);
+            // console.log(actualSquare.data[0]['reports'][0]['end_timestamp'])
+            actualDate = new Date(actualSquare.data[0]['reports'][0]['end_timestamp'])
+            console.log(actualDate)
 
-            if (actualDate < filterDate) {
-                actualMarker.setVisible(true);
+            for (var i = 0; i < actualSquare.data[0]['reports'].length; i++) {
+              actualSquare.data[0]['reports'][i]
             }
+          if (actualDate < filterDate) {
+                  nActive += 1;
+                  actualSquare.visible = true;
+              }
 
-            if (i < value) {
-                actualMarker.setVisible(true);
-            }
-            else {
-                actualMarker.setVisible(false);
-            }
+          else {
+              actualSquare.visible = false;
+          }
         }
+        console.log("activos");
+        console.log(nActive);
     }
+
 
     parseReports(reports) {
         console.log(reports[0]);
@@ -167,7 +185,7 @@ class TimeMap extends React.Component {
         let mySquares = [...this.state.squares];
 
         for (let i = 0; i < mySquares.length; i++) {
-            console.log(i);
+            // console.log(i);
         }
     }
 
@@ -184,7 +202,7 @@ class TimeMap extends React.Component {
             mySquares.push(square);
         }
         console.log("done");
-        this.setState({mySquares});
+        this.setState({squares : mySquares});
     }
 
     //Delay viene en horas
@@ -253,9 +271,20 @@ class TimeMap extends React.Component {
             .then(reports => self.parseQuadrantReports(reports));
     }
 
+    placeTime(time){
+      let self = this;
+      self.setState({timeLineFilter: time});
+      self.setState({value : time.length -1 })
+    }
+
+
     componentDidMount() {
         this.drawMap();
+        var timeLineDates = this.createDateArray();
+        this.placeTime(timeLineDates.reverse());
+
     }
+
 
     shouldComponentUpdate() {
         return true;
@@ -266,6 +295,22 @@ class TimeMap extends React.Component {
         this.changeInput();
         this.parseQuadrants();
     }
+
+
+    createDateArray(){
+      var myEndDateTime = new Date();
+      var MS_PER_MINUTE = 60000;
+
+      var auxArray = [];
+      for (let i = 0; i < 60; i++) {
+        var date = new Date(myEndDateTime - i * 5 * MS_PER_MINUTE);
+        auxArray.push(date);
+      }
+      this.setState({timeLineFilter : auxArray});
+
+      return auxArray;
+    }
+
 
     render() {
         return (
@@ -295,9 +340,9 @@ class TimeMap extends React.Component {
                             ref={InputRange => {
                                 this.myInput = InputRange;
                             }}
-                            maxValue={this.state.squares.length}
+                            maxValue={this.state.timeLineFilter.length - 1}
                             minValue={0}
-                            formatLabel={value => `${value} Reportes`}
+                            formatLabel={value => `${this.dateToLabel(this.state.timeLineFilter[value])}`}
                             value={this.state.value}
                             onChange={value => this.setState({value})}/>
                     </div>
