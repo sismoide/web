@@ -5,6 +5,9 @@ import {Checkbox, FormGroup} from 'react-bootstrap'
 import 'react-input-range'
 import 'react-input-range/lib/css/index.css'
 import InputRange from 'react-input-range';
+import Hospital from 'react-icons/lib/fa/hospital-o';
+import Water from 'react-icons/lib/fa/tint';
+
 
 /* global google */
 
@@ -16,45 +19,6 @@ class TimeMap extends React.Component {
             data: [], tableInfo: [], circles: [],
             value: 0, markers: [], nMarkers: 0, squares: []
         };
-        //this.handleChange = this.handleChange.bind(this);
-        this.drawCircles = this.drawCircles.bind(this);
-        this.drawSquares = this.drawSquares.bind(this);
-    }
-
-    /*handleChange(marker) {
-        console.log(marker.data)
-    }*/
-
-    drawCircles() {
-        let circleTwo = {
-            strokeColor: "#25DEA0",
-            fillColor: "#25DEA0",
-            strokeOpacity: 0.8,
-            strokeWeight: 1,
-            fillOpacity: 0.2,
-            map: this.map,
-            center: {lat: -33.1, lng: -70.6},
-            radius: 2000
-        };
-        new google.maps.Circle(circleTwo);
-    }
-
-    drawSquares() {
-        let myRectangle = {
-            strokeColor: '#0000FF',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#0000FF',
-            fillOpacity: 0.35,
-            map: this.map,
-            bounds: {
-                north: -33.0050000000,
-                south: -32.9600000000,
-                east: -69.9649330000,
-                west: -70.0189330000
-            }
-        };
-        new google.maps.Rectangle(myRectangle);
     }
 
     countReports(a, b, c, d) {
@@ -310,10 +274,18 @@ class TimeMap extends React.Component {
                     <div className="col-sm-10" ref="map">
                     </div>
                     <div className="col-sm-2">
-                        <FormGroup>
-                            <Checkbox onChange={this.drawCircles.bind(this)}>Hospitales</Checkbox>{' '}
-                            <Checkbox onChange={this.drawSquares.bind(this)}>Bomberos</Checkbox>
-                        </FormGroup>
+                        <div className="simbols">
+                            Simbología:
+                            <FormGroup>
+                            </FormGroup>
+
+                            <FormGroup>
+                                <Hospital size={24}/> Centros de Salud
+                            </FormGroup>
+                            <FormGroup>
+                                <Water size={24}/> Fuentes de Agua Rurales
+                            </FormGroup>
+                        </div>
                     </div>
                 </div>
 
