@@ -132,9 +132,6 @@ class TimeMap extends React.Component {
             actualDate = new Date(actualSquare.data[0]['reports'][0]['end_timestamp'])
             console.log(actualDate)
 
-            for (var i = 0; i < actualSquare.data[0]['reports'].length; i++) {
-              actualSquare.data[0]['reports'][i]
-            }
           if (actualDate < filterDate) {
                   nActive += 1;
                   actualSquare.visible = true;
