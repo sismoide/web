@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import MyMap from "./Map";
 import TableView from "./TableView";
+import TimeMap from "./TimeMap";
 import OptionalMap from "./OptionalMap"
 //import Login from "./Login"
 
@@ -35,12 +36,17 @@ class App extends Component {
                             <NavItem>
                                 <NavLink style={{textDecoration: 'none'}} to="/optionalView">Inicio antiguo</NavLink>
                             </NavItem>
+                            <NavItem>
+                                <NavLink style={{textDecoration: 'none'}} to="/timeMap">Inicio Nuevo</NavLink>
+                            </NavItem>
+
                         </Nav>
                     </Navbar>
                     <div className="complete">
                         <Route exact path="/" component={MyMap}/>
                         <Route path="/tableView" component={TableView}/>
                         <Route path="/optionalView" component={OptionalMap}/>
+                        <Route path="/timeMap" component={TimeMap}/>
                     </div>
                 </div>
             </HashRouter>

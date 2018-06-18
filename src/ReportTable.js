@@ -105,6 +105,7 @@ class ReportTable extends Component {
         this.handleChange(newData);
     }
 
+    //Delay viene en minutos
     parseLink(delay) {
         let current = new Date();
 
