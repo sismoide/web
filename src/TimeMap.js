@@ -159,29 +159,28 @@ class TimeMap extends React.Component {
             //console.log(new Date(this.state.markers[this.state.value].data[0]['res']));
             filterDate = this.state.timeLineFilter[this.state.value];
         }
-        var nActive = 0;
-
         for (let i = 0; i < this.state.squares.length; i++) {
             let actualSquare = this.state.squares[i];
             let actualDate = new Date(actualSquare.data[0]);
             // console.log(actualSquare.data[0]['reports'][0]['end_timestamp'])
-            actualDate = new Date(actualSquare.data[0]['reports'][0]['end_timestamp'])
-            console.log(actualDate)
+            var rightSlice = -1;
+            for (var j = 0; j < actualSquare.data[0]['reports'].length; j++) {
+              actualDate = new Date(actualSquare.data[0]['reports'][j]['end_timestamp'])
 
-            for (var i = 0; i < actualSquare.data[0]['reports'].length; i++) {
-              actualSquare.data[0]['reports'][i]
+              if (actualDate < filterDate) {
+                      rightSlice = j;
+                  }
             }
-          if (actualDate < filterDate) {
-                  nActive += 1;
-                  actualSquare.visible = true;
-              }
 
-          else {
-              actualSquare.visible = false;
-          }
+            if (rightSlice !== -1){
+              console.log(rightSlice)
+              actualSquare.visible = true
+            }
+            else {
+              actualSquare.visible = false
+            }
+
         }
-        console.log("activos");
-        console.log(nActive);
     }
 
 
