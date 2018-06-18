@@ -103,6 +103,7 @@ class ReportTable extends Component {
 
     convertDataToCsv(d) {
         let result, ctr, keys, columnDelimiter, lineDelimiter, data;
+        let headers = 'Intensidad,Fecha de Reporte,Latitud,Longitud';
 
         data = d || null;
         if (data == null || !data.length) {
@@ -115,7 +116,7 @@ class ReportTable extends Component {
         keys = Object.keys(data[0]);
 
         result = '';
-        result += 'Intensidad, Fecha de Reporte, Latitud, Longitud';
+        result += headers;
         result += lineDelimiter;
 
         data.forEach(function(item) {
@@ -189,18 +190,36 @@ class ReportTable extends Component {
                 width: 700,
                 columns: [
                     {
-                        Header: 'Intensidad',
+                        //Header: 'Intensidad',
+                        Header: () => (
+                            <div
+                                style={{
+                                    textAlign: "left"
+                                }}>Intensidad</div>
+                        ),
                         accessor: 'int',
-                        width: 100
+                        minWidth: 100
                     }, {
-                        Header: 'Fecha de reporte',
+                        //Header: 'Fecha de reporte',
+                        Header: () => (
+                            <div
+                                style={{
+                                    textAlign: "left"
+                                }}>Fecha de reporte</div>
+                        ),
                         accessor: 'fecha',
-                        width: 300
+                        minWidth: 200
                     }, {
-                        Header: 'Coordenadas',
+                        //Header: 'Coordenadas',
+                        Header: () => (
+                            <div
+                                style={{
+                                    textAlign: "left"
+                                }}>Coordenadas</div>
+                        ),
                         accessor: 'coord',
                         sortable: false,
-                        width: 800
+                        minWidth: 500
                     }
                 ]
             }
