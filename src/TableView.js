@@ -10,6 +10,10 @@ class TableView extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleDate = this.handleDate.bind(this);
+        this.handleDate1 = this.handleDate1.bind(this);
+        this.handleDate2 = this.handleDate2.bind(this);
+
+        console.log(this.state.dateOne)
     }
 
     handleChange(event) {
@@ -18,6 +22,14 @@ class TableView extends Component {
 
     handleDate(date) {
         this.setState({dateOne: date.target.value});
+    }
+
+    handleDate1(date) {
+        this.setState({dateOne: date.target.value});
+    }
+
+    handleDate2(date) {
+        this.setState({dateTwo: date.target.value});
     }
 
     render() {
@@ -37,6 +49,12 @@ class TableView extends Component {
                               <option value="Últimos 6 meses">Últimos 6 meses</option>
                           </select>
                         </div>
+                          <div>
+                              Fecha de inicio:
+                              <input type="datetime-local" onChange={this.handleDate1}/>
+                              Fecha de término:
+                              <input type="datetime-local" onChange={this.handleDate2}/>
+                          </div>
                       </div>
                     </form>
 
@@ -45,7 +63,9 @@ class TableView extends Component {
                 <ol>
                 </ol>
                 <ol>
-                    <ReportTable filter = {this.state.value}/>
+                    {/*<ReportTable filter = {this.state.value}/>*/}
+                    <ReportTable filterStart={this.state.dateOne}
+                                    filterEnd={this.state.dateTwo}/>
                 </ol>
             </div>
         );

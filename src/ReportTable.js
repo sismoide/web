@@ -49,6 +49,38 @@ class ReportTable extends Component {
         return filteredData
     }
 
+    filterByDate(data){
+        let filteredData = [];
+        let filterStart = this.props.filterStart;
+        let filterEnd = this.props.filterEnd;
+
+        function isInRange(date, start, end) {
+            let parsedDate = Date.parse(date);
+            if (start === undefined) {
+                return Date.parse(date) < Date.parse(end);
+            }
+            if (end === undefined) {
+                return Date.parse(date) > Date.parse(start);
+            }
+
+            let parsedStart = Date.parse(start);
+            let parsedEnd = Date.parse(end);
+            if (parsedStart > parsedEnd) {
+                return false;
+            }
+            return parsedStart < parsedDate && parsedDate < parsedEnd;
+        }
+
+        for (let i = 0; i < data.length; i++) {
+            if (isInRange(data[i].fecha, filterStart, filterEnd)) {
+                filteredData.push(data[i]);
+            }
+        }
+        return filteredData;
+
+
+    }
+
     parseReports(reports) {
         let newData = [];
         let rowIntensity, date, longitude, latitude, coordinate;
@@ -254,7 +286,7 @@ class ReportTable extends Component {
         return (
             <ReactTable
                 defaultPageSize={10}
-                data={this.filterData(this.state['data'])}
+                data={this.filterByDate(this.state['data'])}
                 columns={myColumns}
                 previousText={'Anterior'}
                 nextText={'Siguiente'}
