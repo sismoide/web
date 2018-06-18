@@ -123,6 +123,11 @@ class TimeMap extends React.Component {
             //console.log(new Date(this.state.markers[this.state.value].data[0]['res']));
             filterDate = this.state.timeLineFilter[this.state.value];
         }
+
+        console.log("#############################################")
+        console.log("filtro del timeline")
+        console.log(this.state.timeLineFilter)
+        console.log(filterDate)
         for (let i = 0; i < this.state.squares.length; i++) {
             let actualSquare = this.state.squares[i];
             let actualDate = new Date(actualSquare.data[0]);
@@ -137,11 +142,13 @@ class TimeMap extends React.Component {
             }
 
             if (rightSlice !== -1){
+              console.log("datos del cuadrante")
               console.log(rightSlice)
-              actualSquare.visible = true
+              console.log(new Date(actualSquare.data[0]['reports'][rightSlice]['end_timestamp']))
+              actualSquare.setVisible(true)
             }
             else {
-              actualSquare.visible = false
+              actualSquare.setVisible(false)
             }
 
         }
@@ -256,7 +263,7 @@ class TimeMap extends React.Component {
             "min_long=-71.02&" +
             "max_lat=-33.1&" +
             "max_long=-70.2&" +
-            "start_timestamp=" + this.parseLink(5) +
+            "start_timestamp=" + this.parseLink(1) +
             "&end_timestamp=" + this.parseLink(0), {
             method: "GET",
             headers: {
