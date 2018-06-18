@@ -8,6 +8,9 @@ import InputRange from 'react-input-range';
 
 /* global google */
 
+var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
+
+
 function loadScript(url, callback) {
     // Adding the script tag to the head as suggested before
     const head = document.getElementsByTagName('head')[0];
@@ -341,6 +344,8 @@ class MyMap extends React.Component {
                 zoom: 10,
                 mapTypeId: google.maps.MapTypeId.HYBRID
             });
+
+
         let fetchLink = "http://wangulen.dgf.uchile.cl:17014/web/reports/?" +
                 "start=2018-06-18T00%3A00&end=2018-06-19T00%3A00";
 
@@ -375,6 +380,7 @@ class MyMap extends React.Component {
     placeTime(time){
       let self = this;
       self.setState({timeLineFilter: time});
+      self.setState({value : time.length -1 })
     }
 
     componentWillMount(){
@@ -398,6 +404,12 @@ class MyMap extends React.Component {
         this.parseSquare();
     }
 
+    dateToLabel(date){
+      if (date){
+      var string = date.toLocaleDateString('es-ES', options);
+      return string
+      }
+}
     render() {
         return (
             <div className="container">
@@ -420,7 +432,7 @@ class MyMap extends React.Component {
                             }}
                             maxValue={this.state.timeLineFilter.length - 1}
                             minValue={0}
-                            formatLabel={value => `${this.state.timeLineFilter[value]}`}
+                            formatLabel={value => `${this.dateToLabel(this.state.timeLineFilter[value])}`}
                             value={this.state.value}
                             onChange={value => this.setState({value})}/>
                     </div>
