@@ -13,8 +13,8 @@ class TimeMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [], tableInfo: [], circles: [], oldValue: 5,
-            value: 10, markers: [], nMarkers: 0, squares: []
+            data: [], tableInfo: [], circles: [],
+            value: 0, markers: [], nMarkers: 0, squares: []
         };
         //this.handleChange = this.handleChange.bind(this);
         this.drawCircles = this.drawCircles.bind(this);
@@ -57,14 +57,6 @@ class TimeMap extends React.Component {
         new google.maps.Rectangle(myRectangle);
     }
 
-    /*closeAllInfoWindows() {
-        let squares = [...this.state.squares];
-        for (let i = 0; i < squares.length; i++) {
-            squares[i].infowindow.close();
-        }
-        this.setState({squares});
-    }*/
-
     countReports(a, b, c, d) {
         let count = 0;
         let markers = [...this.state.markers];
@@ -101,7 +93,7 @@ class TimeMap extends React.Component {
         return total / amount;
     }
 
-    drawSquare(a, b, c, d) {
+    getSquare(a, b, c, d, reports) {
         let info = new google.maps.InfoWindow();
         let centre = {lat: (a + c) / 2, lng: (b + d) / 2};
 
@@ -112,7 +104,9 @@ class TimeMap extends React.Component {
             fillColor: '#0000FF',
             fillOpacity: 0.1,
             map: this.map,
+            visible: false,
             infowindow: info,
+            data: [{reports}],
             bounds: {
                 north: a,
                 south: c,
@@ -126,42 +120,6 @@ class TimeMap extends React.Component {
         rectangle.addListener('click', function () {
             info.setPosition(centre);
             info.setContent("<p>Cantidad de reportes: 0<br />Intensidad promedio: 0</p>");
-            info.open(this.map);
-        });
-
-        rectangle.addListener('mouseout', function () {
-            info.close();
-        });
-        return rectangle;
-    }
-
-    getNewSquare(n, p, a, b, c, d) {
-        let info = new google.maps.InfoWindow();
-        let new_lat = (a + c) / 2;
-        let new_lng = (b + d) / 2;
-        let centre = {lat: new_lat, lng: new_lng};
-
-        let myRectangle = {
-            strokeColor: '#0000FF',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#0000FF',
-            fillOpacity: 0.1,
-            map: this.map,
-            infowindow: info,
-            bounds: {
-                north: a,
-                south: c,
-                east: d,
-                west: b
-            }
-        };
-
-        let rectangle = new google.maps.Rectangle(myRectangle);
-        rectangle.addListener('click', function () {
-            info.setPosition(centre);
-            info.setContent("<p>Cantidad de reportes: " + n +
-                "<br />Intensidad promedio: " + Math.round(p) + "</p>");
             info.open(this.map);
         });
 
@@ -241,69 +199,28 @@ class TimeMap extends React.Component {
         this.setState({markers});
     }
 
-    drawQuadrants(quadrants) {
-        let a, b, c ,d, i;
-        let squares = [...this.state.squares];
-
-        for (i = 0; i < quadrants.length; i++) {
-            a = Number(quadrants[i]['min_coordinates']['latitude']);
-            b = Number(quadrants[i]['min_coordinates']['longitude']);
-            c = Number(quadrants[i]['max_coordinates']['latitude']);
-            d = Number(quadrants[i]['max_coordinates']['longitude']);
-            let square = this.drawSquare(a, b, c, d);
-            squares.push(square);
-        }
-        this.setState({squares});
-    }
-
-    parseSquare() {
-        let squares = [...this.state.squares];
-        let newInfo = new google.maps.InfoWindow();
-        let a, b, c, d, i;
-        for (i = 0; i < squares.length; i++) {
-            a = squares[i].getBounds().getNorthEast().lat();
-            b = squares[i].getBounds().getSouthWest().lng();
-            c = squares[i].getBounds().getSouthWest().lat();
-            d = squares[i].getBounds().getNorthEast().lng();
-            let reports = this.countReports(a, b, c, d);
-            let mean = this.meanIntensity(a, b, c, d);
-            let centre = {lat: (a + c) / 2, lng: (b + d) / 2};
-
-            squares[i].addListener('click', function () {
-                newInfo.setPosition(centre);
-                newInfo.setContent("<p>Cantidad de reportes: " + reports +
-                    "<br />Intensidad promedio: " + Math.round(mean) + "</p>");
-                newInfo.open(this.map);
-            });
-
-            squares[i].addListener('mouseout', function () {
-                newInfo.close();
-            });
-        }
-    }
-
     parseQuadrants() {
-        let i;
-        let quadrants = [...this.state.quadrants];
         let mySquares = [...this.state.squares];
-        let a, b, c, d;
-        for (i = 0; i < quadrants.length; i++) {
-            a = Number(quadrants[i]['min_coordinates']['latitude']);
-            b = Number(quadrants[i]['min_coordinates']['longitude']);
-            c = Number(quadrants[i]['max_coordinates']['latitude']);
-            d = Number(quadrants[i]['max_coordinates']['longitude']);
-            let num_reports = this.countReports(a, b, c, d);
-            let mean_int = this.meanIntensity(a, b, c, d);
-            let square = this.getNewSquare(num_reports, mean_int, a, b, c, d);
-            this.countReports(square);
-            mySquares.push(square);
+
+        for (let i = 0; i < mySquares.length; i++) {
+            console.log(i);
         }
-        //this.setState({mySquares});
-        console.log("cuadrantes puestos D:")
     }
 
     parseQuadrantReports(reports) {
-        console.log(reports);
+        let mySquares = [...this.state.squares];
+        let a, b, c, d, i;
+
+        for (i = 0; i < reports.length; i++) {
+            a = Number(reports[i]['quadrant_data']['min_coordinates']['latitude']);
+            b = Number(reports[i]['quadrant_data']['min_coordinates']['longitude']);
+            c = Number(reports[i]['quadrant_data']['max_coordinates']['latitude']);
+            d = Number(reports[i]['quadrant_data']['max_coordinates']['longitude']);
+            let square = this.getSquare(a, b, c, d, reports[i]['slices_data']);
+            mySquares.push(square);
+        }
+        console.log("done");
+        this.setState({mySquares});
     }
 
     //Delay viene en horas
@@ -383,7 +300,7 @@ class TimeMap extends React.Component {
 
     componentDidUpdate() {
         this.changeInput();
-        this.parseSquare();
+        this.parseQuadrants();
     }
 
     render() {
@@ -406,7 +323,7 @@ class TimeMap extends React.Component {
                             ref={InputRange => {
                                 this.myInput = InputRange;
                             }}
-                            maxValue={this.state.markers.length}
+                            maxValue={this.state.squares.length}
                             minValue={0}
                             formatLabel={value => `${value} Reportes`}
                             value={this.state.value}
