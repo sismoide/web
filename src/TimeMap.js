@@ -1,7 +1,7 @@
 import React from 'react';
 import './index.css';
 import 'react-table/react-table.css'
-import {Checkbox, FormGroup} from 'react-bootstrap'
+import {FormGroup} from 'react-bootstrap'
 import 'react-input-range'
 import 'react-input-range/lib/css/index.css'
 import InputRange from 'react-input-range';
@@ -99,8 +99,7 @@ class TimeMap extends React.Component {
 
     dateToLabel(date){
       if (date){
-      var string = date.toLocaleDateString('es-ES', options);
-      return string
+        return date.toLocaleDateString('es-ES', options);
       }
 }
 
@@ -125,17 +124,17 @@ class TimeMap extends React.Component {
             filterDate = this.state.timeLineFilter[this.state.value];
         }
 
-        console.log("#############################################")
-        console.log("filtro del timeline")
-        console.log(this.state.timeLineFilter)
-        console.log(filterDate)
+        console.log("#############################################");
+        console.log("filtro del timeline");
+        console.log(this.state.timeLineFilter);
+        console.log(filterDate);
         for (let i = 0; i < this.state.squares.length; i++) {
             let actualSquare = this.state.squares[i];
             let actualDate = new Date(actualSquare.data[0]);
             // console.log(actualSquare.data[0]['reports'][0]['end_timestamp'])
-            var rightSlice = -1;
-            for (var j = 0; j < actualSquare.data[0]['reports'].length; j++) {
-              actualDate = new Date(actualSquare.data[0]['reports'][j]['end_timestamp'])
+            let rightSlice = -1;
+            for (let j = 0; j < actualSquare.data[0]['reports'].length; j++) {
+              actualDate = new Date(actualSquare.data[0]['reports'][j]['end_timestamp']);
 
               if (actualDate < filterDate) {
                       rightSlice = j;
@@ -143,9 +142,9 @@ class TimeMap extends React.Component {
             }
 
             if (rightSlice !== -1){
-              console.log("datos del cuadrante")
-              console.log(rightSlice)
-              console.log(new Date(actualSquare.data[0]['reports'][rightSlice]['end_timestamp']))
+              console.log("datos del cuadrante");
+              console.log(rightSlice);
+              console.log(new Date(actualSquare.data[0]['reports'][rightSlice]['end_timestamp']));
               actualSquare.setVisible(true)
             }
             else {
@@ -153,39 +152,6 @@ class TimeMap extends React.Component {
             }
 
         }
-    }
-
-
-    parseReports(reports) {
-        console.log(reports[0]);
-        let i;
-        let markers = [...this.state.markers];
-        for (i = 0; i < reports.length; i++) {
-            let x = Number(reports[i]['coordinates']['latitude']);
-            let y = Number(reports[i]['coordinates']['longitude']);
-            let date = reports[i]['created_on'].split("T");
-
-            let marker = new google.maps.Marker({
-                position: {lat: x, lng: y},
-                map: this.map,
-                data: [{
-                    med: 'Fecha',
-                    //String(Math.trunc(Number(date[1])))
-                    res: date[0] + " " + date[1]
-                },
-                    {
-                        med: 'Coordenadas',
-                        res: "Lat: " + String(x) + " Long: " + String(y)
-                    },
-                    {
-                        med: 'Intensidad',
-                        res: reports[i]['intensity']
-                    }]
-            });
-
-            markers.push(marker);
-        }
-        this.setState({markers});
     }
 
     parseQuadrants() {
@@ -274,7 +240,6 @@ class TimeMap extends React.Component {
             }
         })
             .then(response => response.json())
-            //.then(reports => self.setState({quadrants: reports}));
             .then(reports => self.parseQuadrantReports(reports));
     }
 
@@ -287,7 +252,7 @@ class TimeMap extends React.Component {
 
     componentDidMount() {
         this.drawMap();
-        var timeLineDates = this.createDateArray();
+        let timeLineDates = this.createDateArray();
         this.placeTime(timeLineDates.reverse());
 
     }
@@ -305,12 +270,12 @@ class TimeMap extends React.Component {
 
 
     createDateArray(){
-      var myEndDateTime = new Date();
-      var MS_PER_MINUTE = 60000;
+      let myEndDateTime = new Date();
+      let MS_PER_MINUTE = 60000;
 
-      var auxArray = [];
+      let auxArray = [];
       for (let i = 0; i < 60; i++) {
-        var date = new Date(myEndDateTime - i * 5 * MS_PER_MINUTE);
+        let date = new Date(myEndDateTime - i * 5 * MS_PER_MINUTE);
         auxArray.push(date);
       }
       this.setState({timeLineFilter : auxArray});
