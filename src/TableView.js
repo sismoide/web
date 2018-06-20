@@ -38,7 +38,7 @@ class TableView extends Component {
                     <form>
                       <div class="form-group row">
                         <label for="inputPassword" class="col-sm-1 col-form-label">Filtrar por fecha:</label>
-                          <div class="col-sm-3">
+                          {/*<div class="col-sm-3">
                           <select class="form-control" value={this.state.value} onChange={this.handleChange}>
                               <option value="Todos">Todos</option>
                               <option value="Últimas 24 horas">Últimas 24 horas</option>
@@ -46,11 +46,11 @@ class TableView extends Component {
                               <option value="Último mes">Último mes</option>
                               <option value="Últimos 6 meses">Últimos 6 meses</option>
                           </select>
-                        </div>
+                        </div>*/}
                           <div>
-                              Fecha de inicio:
+                              <span>Fecha inicial:</span>
                               <input type="datetime-local" onChange={this.handleDate1}/>
-                              Fecha de término:
+                              <span>Fecha final:</span>
                               <input type="datetime-local" onChange={this.handleDate2}/>
                           </div>
                       </div>
