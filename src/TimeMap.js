@@ -127,8 +127,8 @@ class TimeMap extends React.Component {
         for (let i = 0; i < this.state.squares.length; i++) {
             let actualSquare = this.state.squares[i];
             let actualDate = new Date(actualSquare.data[0]);
-            // console.log(actualSquare.data[0]['reports'][0]['end_timestamp'])
             let rightSlice = -1;
+
             for (let j = 0; j < actualSquare.data[0]['reports'].length; j++) {
               actualDate = new Date(actualSquare.data[0]['reports'][j]['end_timestamp']);
 
@@ -136,6 +136,44 @@ class TimeMap extends React.Component {
                       rightSlice = j;
                   }
             }
+
+            let reportCount = 0;
+            let reportIntCount = 0;
+            let totalInt = 0;
+            let meanInt = 0;
+            let info = new google.maps.InfoWindow();
+            let a, b, c, d;
+
+            a = actualSquare.getBounds().getNorthEast().lat();
+            b = actualSquare.getBounds().getSouthWest().lng();
+            c = actualSquare.getBounds().getSouthWest().lat();
+            d = actualSquare.getBounds().getNorthEast().lng();
+            let centre = {lat: (a + c) / 2, lng: (b + d) / 2};
+
+            for (let k = 0; k <= rightSlice; k++) {
+                reportCount += actualSquare.data[0]['reports'][k]['report_total_count'];
+                reportIntCount += actualSquare.data[0]['reports'][k]['report_w_intensity_count'];
+                totalInt += actualSquare.data[0]['reports'][k]['intensity_sum'];
+            }
+
+            if (reportIntCount === 0) {
+                meanInt = totalInt / reportIntCount;
+            }
+
+            google.maps.event.clearInstanceListeners(actualSquare);
+
+            actualSquare.addListener('click', function () {
+                info.setPosition(centre);
+                info.setContent("<p>Cantidad de reportes: " + reportCount +
+                    "<br />Intensidad promedio: " + Math.round(meanInt) + "</p>");
+                info.open(this.map);
+            });
+
+            actualSquare.addListener('mouseout', function () {
+                info.close();
+            });
+
+            //actualSquare.setOptions({fillColor: 'green'});
 
             if (rightSlice !== -1){
               actualSquare.setVisible(true)
@@ -156,6 +194,8 @@ class TimeMap extends React.Component {
     }
 
     parseQuadrantReports(reports) {
+        console.log(reports);
+
         let mySquares = [...this.state.squares];
         let a, b, c, d, i;
 
