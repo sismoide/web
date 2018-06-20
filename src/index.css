@@ -19,8 +19,12 @@ ol, ul {
   width: 100%;
 }
 
-.row, .container, .col-sm-10, .col-sm-2{
-  height: 90%;
+.row, .container, .col-sm-10{
+  height: 100%;
+}
+
+.col-sm-2 {
+  width: 16%;
 }
 
 .row {
@@ -108,7 +112,21 @@ ol, ul {
 }
 
 .whitespace-fromtop {
-  margin-top: 260px;
+  margin-top: 50px;
+}
+
+.other-whitespace-fromtop {
+    margin-top: 80px;
+}
+
+.color-box {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: #ccc;
+    position: absolute;
+    left: 5px;
+    top: 5px;
 }
 
 .centerStat {
@@ -131,4 +149,8 @@ ol, ul {
 
 .move-left {
   margin-left: 300px;
+}
+
+.simbols {
+  border: 1px solid #222222;
 }

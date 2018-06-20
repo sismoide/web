@@ -1,12 +1,18 @@
 import React from 'react';
 import './index.css';
 import 'react-table/react-table.css'
-import {Checkbox, FormGroup} from 'react-bootstrap'
+import {FormGroup} from 'react-bootstrap'
 import 'react-input-range'
 import 'react-input-range/lib/css/index.css'
 import InputRange from 'react-input-range';
+import Hospital from 'react-icons/lib/fa/hospital-o';
+import Water from 'react-icons/lib/fa/tint';
+import Circle from 'react-icons/lib/fa/circle';
+
 
 /* global google */
+var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
+
 
 class TimeMap extends React.Component {
 
@@ -14,83 +20,11 @@ class TimeMap extends React.Component {
         super(props);
         this.state = {
             data: [], tableInfo: [], circles: [],
-            value: 0, markers: [], nMarkers: 0, squares: []
+            intensityColors: ['#F2F3F4', '#AED6F1', '#5DADE2', '#76D7C4','#17A589', '#F7DC6F',
+                '#F39C12', '#CA6F1E', '#E74C3C', '#B03A2E', '#7B241C', '#000000'],
+            value: 0, markers: [], nMarkers: 0, squares: [],
+            timeLineFilter: [],
         };
-        //this.handleChange = this.handleChange.bind(this);
-        this.drawCircles = this.drawCircles.bind(this);
-        this.drawSquares = this.drawSquares.bind(this);
-    }
-
-    /*handleChange(marker) {
-        console.log(marker.data)
-    }*/
-
-    drawCircles() {
-        let circleTwo = {
-            strokeColor: "#25DEA0",
-            fillColor: "#25DEA0",
-            strokeOpacity: 0.8,
-            strokeWeight: 1,
-            fillOpacity: 0.2,
-            map: this.map,
-            center: {lat: -33.1, lng: -70.6},
-            radius: 2000
-        };
-        new google.maps.Circle(circleTwo);
-    }
-
-    drawSquares() {
-        let myRectangle = {
-            strokeColor: '#0000FF',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#0000FF',
-            fillOpacity: 0.35,
-            map: this.map,
-            bounds: {
-                north: -33.0050000000,
-                south: -32.9600000000,
-                east: -69.9649330000,
-                west: -70.0189330000
-            }
-        };
-        new google.maps.Rectangle(myRectangle);
-    }
-
-    countReports(a, b, c, d) {
-        let count = 0;
-        let markers = [...this.state.markers];
-        let x, y;
-
-        for (let i = 0; i < markers.length; i++) {
-            x = markers[i].getPosition().lat();
-            y = markers[i].getPosition().lng();
-            if (!(x < a || x > c || y < b || y > d)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    meanIntensity(a, b, c, d) {
-        let total = 0;
-        let amount = 0;
-        let markers = [...this.state.markers];
-        let x, y;
-
-        for (let i = 0; i < markers.length; i++) {
-            x = markers[i].getPosition().lat();
-            y = markers[i].getPosition().lng();
-            if (!(x < a || x > c || y < b || y > d) && markers[i].data[2]['res'] != null) {
-                total += markers[i].data[2]['res'];
-                amount += 1;
-            }
-        }
-
-        if (amount === 0) {
-            return 0;
-        }
-        return total / amount;
     }
 
     getSquare(a, b, c, d, reports) {
@@ -129,85 +63,106 @@ class TimeMap extends React.Component {
         return rectangle;
     }
 
+    dateToLabel(date){
+      if (date){
+        return date.toLocaleDateString('es-ES', options);
+      }
+}
+
     changeInput() {
         //Importante dejar por si otro componente demora mucho en terminar para evitar errores.
-        if (this.state.markers.length === 0) {
+        if (this.state.squares.length === 0) {
             return;
         }
 
         let value = this.state.value;
         let filterDate;
-        let markerFilter = this.state.markers[value];
+        let dateFilter = this.state.timeLineFilter[value];
 
-        if (!markerFilter) {
-            let lastIndex = this.state.markers.length - 1;
+        if (!dateFilter) {
+            let lastIndex = this.state.timeLineFilter.length - 1;
             //console.log(new Date(this.state.markers[lastIndex].data[0]['res']));
-            filterDate = new Date(this.state.markers[lastIndex].data[0]['res']);
+            filterDate = this.state.timeLineFilter[lastIndex];
         }
 
         else {
             //console.log(new Date(this.state.markers[this.state.value].data[0]['res']));
-            filterDate = new Date(this.state.markers[this.state.value].data[0]['res']);
+            filterDate = this.state.timeLineFilter[this.state.value];
         }
 
-        for (let i = 0; i < this.state.markers.length; i++) {
-            let actualMarker = this.state.markers[i];
-            let actualDate = new Date(actualMarker.data[0]['res']);
+        for (let i = 0; i < this.state.squares.length; i++) {
+            let actualSquare = this.state.squares[i];
+            let actualDate = new Date(actualSquare.data[0]);
+            let rightSlice = -1;
 
-            if (actualDate < filterDate) {
-                actualMarker.setVisible(true);
+            for (let j = 0; j < actualSquare.data[0]['reports'].length; j++) {
+              actualDate = new Date(actualSquare.data[0]['reports'][j]['end_timestamp']);
+
+              if (actualDate < filterDate) {
+                      rightSlice = j;
+                  }
             }
 
-            if (i < value) {
-                actualMarker.setVisible(true);
-            }
-            else {
-                actualMarker.setVisible(false);
-            }
-        }
-    }
+            let reportCount = 0;
+            let reportIntCount = 0;
+            let totalInt = 0;
+            let meanInt = 0;
+            let info = new google.maps.InfoWindow();
+            let a, b, c, d;
 
-    parseReports(reports) {
-        console.log(reports[0]);
-        let i;
-        let markers = [...this.state.markers];
-        for (i = 0; i < reports.length; i++) {
-            let x = Number(reports[i]['coordinates']['latitude']);
-            let y = Number(reports[i]['coordinates']['longitude']);
-            let date = reports[i]['created_on'].split("T");
+            a = actualSquare.getBounds().getNorthEast().lat();
+            b = actualSquare.getBounds().getSouthWest().lng();
+            c = actualSquare.getBounds().getSouthWest().lat();
+            d = actualSquare.getBounds().getNorthEast().lng();
+            let centre = {lat: (a + c) / 2, lng: (b + d) / 2};
 
-            let marker = new google.maps.Marker({
-                position: {lat: x, lng: y},
-                map: this.map,
-                data: [{
-                    med: 'Fecha',
-                    //String(Math.trunc(Number(date[1])))
-                    res: date[0] + " " + date[1]
-                },
-                    {
-                        med: 'Coordenadas',
-                        res: "Lat: " + String(x) + " Long: " + String(y)
-                    },
-                    {
-                        med: 'Intensidad',
-                        res: reports[i]['intensity']
-                    }]
+            for (let k = 0; k <= rightSlice; k++) {
+                reportCount += actualSquare.data[0]['reports'][k]['report_total_count'];
+                reportIntCount += actualSquare.data[0]['reports'][k]['report_w_intensity_count'];
+                totalInt += actualSquare.data[0]['reports'][k]['intensity_sum'];
+            }
+
+            if (reportIntCount !== 0) {
+                meanInt = totalInt / reportIntCount;
+            }
+
+            google.maps.event.clearInstanceListeners(actualSquare);
+
+            actualSquare.addListener('click', function () {
+                info.setPosition(centre);
+                info.setContent("<p>Cantidad de reportes: " + reportCount +
+                    "<br />Intensidad promedio: " + Math.round(meanInt) + "</p>");
+                info.open(this.map);
+
             });
 
-            markers.push(marker);
+            actualSquare.addListener('mouseout', function () {
+                info.close();
+            });
+
+            actualSquare.setOptions({fillColor: this.state.intensityColors[Math.round(meanInt) - 1]});
+
+            if (rightSlice !== -1){
+              actualSquare.setVisible(true)
+            }
+            else {
+              actualSquare.setVisible(false)
+            }
+
         }
-        this.setState({markers});
     }
 
     parseQuadrants() {
         let mySquares = [...this.state.squares];
 
         for (let i = 0; i < mySquares.length; i++) {
-            console.log(i);
+            // console.log(i);
         }
     }
 
     parseQuadrantReports(reports) {
+        console.log(reports);
+
         let mySquares = [...this.state.squares];
         let a, b, c, d, i;
 
@@ -219,8 +174,7 @@ class TimeMap extends React.Component {
             let square = this.getSquare(a, b, c, d, reports[i]['slices_data']);
             mySquares.push(square);
         }
-        console.log("done");
-        this.setState({mySquares});
+        this.setState({squares : mySquares});
     }
 
     //Delay viene en horas
@@ -275,7 +229,7 @@ class TimeMap extends React.Component {
             "min_long=-71.02&" +
             "max_lat=-33.1&" +
             "max_long=-70.2&" +
-            "start_timestamp=" + this.parseLink(5) +
+            "start_timestamp=" + this.parseLink(1) +
             "&end_timestamp=" + this.parseLink(0), {
             method: "GET",
             headers: {
@@ -285,13 +239,23 @@ class TimeMap extends React.Component {
             }
         })
             .then(response => response.json())
-            //.then(reports => self.setState({quadrants: reports}));
             .then(reports => self.parseQuadrantReports(reports));
     }
 
+    placeTime(time){
+      let self = this;
+      self.setState({timeLineFilter: time});
+      self.setState({value : time.length -1 })
+    }
+
+
     componentDidMount() {
         this.drawMap();
+        let timeLineDates = this.createDateArray();
+        this.placeTime(timeLineDates.reverse());
+
     }
+
 
     shouldComponentUpdate() {
         return true;
@@ -303,6 +267,22 @@ class TimeMap extends React.Component {
         this.parseQuadrants();
     }
 
+
+    createDateArray(){
+      let myEndDateTime = new Date();
+      let MS_PER_MINUTE = 60000;
+
+      let auxArray = [];
+      for (let i = 0; i < 60; i++) {
+        let date = new Date(myEndDateTime - i * 5 * MS_PER_MINUTE);
+        auxArray.push(date);
+      }
+      this.setState({timeLineFilter : auxArray});
+
+      return auxArray;
+    }
+
+
     render() {
         return (
             <div className="container">
@@ -310,11 +290,68 @@ class TimeMap extends React.Component {
                     <div className="col-sm-10" ref="map">
                     </div>
                     <div className="col-sm-2">
-                        <FormGroup>
-                            <Checkbox onChange={this.drawCircles.bind(this)}>Hospitales</Checkbox>{' '}
-                            <Checkbox onChange={this.drawSquares.bind(this)}>Bomberos</Checkbox>
-                        </FormGroup>
+                        <div className="simbols">
+                            Simbología:
+                            <FormGroup>
+                            </FormGroup>
+
+                            <FormGroup>
+                                <Hospital size={24}/> Centros de Salud
+                            </FormGroup>
+                            <FormGroup>
+                                <Water size={24}/> Fuentes de Agua Rurales
+                            </FormGroup>
+                        </div>
+                        <div className="other-whitespace-fromtop">
+                        </div>
+                        <div className="simbols">
+                            Escala de Intensidades:
+                            <FormGroup>
+                            </FormGroup>
+
+                            <FormGroup>
+                                <Circle color='#F2F3F4'/> I
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#AED6F1'/> II
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#5DADE2'/> III
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#76D7C4'/> IV
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#17A589'/> V
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#F7DC6F'/> VI
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#F39C12'/> VII
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#CA6F1E'/> VIII
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#E74C3C'/> IX
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#B03A2E'/> X
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#7B241C'/> XI
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#000000'/> XII
+                            </FormGroup>
+
+
+                        </div>
                     </div>
+                </div>
+
+                <div className='whitespace-fromtop'>
                 </div>
 
                 <div>
@@ -323,9 +360,9 @@ class TimeMap extends React.Component {
                             ref={InputRange => {
                                 this.myInput = InputRange;
                             }}
-                            maxValue={this.state.squares.length}
+                            maxValue={this.state.timeLineFilter.length - 1}
                             minValue={0}
-                            formatLabel={value => `${value} Reportes`}
+                            formatLabel={value => `${this.dateToLabel(this.state.timeLineFilter[value])}`}
                             value={this.state.value}
                             onChange={value => this.setState({value})}/>
                     </div>

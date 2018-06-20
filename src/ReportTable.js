@@ -204,7 +204,7 @@ class ReportTable extends Component {
     }
 
     downloadAsCsv(d) {
-        let data, filename, link;
+        let filename, link;
         let csv = this.convertDataToCsv(d);
         if (csv == null) return;
 
