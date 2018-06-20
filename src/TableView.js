@@ -12,8 +12,6 @@ class TableView extends Component {
         this.handleDate = this.handleDate.bind(this);
         this.handleDate1 = this.handleDate1.bind(this);
         this.handleDate2 = this.handleDate2.bind(this);
-
-        console.log(this.state.dateOne)
     }
 
     handleChange(event) {
@@ -40,7 +38,7 @@ class TableView extends Component {
                     <form>
                       <div class="form-group row">
                         <label for="inputPassword" class="col-sm-1 col-form-label">Filtrar por fecha:</label>
-                        <div class="col-sm-3">
+                          <div class="col-sm-3">
                           <select class="form-control" value={this.state.value} onChange={this.handleChange}>
                               <option value="Todos">Todos</option>
                               <option value="Últimas 24 horas">Últimas 24 horas</option>
@@ -57,6 +55,13 @@ class TableView extends Component {
                           </div>
                       </div>
                     </form>
+                    {/*<form>
+                        <label>Filtrar por fecha:</label>
+                        <div>
+                            <DateFilter text={"Fecha inicial"}/>
+                            <DateFilter text={"Fecha final"}/>
+                        </div>
+                    </form>*/}
 
                 </div>
 
