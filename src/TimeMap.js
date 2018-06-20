@@ -20,45 +20,11 @@ class TimeMap extends React.Component {
         super(props);
         this.state = {
             data: [], tableInfo: [], circles: [],
+            intensityColors: ['#F2F3F4', '#AED6F1', '#5DADE2', '#76D7C4','#17A589', '#F7DC6F',
+                '#F39C12', '#CA6F1E', '#E74C3C', '#B03A2E', '#7B241C', '#000000'],
             value: 0, markers: [], nMarkers: 0, squares: [],
             timeLineFilter: [],
         };
-    }
-
-    countReports(a, b, c, d) {
-        let count = 0;
-        let markers = [...this.state.markers];
-        let x, y;
-
-        for (let i = 0; i < markers.length; i++) {
-            x = markers[i].getPosition().lat();
-            y = markers[i].getPosition().lng();
-            if (!(x < a || x > c || y < b || y > d)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    meanIntensity(a, b, c, d) {
-        let total = 0;
-        let amount = 0;
-        let markers = [...this.state.markers];
-        let x, y;
-
-        for (let i = 0; i < markers.length; i++) {
-            x = markers[i].getPosition().lat();
-            y = markers[i].getPosition().lng();
-            if (!(x < a || x > c || y < b || y > d) && markers[i].data[2]['res'] != null) {
-                total += markers[i].data[2]['res'];
-                amount += 1;
-            }
-        }
-
-        if (amount === 0) {
-            return 0;
-        }
-        return total / amount;
     }
 
     getSquare(a, b, c, d, reports) {
@@ -156,7 +122,7 @@ class TimeMap extends React.Component {
                 totalInt += actualSquare.data[0]['reports'][k]['intensity_sum'];
             }
 
-            if (reportIntCount === 0) {
+            if (reportIntCount !== 0) {
                 meanInt = totalInt / reportIntCount;
             }
 
@@ -167,13 +133,14 @@ class TimeMap extends React.Component {
                 info.setContent("<p>Cantidad de reportes: " + reportCount +
                     "<br />Intensidad promedio: " + Math.round(meanInt) + "</p>");
                 info.open(this.map);
+
             });
 
             actualSquare.addListener('mouseout', function () {
                 info.close();
             });
 
-            //actualSquare.setOptions({fillColor: 'green'});
+            actualSquare.setOptions({fillColor: this.state.intensityColors[Math.round(meanInt) - 1]});
 
             if (rightSlice !== -1){
               actualSquare.setVisible(true)
