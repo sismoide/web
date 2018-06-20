@@ -53,6 +53,24 @@ class ReportTable extends Component {
         let filteredData = [];
         let filterStart = this.props.filterStart;
         let filterEnd = this.props.filterEnd;
+        let startActive = this.props.startActive;
+        let endActive = this.props.endActive;
+
+        function isHigherThanStart(date) {
+            if (!startActive) {
+                return true;
+            }
+            let parsedStart = Date.parse(filterStart);
+            return parsedStart < date;
+        }
+
+        function isLowerThanEnd(date) {
+            if (!endActive) {
+                return true;
+            }
+            let parsedEnd = Date.parse(filterEnd);
+            return date < parsedEnd;
+        }
 
         function isInRange(date, start, end) {
             let parsedDate = Date.parse(date);
@@ -68,7 +86,8 @@ class ReportTable extends Component {
             if (parsedStart > parsedEnd) {
                 return false;
             }
-            return parsedStart < parsedDate && parsedDate < parsedEnd;
+
+            return isHigherThanStart(parsedDate) && isLowerThanEnd(parsedDate);
         }
 
         for (let i = 0; i < data.length; i++) {
