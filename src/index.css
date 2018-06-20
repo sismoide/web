@@ -20,7 +20,7 @@ ol, ul {
 }
 
 .row, .container, .col-sm-10{
-  height: 90%;
+  height: 100%;
 }
 
 .col-sm-2 {
@@ -112,7 +112,21 @@ ol, ul {
 }
 
 .whitespace-fromtop {
-  margin-top: 260px;
+  margin-top: 50px;
+}
+
+.other-whitespace-fromtop {
+    margin-top: 80px;
+}
+
+.color-box {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: #ccc;
+    position: absolute;
+    left: 5px;
+    top: 5px;
 }
 
 .centerStat {

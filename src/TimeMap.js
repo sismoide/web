@@ -7,6 +7,7 @@ import 'react-input-range/lib/css/index.css'
 import InputRange from 'react-input-range';
 import Hospital from 'react-icons/lib/fa/hospital-o';
 import Water from 'react-icons/lib/fa/tint';
+import Circle from 'react-icons/lib/fa/circle';
 
 
 /* global google */
@@ -337,7 +338,56 @@ class TimeMap extends React.Component {
                                 <Water size={24}/> Fuentes de Agua Rurales
                             </FormGroup>
                         </div>
+                        <div className="other-whitespace-fromtop">
+                        </div>
+                        <div className="simbols">
+                            Escala de Intensidades:
+                            <FormGroup>
+                            </FormGroup>
+
+                            <FormGroup>
+                                <Circle color='#F2F3F4'/> I
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#AED6F1'/> II
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#5DADE2'/> III
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#76D7C4'/> IV
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#17A589'/> V
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#F7DC6F'/> VI
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#F39C12'/> VII
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#CA6F1E'/> VIII
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#E74C3C'/> IX
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#B03A2E'/> X
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#7B241C'/> XI
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#000000'/> XII
+                            </FormGroup>
+
+
+                        </div>
                     </div>
+                </div>
+
+                <div className='whitespace-fromtop'>
                 </div>
 
                 <div>
