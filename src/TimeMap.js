@@ -124,10 +124,6 @@ class TimeMap extends React.Component {
             filterDate = this.state.timeLineFilter[this.state.value];
         }
 
-        console.log("#############################################");
-        console.log("filtro del timeline");
-        console.log(this.state.timeLineFilter);
-        console.log(filterDate);
         for (let i = 0; i < this.state.squares.length; i++) {
             let actualSquare = this.state.squares[i];
             let actualDate = new Date(actualSquare.data[0]);
@@ -142,9 +138,6 @@ class TimeMap extends React.Component {
             }
 
             if (rightSlice !== -1){
-              console.log("datos del cuadrante");
-              console.log(rightSlice);
-              console.log(new Date(actualSquare.data[0]['reports'][rightSlice]['end_timestamp']));
               actualSquare.setVisible(true)
             }
             else {
@@ -174,7 +167,6 @@ class TimeMap extends React.Component {
             let square = this.getSquare(a, b, c, d, reports[i]['slices_data']);
             mySquares.push(square);
         }
-        console.log("done");
         this.setState({squares : mySquares});
     }
 
