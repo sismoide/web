@@ -3,6 +3,9 @@ import 'react-moment'
 import 'react-table/react-table.css'
 import ReportTable from "./ReportTable"
 
+import DayPicker from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
+
 class TableView extends Component {
     constructor(props) {
         super(props);
