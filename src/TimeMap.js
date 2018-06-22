@@ -127,11 +127,12 @@ class TimeMap extends React.Component {
             }
 
             google.maps.event.clearInstanceListeners(actualSquare);
+            let roundInt = Math.round(meanInt);
 
             actualSquare.addListener('click', function () {
                 info.setPosition(centre);
                 info.setContent("<p>Cantidad de reportes: " + reportCount +
-                    "<br />Intensidad promedio: " + Math.round(meanInt) + "</p>");
+                    "<br />Intensidad promedio: " + roundInt + "</p>");
                 info.open(this.map);
 
             });
@@ -140,7 +141,10 @@ class TimeMap extends React.Component {
                 info.close();
             });
 
-            actualSquare.setOptions({fillColor: this.state.intensityColors[Math.round(meanInt) - 1]});
+            if (roundInt !== 0) {
+                actualSquare.setOptions({strokeColor: this.state.intensityColors[Math.round(meanInt) - 1],
+                                         fillColor: this.state.intensityColors[Math.round(meanInt) - 1]});
+            }
 
             if (rightSlice !== -1){
               actualSquare.setVisible(true)
