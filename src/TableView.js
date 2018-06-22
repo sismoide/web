@@ -5,13 +5,16 @@ import ReportTable from "./ReportTable"
 
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
+import MomentLocaleUtils from 'react-day-picker/moment';
+
+import 'moment/locale/es';
 
 class TableView extends Component {
     constructor(props) {
         super(props);
         this.state = {value: "Todos",
-                        dateOne: new Date(),
-                        dateTwo: new Date(),
+                        dateOne: undefined,
+                        dateTwo: undefined,
                         dateOneActive: false,
                         dateTwoActive: false
         };
@@ -33,29 +36,25 @@ class TableView extends Component {
     }
 
     handleDate1(date) {
-        this.setState({dateOne: date.target.value});
+        let d = new Date(date);
+        //remove time component from date
+        let newDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        this.setState({dateOne: newDate});
     }
 
     handleDate2(date) {
-        this.setState({dateTwo: date.target.value});
+        let d = new Date(date);
+        //remove time component from date
+        let newDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        this.setState({dateTwo: newDate});
     }
 
     toggleDate1() {
-        if (this.state.dateOneActive){
-            this.setState({dateOneActive: false})
-        }
-        else {
-            this.setState({dateOneActive: true})
-        }
+        this.setState({dateOneActive: !this.state.dateOneActive});
     }
 
     toggleDate2() {
-        if (this.state.dateTwoActive){
-            this.setState({dateTwoActive: false})
-        }
-        else {
-            this.setState({dateTwoActive: true})
-        }
+        this.setState({dateTwoActive: !this.state.dateTwoActive});
     }
 
     render() {
@@ -64,33 +63,37 @@ class TableView extends Component {
                 <h2>DATOS DE TODOS LOS REPORTES</h2>
                 <div>
                     <form>
-                      <div className="form-group row">
-                        <label htmlFor="inputPassword" className="col-sm-1 col-form-label">Filtrar por fecha:</label>
-                          {/*<div class="col-sm-3">
-                          <select class="form-control" value={this.state.value} onChange={this.handleChange}>
-                              <option value="Todos">Todos</option>
-                              <option value="Últimas 24 horas">Últimas 24 horas</option>
-                              <option value="Última semana">Última semana</option>
-                              <option value="Último mes">Último mes</option>
-                              <option value="Últimos 6 meses">Últimos 6 meses</option>
-                          </select>
-                        </div>*/}
-                          <div>
-                              <input type="checkbox" onChange={this.toggleDate1}/>
-                              <span style={{
-                                  margin: "auto 5px"
-                              }}>Fecha inicial:</span>
-                              <input type="datetime-local" onChange={this.handleDate1}/>
-                              <input type="checkbox" onChange={this.toggleDate2}
-                                style={{
-                                    marginLeft: "30px"
-                                }}/>
-                              <span style={{
-                                  margin: "auto 5px auto 5px"
-                              }}>Fecha final:</span>
-                              <input type="datetime-local" onChange={this.handleDate2}/>
-                          </div>
-                      </div>
+                        <div className="form-group row">
+                            <label htmlFor="inputPassword" className="col-sm-1 col-form-label">Filtrar por fecha:</label>
+
+                            <div>
+                                <input
+                                    type="checkbox"
+                                    onChange={this.toggleDate1}/>
+                                <span style={{
+                                    margin: "auto 5px"
+                                }}>Fecha inicial:</span>
+                                <DayPicker
+                                    onDayClick={this.handleDate1}
+                                    selectedDays={this.state.dateOne}
+                                    localeUtils={MomentLocaleUtils}
+                                    locale={'es'}  />
+                                <input
+                                    type="checkbox"
+                                    onChange={this.toggleDate2}
+                                    style={{
+                                        marginLeft: "30px"}}/>
+                                <span
+                                    style={{
+                                        margin: "auto 5px auto 5px"
+                                    }}>Fecha final:</span>
+                                <DayPicker
+                                    onDayClick={this.handleDate2}
+                                    selectedDays={this.state.dateTwo}
+                                    localeUtils={MomentLocaleUtils}
+                                    locale={'es'}  />
+                            </div>
+                        </div>
                     </form>
 
                 </div>
@@ -98,10 +101,11 @@ class TableView extends Component {
                 <ol>
                 </ol>
                 <ol>
-                    <ReportTable filterStart={this.state.dateOne}
-                                    filterEnd={this.state.dateTwo}
-                                    startActive={this.state.dateOneActive}
-                                    endActive={this.state.dateTwoActive}/>
+                    <ReportTable
+                        filterStart={this.state.dateOne}
+                        filterEnd={this.state.dateTwo}
+                        startActive={this.state.dateOneActive}
+                        endActive={this.state.dateTwoActive}/>
                 </ol>
             </div>
         );

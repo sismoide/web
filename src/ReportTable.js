@@ -57,7 +57,7 @@ class ReportTable extends Component {
         let endActive = this.props.endActive;
 
         function isHigherThanStart(date) {
-            if (!startActive) {
+            if (!startActive || filterStart === undefined) {
                 return true;
             }
             let parsedStart = Date.parse(filterStart);
@@ -65,7 +65,7 @@ class ReportTable extends Component {
         }
 
         function isLowerThanEnd(date) {
-            if (!endActive) {
+            if (!endActive || filterEnd === undefined) {
                 return true;
             }
             let parsedEnd = Date.parse(filterEnd);
@@ -74,18 +74,6 @@ class ReportTable extends Component {
 
         function isInRange(date, start, end) {
             let parsedDate = Date.parse(date);
-            if (start === undefined) {
-                return Date.parse(date) < Date.parse(end);
-            }
-            if (end === undefined) {
-                return Date.parse(date) > Date.parse(start);
-            }
-
-            let parsedStart = Date.parse(start);
-            let parsedEnd = Date.parse(end);
-            if (parsedStart > parsedEnd) {
-                return false;
-            }
 
             return isHigherThanStart(parsedDate) && isLowerThanEnd(parsedDate);
         }
@@ -165,7 +153,7 @@ class ReportTable extends Component {
 
     componentDidMount() {
         let fetchLink = "http://wangulen.dgf.uchile.cl:17014/web/reports/?start=" +
-                            this.parseLink(15) + "&end=" +
+                            this.parseLink(1440) + "&end=" +
                             this.parseLink(0);
 
         fetch(fetchLink, {
