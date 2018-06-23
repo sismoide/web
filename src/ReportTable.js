@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ReactTable from 'react-table';
-import 'react-table/react-table.css'
+import 'react-table/react-table.css';
+import { Button } from 'react-bootstrap';
 
 class ReportTable extends Component {
     constructor(props) {
@@ -256,7 +257,6 @@ class ReportTable extends Component {
                 width: 700,
                 columns: [
                     {
-                        //Header: 'Intensidad',
                         Header: () => (
                             <div
                                 style={{
@@ -266,7 +266,6 @@ class ReportTable extends Component {
                         accessor: 'int',
                         minWidth: 100
                     }, {
-                        //Header: 'Fecha de reporte',
                         Header: () => (
                             <div
                                 style={{
@@ -276,7 +275,6 @@ class ReportTable extends Component {
                         accessor: 'fecha',
                         minWidth: 200
                     }, {
-                        //Header: 'Coordenadas',
                         Header: () => (
                             <div
                                 style={{
@@ -308,7 +306,9 @@ class ReportTable extends Component {
                     return (
                         <div>
                             {makeTable()}
-                            <button onClick={this.downloadAsCsv.bind(this, state.data)}>Descargar CSV</button>
+                            <Button
+                                onClick={this.downloadAsCsv.bind(this, state.data)}
+                            >Descargar CSV</Button>
                         </div>
                     );
                 }}
