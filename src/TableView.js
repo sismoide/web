@@ -3,9 +3,9 @@ import 'react-moment'
 import 'react-table/react-table.css'
 import ReportTable from "./ReportTable"
 
-import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
-import MomentLocaleUtils from 'react-day-picker/moment';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import MomentLocaleUtils, { formatDate, parseDate, } from 'react-day-picker/moment';
 
 import 'moment/locale/es';
 
@@ -73,11 +73,19 @@ class TableView extends Component {
                                 <span style={{
                                     margin: "auto 5px"
                                 }}>Fecha inicial:</span>
-                                <DayPicker
-                                    onDayClick={this.handleDate1}
-                                    selectedDays={this.state.dateOne}
-                                    localeUtils={MomentLocaleUtils}
-                                    locale={'es'}  />
+                                <DayPickerInput
+                                    formatDate={formatDate}
+                                    parseDate={parseDate}
+                                    format="DD/MM/YYYY"
+                                    placeholder="DD/MM/YYYY"
+                                    onDayChange={this.handleDate1}
+                                    dayPickerProps={{
+                                        onDayClick: this.handleDate1,
+                                        selectedDays: this.state.dateOne,
+                                        localeUtils: MomentLocaleUtils,
+                                        locale: 'es'
+                                    }}
+                                />
                                 <input
                                     type="checkbox"
                                     onChange={this.toggleDate2}
@@ -87,11 +95,19 @@ class TableView extends Component {
                                     style={{
                                         margin: "auto 5px auto 5px"
                                     }}>Fecha final:</span>
-                                <DayPicker
-                                    onDayClick={this.handleDate2}
-                                    selectedDays={this.state.dateTwo}
-                                    localeUtils={MomentLocaleUtils}
-                                    locale={'es'}  />
+                                <DayPickerInput
+                                    formatDate={formatDate}
+                                    parseDate={parseDate}
+                                    format="DD/MM/YYYY"
+                                    placeholder="DD/MM/YYYY"
+                                    onDayChange={this.handleDate2}
+                                    dayPickerProps={{
+                                        onDayClick: this.handleDate2,
+                                        selectedDays: this.state.dateOne,
+                                        localeUtils: MomentLocaleUtils,
+                                        locale: 'es'
+                                    }}
+                                />
                             </div>
                         </div>
                     </form>
