@@ -14,9 +14,9 @@ import Hospital from 'react-icons/lib/fa/hospital-o';
 import Water from 'react-icons/lib/fa/tint';
 import Circle from 'react-icons/lib/fa/circle';
 
-Moment.locale('es')
+Moment.locale('es');
 
-momentLocalizer()
+momentLocalizer();
 
 
 
@@ -300,7 +300,7 @@ class TimeMap extends React.Component {
 
       let self = this;
       self.setState({timeLineFilter: auxArray});
-      self.setState({value : auxArray.length -1 })
+      self.setState({value : auxArray.length -1 });
       this.placeTime(auxArray.reverse());
 
     }
@@ -344,8 +344,24 @@ class TimeMap extends React.Component {
                             <FormGroup>
                                 <Circle color='#0000FF'/> Reportes sin intensidad
                             </FormGroup>
+                        </div>
 
+                        <div className="small-whitespace-fromtop">
+                        </div>
+                        <div className="simbols">
+                            Escala de reportes:
+                            <FormGroup>
+                            </FormGroup>
 
+                            <FormGroup>
+                                <Circle color='#76D7C4'/> &lt; 10 reportes
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#F7DC6F'/> &lt; 100 reportes
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#E74C3C'/> &gt; 100 reportes
+                            </FormGroup>
                         </div>
                     </div>
                 </div>
