@@ -11,7 +11,7 @@ import Circle from 'react-icons/lib/fa/circle';
 
 
 /* global google */
-var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
+let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
 
 
 class TimeMap extends React.Component {
@@ -20,8 +20,7 @@ class TimeMap extends React.Component {
         super(props);
         this.state = {
             data: [], tableInfo: [], circles: [],
-            intensityColors: ['#F2F3F4', '#AED6F1', '#5DADE2', '#76D7C4','#17A589', '#F7DC6F',
-                '#F39C12', '#CA6F1E', '#E74C3C', '#B03A2E', '#7B241C', '#000000'],
+            intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C'],
             value: 0, markers: [], nMarkers: 0, squares: [],
             timeLineFilter: [],
         };
@@ -142,8 +141,14 @@ class TimeMap extends React.Component {
             });
 
             if (roundInt !== 0) {
-                actualSquare.setOptions({strokeColor: this.state.intensityColors[Math.round(meanInt) - 1],
-                                         fillColor: this.state.intensityColors[Math.round(meanInt) - 1]});
+                let colorIndex = 2;
+                if (roundInt < 5) {
+                    colorIndex = 0;
+                } else if (roundInt < 9) {
+                    colorIndex = 1;
+                }
+                actualSquare.setOptions({strokeColor: this.state.intensityColors[colorIndex],
+                                         fillColor: this.state.intensityColors[colorIndex]});
             }
 
             if (rightSlice !== -1){
@@ -314,40 +319,16 @@ class TimeMap extends React.Component {
                             </FormGroup>
 
                             <FormGroup>
-                                <Circle color='#F2F3F4'/> I
+                                <Circle color='#76D7C4'/> I-IV
                             </FormGroup>
                             <FormGroup>
-                                <Circle color='#AED6F1'/> II
+                                <Circle color='#F7DC6F'/> V-VIII
                             </FormGroup>
                             <FormGroup>
-                                <Circle color='#5DADE2'/> III
+                                <Circle color='#E74C3C'/> IX-XII
                             </FormGroup>
                             <FormGroup>
-                                <Circle color='#76D7C4'/> IV
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#17A589'/> V
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#F7DC6F'/> VI
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#F39C12'/> VII
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#CA6F1E'/> VIII
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#E74C3C'/> IX
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#B03A2E'/> X
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#7B241C'/> XI
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#000000'/> XII
+                                <Circle color='#0000FF'/> Reportes sin intensidad
                             </FormGroup>
 
 
