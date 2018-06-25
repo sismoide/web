@@ -3,11 +3,27 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { Button } from 'react-bootstrap';
 
+import 'react-day-picker/lib/style.css';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import MomentLocaleUtils, { formatDate, parseDate, } from 'react-day-picker/moment';
+
+import 'moment/locale/es';
+
 class ReportTable extends Component {
     constructor(props) {
         super(props);
-        this.state = {data: []};
+        this.state = {
+            data: [],
+            dateOne: undefined,
+            dateTwo: undefined,
+            dateOneActive: false,
+            dateTwoActive: false
+        };
         this.handleChange = this.handleChange.bind(this);
+        this.handleDate1 = this.handleDate1.bind(this);
+        this.handleDate2 = this.handleDate2.bind(this);
+        this.toggleDate1 = this.toggleDate1.bind(this);
+        this.toggleDate2 = this.toggleDate2.bind(this);
     }
 
     handleChange(newData) {
@@ -50,12 +66,34 @@ class ReportTable extends Component {
         return filteredData
     }
 
+    handleDate1(date) {
+        let d = new Date(date);
+        //remove time component from date
+        let newDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        this.setState({dateOne: newDate});
+    }
+
+    handleDate2(date) {
+        let d = new Date(date);
+        //remove time component from date
+        let newDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        this.setState({dateTwo: newDate});
+    }
+
+    toggleDate1() {
+        this.setState({dateOneActive: !this.state.dateOneActive});
+    }
+
+    toggleDate2() {
+        this.setState({dateTwoActive: !this.state.dateTwoActive});
+    }
+
     filterByDate(data){
         let filteredData = [];
-        let filterStart = this.props.filterStart;
-        let filterEnd = this.props.filterEnd;
-        let startActive = this.props.startActive;
-        let endActive = this.props.endActive;
+        let filterStart = this.state.dateOne;
+        let filterEnd = this.state.dateTwo;
+        let startActive = this.state.dateOneActive;
+        let endActive = this.state.dateTwoActive;
 
         function isHigherThanStart(date) {
             if (!startActive || filterStart === undefined) {
@@ -295,13 +333,76 @@ class ReportTable extends Component {
                 {(state, makeTable, instance) => {
                     return (
                         <div>
-                            {makeTable()}
-                            <div className="small-whitespace-fromtop">
-                                <Button
-                                    onClick={this.downloadAsCsv.bind(this, state.data)}
-                                >Descargar CSV</Button>
+                            <div>
+                                <form className="form-inline">
+                                    <div style={{
+                                        margin: "20px auto 20px"
+                                    }}>
+                                        <div className="form-group">
+                                            <label>Filtros:</label>
+                                        </div>
+                                        <div className="form-group">
+                                            <input
+                                                type="checkbox"
+                                                onChange={this.toggleDate1}
+                                                style={{
+                                                    marginLeft: "30px"
+                                                }}/>
+                                            <span style={{
+                                                margin: "auto 5px"
+                                            }}>Fecha inicial:</span>
+                                            <DayPickerInput
+                                                formatDate={formatDate}
+                                                parseDate={parseDate}
+                                                format="DD/MM/YYYY"
+                                                placeholder="DD/MM/YYYY"
+                                                onDayChange={this.handleDate1}
+                                                dayPickerProps={{
+                                                    onDayClick: this.handleDate1,
+                                                    selectedDays: this.state.dateOne,
+                                                    localeUtils: MomentLocaleUtils,
+                                                    locale: 'es'
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <input
+                                            type="checkbox"
+                                            onChange={this.toggleDate2}
+                                            style={{
+                                                marginLeft: "30px"}}/>
+                                        <span
+                                            style={{
+                                                margin: "auto 5px auto 5px"
+                                            }}>Fecha final:</span>
+                                        <DayPickerInput
+                                            formatDate={formatDate}
+                                            parseDate={parseDate}
+                                            format="DD/MM/YYYY"
+                                            placeholder="DD/MM/YYYY"
+                                            onDayChange={this.handleDate2}
+                                            dayPickerProps={{
+                                                onDayClick: this.handleDate2,
+                                                selectedDays: this.state.dateTwo,
+                                                localeUtils: MomentLocaleUtils,
+                                                locale: 'es'
+                                            }}
+                                        />
+                                        </div>
+                                        <div
+                                            className="form-group"
+                                            style={{
+                                                float: "right"
+                                            }}
+                                        >
+                                            <Button
+                                                onClick={this.downloadAsCsv.bind(this, state.data)}
+                                            >Descargar CSV</Button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-
+                            {makeTable()}
                         </div>
                     );
                 }}

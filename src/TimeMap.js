@@ -14,9 +14,9 @@ import Hospital from 'react-icons/lib/fa/hospital-o';
 import Water from 'react-icons/lib/fa/tint';
 import Circle from 'react-icons/lib/fa/circle';
 
-Moment.locale('es')
+Moment.locale('es');
 
-momentLocalizer()
+momentLocalizer();
 
 
 
@@ -29,8 +29,8 @@ class TimeMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [], tableInfo: [], circles: [],
-            intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C'],
+            data: [], tableInfo: [], circles: [], rColor: false,
+            intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C', '#0000FF'],
             value: 0, markers: [], nMarkers: 0, squares: [],
             timeLineFilter: [], filterDate: 0, animation: false,
         };
@@ -80,7 +80,7 @@ class TimeMap extends React.Component {
       }
 }
 
-    changeInput() {
+    changeInput(reportColor) {
         //Importante dejar por si otro componente demora mucho en terminar para evitar errores.
         if (this.state.squares.length === 0) {
             return;
@@ -152,16 +152,22 @@ class TimeMap extends React.Component {
                 info.close();
             });
 
-            if (roundInt !== 0) {
-                let colorIndex = 2;
-                if (roundInt < 5) {
-                    colorIndex = 0;
-                } else if (roundInt < 9) {
-                    colorIndex = 1;
+            let colorIndex = 3;
+
+            if(!reportColor) {
+                if (roundInt !== 0) {
+                    colorIndex = 2;
+                    if (roundInt < 5) { colorIndex = 0; }
+                    else if (roundInt < 9) { colorIndex = 1; }
                 }
-                actualSquare.setOptions({strokeColor: this.state.intensityColors[colorIndex],
-                                         fillColor: this.state.intensityColors[colorIndex]});
+            } else {
+                colorIndex = 2;
+                if (reportCount < 10) { colorIndex = 0; }
+                else if (reportCount < 100) { colorIndex = 1; }
             }
+
+            actualSquare.setOptions({strokeColor: this.state.intensityColors[colorIndex],
+                                     fillColor: this.state.intensityColors[colorIndex]});
 
             if (rightSlice !== -1){
               actualSquare.setVisible(true)
@@ -283,12 +289,10 @@ class TimeMap extends React.Component {
     }
 
     componentDidUpdate() {
-      this.changeInput();
+      this.changeInput(this.state.rColor);
       this.parseQuadrants();
-
     }
-
-
+    
     createDateArray(date){
       console.log("creando fecha:", date);
       let myEndDateTime = date;
@@ -302,7 +306,7 @@ class TimeMap extends React.Component {
 
       let self = this;
       self.setState({timeLineFilter: auxArray});
-      self.setState({value : auxArray.length -1 })
+      self.setState({value : auxArray.length -1 });
       this.placeTime(auxArray.reverse());
 
     }
@@ -366,8 +370,24 @@ class TimeMap extends React.Component {
                             <FormGroup>
                                 <Circle color='#0000FF'/> Reportes sin intensidad
                             </FormGroup>
+                        </div>
 
+                        <div className="small-whitespace-fromtop">
+                        </div>
+                        <div className="simbols">
+                            Escala de reportes:
+                            <FormGroup>
+                            </FormGroup>
 
+                            <FormGroup>
+                                <Circle color='#76D7C4'/> &lt; 10 reportes
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#F7DC6F'/> &lt; 100 reportes
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#E74C3C'/> &gt; 100 reportes
+                            </FormGroup>
                         </div>
                     </div>
                 </div>
