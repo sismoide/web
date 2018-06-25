@@ -32,8 +32,10 @@ class TimeMap extends React.Component {
             data: [], tableInfo: [], circles: [],
             intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C'],
             value: 0, markers: [], nMarkers: 0, squares: [],
-            timeLineFilter: [], filterDate: 0,
+            timeLineFilter: [], filterDate: 0, animation: false,
         };
+        this.playAnim = this.playAnim.bind(this);
+        this.stopAnim = this.stopAnim.bind(this);
     }
 
     getSquare(a, b, c, d, reports) {
@@ -305,6 +307,26 @@ class TimeMap extends React.Component {
 
     }
 
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    async playAnim(){
+      this.setState({animation : true})
+      for (var i = 0; i < this.state.timeLineFilter.length; i++) {
+        if (this.state.animation) {
+          console.log("slice actual", i);
+          this.setState({ value: i})
+          let wake = await this.sleep(1000);
+        }
+        else {
+          return
+        }
+      }
+    }
+    stopAnim(){
+      this.setState({animation : false})
+
+    }
 
     render() {
         return (
@@ -354,12 +376,20 @@ class TimeMap extends React.Component {
                 </div>
 
                 <div>
-                    <div className="col-sm-4">
+                    <div className="col-sm-6">
 
                     <DateTimePicker
                       dropUp
                       onChange={filterDate => this.createDateArray( filterDate )}
                       />
+                    </div>
+                    <div className="col-sm-6">
+                    <button onClick={this.playAnim}>
+                      Play
+                    </button>
+                    <button onClick={this.stopAnim}>
+                      Stop
+                    </button>
                     </div>
                     <div className="col-sm-10">
 
