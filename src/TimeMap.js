@@ -14,7 +14,7 @@ import Hospital from 'react-icons/lib/fa/hospital-o';
 import Water from 'react-icons/lib/fa/tint';
 import Circle from 'react-icons/lib/fa/circle';
 
-Moment.locale('en')
+Moment.locale('es')
 
 momentLocalizer()
 
@@ -32,7 +32,7 @@ class TimeMap extends React.Component {
             data: [], tableInfo: [], circles: [],
             intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C'],
             value: 0, markers: [], nMarkers: 0, squares: [],
-            timeLineFilter: [],
+            timeLineFilter: [], filterDate: 0,
         };
     }
 
@@ -270,8 +270,7 @@ class TimeMap extends React.Component {
 
     componentDidMount() {
         this.drawMap();
-        let timeLineDates = this.createDateArray();
-        this.placeTime(timeLineDates.reverse());
+        this.createDateArray(new Date);
 
     }
 
@@ -282,13 +281,15 @@ class TimeMap extends React.Component {
     }
 
     componentDidUpdate() {
-        this.changeInput();
-        this.parseQuadrants();
+      this.changeInput();
+      this.parseQuadrants();
+
     }
 
 
-    createDateArray(){
-      let myEndDateTime = new Date();
+    createDateArray(date){
+      console.log("creando fecha:", date);
+      let myEndDateTime = date;
       let MS_PER_MINUTE = 60000;
 
       let auxArray = [];
@@ -296,9 +297,12 @@ class TimeMap extends React.Component {
         let date = new Date(myEndDateTime - i * 5 * MS_PER_MINUTE);
         auxArray.push(date);
       }
-      this.setState({timeLineFilter : auxArray});
 
-      return auxArray;
+      let self = this;
+      self.setState({timeLineFilter: auxArray});
+      self.setState({value : auxArray.length -1 })
+      this.placeTime(auxArray.reverse());
+
     }
 
 
@@ -354,6 +358,7 @@ class TimeMap extends React.Component {
 
                     <DateTimePicker
                       dropUp
+                      onChange={filterDate => this.createDateArray( filterDate )}
                       />
                     </div>
                     <div className="col-sm-10">
