@@ -1,13 +1,23 @@
+
 import React from 'react';
 import './index.css';
 import 'react-table/react-table.css'
 import {FormGroup} from 'react-bootstrap'
+import 'react-widgets/dist/css/react-widgets.css';
 import 'react-input-range'
 import 'react-input-range/lib/css/index.css'
+import Moment from 'moment'
+import momentLocalizer from 'react-widgets-moment';
+import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import InputRange from 'react-input-range';
 import Hospital from 'react-icons/lib/fa/hospital-o';
 import Water from 'react-icons/lib/fa/tint';
 import Circle from 'react-icons/lib/fa/circle';
+
+Moment.locale('en')
+
+momentLocalizer()
+
 
 
 /* global google */
@@ -359,7 +369,14 @@ class TimeMap extends React.Component {
                 </div>
 
                 <div>
+                    <div className="col-sm-4">
+
+                    <DateTimePicker
+                      dropUp
+                      />
+                    </div>
                     <div className="col-sm-10">
+
                         <InputRange
                             ref={InputRange => {
                                 this.myInput = InputRange;
@@ -369,6 +386,8 @@ class TimeMap extends React.Component {
                             formatLabel={value => `${this.dateToLabel(this.state.timeLineFilter[value])}`}
                             value={this.state.value}
                             onChange={value => this.setState({value})}/>
+                    </div>
+                    <div className="col-sm-2">
                     </div>
                 </div>
             </div>
