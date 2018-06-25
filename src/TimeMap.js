@@ -1,17 +1,27 @@
+
 import React from 'react';
 import './index.css';
 import 'react-table/react-table.css'
 import {FormGroup} from 'react-bootstrap'
+import 'react-widgets/dist/css/react-widgets.css';
 import 'react-input-range'
 import 'react-input-range/lib/css/index.css'
+import Moment from 'moment'
+import momentLocalizer from 'react-widgets-moment';
+import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import InputRange from 'react-input-range';
 import Hospital from 'react-icons/lib/fa/hospital-o';
 import Water from 'react-icons/lib/fa/tint';
 import Circle from 'react-icons/lib/fa/circle';
 
+Moment.locale('es')
+
+momentLocalizer()
+
+
 
 /* global google */
-var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
+let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
 
 
 class TimeMap extends React.Component {
@@ -20,10 +30,9 @@ class TimeMap extends React.Component {
         super(props);
         this.state = {
             data: [], tableInfo: [], circles: [],
-            intensityColors: ['#F2F3F4', '#AED6F1', '#5DADE2', '#76D7C4','#17A589', '#F7DC6F',
-                '#F39C12', '#CA6F1E', '#E74C3C', '#B03A2E', '#7B241C', '#000000'],
+            intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C'],
             value: 0, markers: [], nMarkers: 0, squares: [],
-            timeLineFilter: [],
+            timeLineFilter: [], filterDate: 0,
         };
     }
 
@@ -142,8 +151,14 @@ class TimeMap extends React.Component {
             });
 
             if (roundInt !== 0) {
-                actualSquare.setOptions({strokeColor: this.state.intensityColors[Math.round(meanInt) - 1],
-                                         fillColor: this.state.intensityColors[Math.round(meanInt) - 1]});
+                let colorIndex = 2;
+                if (roundInt < 5) {
+                    colorIndex = 0;
+                } else if (roundInt < 9) {
+                    colorIndex = 1;
+                }
+                actualSquare.setOptions({strokeColor: this.state.intensityColors[colorIndex],
+                                         fillColor: this.state.intensityColors[colorIndex]});
             }
 
             if (rightSlice !== -1){
@@ -255,8 +270,7 @@ class TimeMap extends React.Component {
 
     componentDidMount() {
         this.drawMap();
-        let timeLineDates = this.createDateArray();
-        this.placeTime(timeLineDates.reverse());
+        this.createDateArray(new Date);
 
     }
 
@@ -267,13 +281,15 @@ class TimeMap extends React.Component {
     }
 
     componentDidUpdate() {
-        this.changeInput();
-        this.parseQuadrants();
+      this.changeInput();
+      this.parseQuadrants();
+
     }
 
 
-    createDateArray(){
-      let myEndDateTime = new Date();
+    createDateArray(date){
+      console.log("creando fecha:", date);
+      let myEndDateTime = date;
       let MS_PER_MINUTE = 60000;
 
       let auxArray = [];
@@ -281,9 +297,12 @@ class TimeMap extends React.Component {
         let date = new Date(myEndDateTime - i * 5 * MS_PER_MINUTE);
         auxArray.push(date);
       }
-      this.setState({timeLineFilter : auxArray});
 
-      return auxArray;
+      let self = this;
+      self.setState({timeLineFilter: auxArray});
+      self.setState({value : auxArray.length -1 })
+      this.placeTime(auxArray.reverse());
+
     }
 
 
@@ -314,40 +333,16 @@ class TimeMap extends React.Component {
                             </FormGroup>
 
                             <FormGroup>
-                                <Circle color='#F2F3F4'/> I
+                                <Circle color='#76D7C4'/> I-IV
                             </FormGroup>
                             <FormGroup>
-                                <Circle color='#AED6F1'/> II
+                                <Circle color='#F7DC6F'/> V-VIII
                             </FormGroup>
                             <FormGroup>
-                                <Circle color='#5DADE2'/> III
+                                <Circle color='#E74C3C'/> IX-XII
                             </FormGroup>
                             <FormGroup>
-                                <Circle color='#76D7C4'/> IV
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#17A589'/> V
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#F7DC6F'/> VI
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#F39C12'/> VII
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#CA6F1E'/> VIII
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#E74C3C'/> IX
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#B03A2E'/> X
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#7B241C'/> XI
-                            </FormGroup>
-                            <FormGroup>
-                                <Circle color='#000000'/> XII
+                                <Circle color='#0000FF'/> Reportes sin intensidad
                             </FormGroup>
 
 
@@ -359,7 +354,15 @@ class TimeMap extends React.Component {
                 </div>
 
                 <div>
+                    <div className="col-sm-4">
+
+                    <DateTimePicker
+                      dropUp
+                      onChange={filterDate => this.createDateArray( filterDate )}
+                      />
+                    </div>
                     <div className="col-sm-10">
+
                         <InputRange
                             ref={InputRange => {
                                 this.myInput = InputRange;
@@ -369,6 +372,8 @@ class TimeMap extends React.Component {
                             formatLabel={value => `${this.dateToLabel(this.state.timeLineFilter[value])}`}
                             value={this.state.value}
                             onChange={value => this.setState({value})}/>
+                    </div>
+                    <div className="col-sm-2">
                     </div>
                 </div>
             </div>
