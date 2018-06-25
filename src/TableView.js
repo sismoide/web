@@ -62,7 +62,7 @@ class TableView extends Component {
             <div>
                 <h2>DATOS DE TODOS LOS REPORTES</h2>
                 <div>
-                    <form>
+                    {/*<form>
                         <div className="form-group row">
                             <label htmlFor="inputPassword" className="col-sm-1 col-form-label">Filtrar por fecha:</label>
 
@@ -110,7 +110,7 @@ class TableView extends Component {
                                 />
                             </div>
                         </div>
-                    </form>
+                    </form>*/}
 
                 </div>
 
