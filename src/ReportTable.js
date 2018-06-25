@@ -339,7 +339,7 @@ class ReportTable extends Component {
                                         margin: "20px auto 20px"
                                     }}>
                                         <div className="form-group">
-                                            <label>Filtrar por fecha:</label>
+                                            <label>Filtros:</label>
                                         </div>
                                         <div className="form-group">
                                             <input
