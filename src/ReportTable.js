@@ -240,16 +240,6 @@ class ReportTable extends Component {
     }
 
     render() {
-        /*for (let i = 0; i < table.length; i++) {
-            let appendage = [{
-                int: table[i].intensity,
-                fecha: table[i].timestamp,
-                coord: 'lat: ' + table[i].coordinates.latitude + ', lng: ' + table[i].coordinates.longitude,
-                mag: table[i].magnitude,
-                damn: table[i].affected,
-            }];
-            this.data.push(appendage[0]);
-        }*/
 
         const myColumns = [
             {
@@ -306,9 +296,12 @@ class ReportTable extends Component {
                     return (
                         <div>
                             {makeTable()}
-                            <Button
-                                onClick={this.downloadAsCsv.bind(this, state.data)}
-                            >Descargar CSV</Button>
+                            <div className="small-whitespace-fromtop">
+                                <Button
+                                    onClick={this.downloadAsCsv.bind(this, state.data)}
+                                >Descargar CSV</Button>
+                            </div>
+
                         </div>
                     );
                 }}

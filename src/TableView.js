@@ -6,7 +6,6 @@ import ReportTable from "./ReportTable"
 import 'react-day-picker/lib/style.css';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import MomentLocaleUtils, { formatDate, parseDate, } from 'react-day-picker/moment';
-
 import 'moment/locale/es';
 
 class TableView extends Component {
@@ -64,7 +63,8 @@ class TableView extends Component {
                 <div>
                     <form>
                         <div className="form-group row">
-                            <label htmlFor="inputPassword" className="col-sm-1 col-form-label">Filtrar por fecha:</label>
+                            <label htmlFor="inputPassword" className="col-sm-1 col-form-label">Filtros:
+                            </label>
 
                             <div>
                                 <input
