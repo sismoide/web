@@ -3,7 +3,7 @@ import React from 'react';
 import './index.css';
 import 'react-table/react-table.css';
 import {FormGroup} from 'react-bootstrap';
-import {Button, ButtonGroup} from 'reactstrap';
+import {Button} from 'reactstrap';
 import 'react-widgets/dist/css/react-widgets.css';
 import 'react-input-range';
 import 'react-input-range/lib/css/index.css';
@@ -32,10 +32,8 @@ class TimeMap extends React.Component {
         this.state = {
             data: [], tableInfo: [], circles: [], rColor: false,
             intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C', '#0000FF'],
-            value: 0, markers: [], nMarkers: 0, squares: [],
-            timeLineFilter: [], filterDate: 0, animation: false, sliceAnim: 0
             value: 0, markers: [], nMarkers: 0, squares: [], rSelected: [],
-            timeLineFilter: [], filterDate: 0,
+            timeLineFilter: [], filterDate: 0, animation: false, sliceAnim: 0
         };
         this.playAnim = this.playAnim.bind(this);
         this.stopAnim = this.stopAnim.bind(this);
@@ -82,7 +80,7 @@ class TimeMap extends React.Component {
         });
         return rectangle;
     }
-
+    
     dateToLabel(date){
       if (date){
         return date.toLocaleDateString('es-ES', options);
@@ -324,11 +322,11 @@ class TimeMap extends React.Component {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
     async playAnim(){
-      this.setState({animation : true})
-      for (var i = 0; i < this.state.timeLineFilter.length; i++) {
+      this.setState({animation : true});
+      for (let i = 0; i < this.state.timeLineFilter.length; i++) {
         if (this.state.animation) {
           console.log("slice actual", i);
-          this.setState({ value: i})
+          this.setState({ value: i});
           let wake = await this.sleep(1000);
         }
         else {
@@ -340,11 +338,11 @@ class TimeMap extends React.Component {
       this.setState({animation : false})
     }
     async continueAnim() {
-      this.setState({animation : true})
-      for (var i = this.state.value; i < this.state.timeLineFilter.length; i++) {
+      this.setState({animation : true});
+      for (let i = this.state.value; i < this.state.timeLineFilter.length; i++) {
         if (this.state.animation) {
           console.log("slice actual", i);
-          this.setState({ value: i})
+          this.setState({ value: i});
           let wake = await this.sleep(1000);
         }
         else {
