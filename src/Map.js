@@ -31,7 +31,8 @@ class Map extends React.Component {
             data: [], tableInfo: [], circles: [], rColor: false,
             intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C', '#0000FF'],
             value: 0, markers: [], nMarkers: 0, squares: [], rSelected: [],
-            timeLineFilter: [], filterDate: 0, animation: false, sliceAnim: 0
+            timeLineFilter: [], filterDate: 0, animation: false, sliceAnim: 0,
+            actualDateForReports: new Date(),
         };
         this.playAnim = this.playAnim.bind(this);
         this.stopAnim = this.stopAnim.bind(this);
@@ -194,8 +195,11 @@ class Map extends React.Component {
 
     parseQuadrantReports(reports) {
         console.log(reports);
-
         let mySquares = [...this.state.squares];
+        for (var z = 0; z < mySquares.length; z++) {
+          mySquares[z].setMap(null)
+        }
+
         let a, b, c, d, i;
 
         for (i = 0; i < reports.length; i++) {
@@ -211,6 +215,7 @@ class Map extends React.Component {
 
     //Delay viene en horas
     parseLink(delay) {
+
         let current = new Date();
 
         current.setHours(current.getHours() - delay);
@@ -241,6 +246,7 @@ class Map extends React.Component {
             minute = current.getMinutes();
         }
 
+
         return current.getFullYear() + "-" +
             month + "-" +
             day + "T" +
@@ -250,11 +256,13 @@ class Map extends React.Component {
 
     drawMap() {
         let self = this;
+
         self.map = new google.maps.Map(self.refs.map, {
             center: {lat: -33.5, lng: -70.63},
             zoom: 10,
             mapTypeId: google.maps.MapTypeId.HYBRID
         });
+        console.log("obteniendo reportes entre", this.parseLink(1), this.parseLink(0))
 
         fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
             "min_lat=-34.01&" +
@@ -283,8 +291,7 @@ class Map extends React.Component {
 
     componentDidMount() {
         this.drawMap();
-        this.createDateArray(new Date);
-
+        this.createDateArray(new Date());
     }
 
 
@@ -298,34 +305,19 @@ class Map extends React.Component {
         this.parseQuadrants();
     }
 
-    createDateArray(date){
-        console.log("creando fecha:", date);
-        let myEndDateTime = date;
-        let MS_PER_MINUTE = 60000;
 
-        let auxArray = [];
-        for (let i = 0; i < 60; i++) {
-            let date = new Date(myEndDateTime - i * 5 * MS_PER_MINUTE);
-            auxArray.push(date);
-        }
-
-        let self = this;
-        self.setState({timeLineFilter: auxArray});
-        self.setState({value : auxArray.length -1 });
-        this.placeTime(auxArray.reverse());
-
-    }
 
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
     async playAnim(){
         this.setState({animation : true});
         for (let i = 0; i < this.state.timeLineFilter.length; i++) {
             if (this.state.animation) {
                 console.log("slice actual", i);
                 this.setState({ value: i});
-                let wake = await this.sleep(1000);
+                await this.sleep(1000);
             }
             else {
                 return
@@ -341,13 +333,57 @@ class Map extends React.Component {
             if (this.state.animation) {
                 console.log("slice actual", i);
                 this.setState({ value: i});
-                let wake = await this.sleep(1000);
+                await this.sleep(1000);
             }
             else {
                 return
             }
         }
     }
+
+    createDateArray(date){
+        let self = this;
+
+        self.setState({actualDateForReports: date})
+
+        let myEndDateTime = date;
+        let MS_PER_MINUTE = 60000;
+
+        let auxArray = [];
+        for (let i = 0; i < 60; i++) {
+            let date = new Date(myEndDateTime - i * 5 * MS_PER_MINUTE);
+            auxArray.push(date);
+        }
+
+        self.setState({timeLineFilter: auxArray});
+        self.setState({value : auxArray.length -1 });
+        this.placeTime(auxArray.reverse());
+
+    }
+
+    changeDateofReports(date){
+      this.createDateArray( date );
+
+      let self = this;
+
+      fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
+        "min_lat=-34.01&" +
+        "min_long=-71.02&" +
+        "max_lat=-33.1&" +
+        "max_long=-70.2&" +
+        "start_timestamp=" + this.parseLink(1) +
+        "&end_timestamp=" + this.parseLink(0), {
+        method: "GET",
+        headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
+          }
+      })
+        .then(response => response.json())
+        .then(reports => self.parseQuadrantReports(reports));
+    }
+
 
     render() {
         return (
@@ -434,7 +470,7 @@ class Map extends React.Component {
 
                         <DateTimePicker
                             dropUp
-                            onChange={filterDate => this.createDateArray( filterDate )}
+                            onChange={filterDate => this.changeDateofReports( filterDate )}
                         />
                     </div>
                     <div className="col-sm-6">

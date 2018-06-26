@@ -282,7 +282,6 @@ class TimeMap extends React.Component {
     componentDidMount() {
         this.drawMap();
         this.createDateArray(new Date);
-
     }
 
 
@@ -318,6 +317,7 @@ class TimeMap extends React.Component {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
     async playAnim(){
+      console.log("play")
       this.setState({animation : true})
       for (var i = 0; i < this.state.timeLineFilter.length; i++) {
         if (this.state.animation) {
@@ -349,6 +349,7 @@ class TimeMap extends React.Component {
     }
 
     changeDateofReports(date){
+      console.log("hola");
       let self = this;
     fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
         "min_lat=-34.01&" +
@@ -366,7 +367,7 @@ class TimeMap extends React.Component {
     })
         .then(response => response.json())
         .then(reports => self.parseQuadrantReports(reports));
-      this.createDateArray( date );
+      // this.createDateArray( date );
     }
 
     render() {
