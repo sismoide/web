@@ -32,7 +32,7 @@ class TimeMap extends React.Component {
             data: [], tableInfo: [], circles: [], rColor: false,
             intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C', '#0000FF'],
             value: 0, markers: [], nMarkers: 0, squares: [],
-            timeLineFilter: [], filterDate: 0, animation: false, sliceAnim: 0
+            timeLineFilter: [], filterDate: new Date(), animation: true, sliceAnim: 0
         };
         this.playAnim = this.playAnim.bind(this);
         this.stopAnim = this.stopAnim.bind(this);
@@ -207,7 +207,9 @@ class TimeMap extends React.Component {
 
     //Delay viene en horas
     parseLink(delay) {
+        // let current = this.state.filterDate;
         let current = new Date();
+        console.log(current);
 
         current.setHours(current.getHours() - delay);
 
@@ -257,7 +259,7 @@ class TimeMap extends React.Component {
             "min_long=-71.02&" +
             "max_lat=-33.1&" +
             "max_long=-70.2&" +
-            "start_timestamp=" + this.parseLink(1) +
+            "start_timestamp=" + this.parseLink(5) +
             "&end_timestamp=" + this.parseLink(0), {
             method: "GET",
             headers: {
@@ -331,6 +333,7 @@ class TimeMap extends React.Component {
     stopAnim(){
       this.setState({animation : false})
     }
+
     async continueAnim() {
       this.setState({animation : true})
       for (var i = this.state.value; i < this.state.timeLineFilter.length; i++) {
@@ -343,6 +346,27 @@ class TimeMap extends React.Component {
           return
         }
       }
+    }
+
+    changeDateofReports(date){
+      let self = this;
+    fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
+        "min_lat=-34.01&" +
+        "min_long=-71.02&" +
+        "max_lat=-33.1&" +
+        "max_long=-70.2&" +
+        "start_timestamp=" + this.parseLink(5) +
+        "&end_timestamp=" + this.parseLink(0), {
+        method: "GET",
+        headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
+        }
+    })
+        .then(response => response.json())
+        .then(reports => self.parseQuadrantReports(reports));
+      this.createDateArray( date );
     }
 
     render() {
@@ -413,7 +437,7 @@ class TimeMap extends React.Component {
 
                     <DateTimePicker
                       dropUp
-                      onChange={filterDate => this.createDateArray( filterDate )}
+                      onChange={filterDate => this.changeDateofReports( filterDate )}
                       />
                     </div>
                     <div className="col-sm-6">
