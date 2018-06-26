@@ -1,127 +1,49 @@
 import React from 'react';
 import './index.css';
-import 'react-table/react-table.css'
-import {Checkbox, FormGroup} from 'react-bootstrap'
-import 'react-input-range'
-import 'react-input-range/lib/css/index.css'
+import 'react-table/react-table.css';
+import {FormGroup} from 'react-bootstrap';
+import {Button} from 'reactstrap';
+import 'react-widgets/dist/css/react-widgets.css';
+import 'react-input-range';
+import 'react-input-range/lib/css/index.css';
+import Moment from 'moment';
+import momentLocalizer from 'react-widgets-moment';
+import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import InputRange from 'react-input-range';
+import Hospital from 'react-icons/lib/fa/hospital-o';
+import Water from 'react-icons/lib/fa/tint';
+import Circle from 'react-icons/lib/fa/circle';
+
+Moment.locale('es');
+
+momentLocalizer();
+
 
 /* global google */
+let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
 
-var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
 
-
-function loadScript(url, callback) {
-    // Adding the script tag to the head as suggested before
-    const head = document.getElementsByTagName('head')[0];
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = url;
-
-    // Then bind the event to the callback function.
-    // There are several events for cross browser compatibility.
-    script.onreadystatechange = callback;
-    script.onload = callback;
-
-    // Fire the loading
-    head.appendChild(script);
-}
-
-class MyMap extends React.Component {
+class Map extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            data: [], tableInfo: [], circles: [], oldValue: 5,
-            value: 0, markers: [], nMarkers: 0, squares: [],
-            timeLineFilter: [],
+            data: [], tableInfo: [], circles: [], rColor: false,
+            intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C', '#0000FF'],
+            value: 0, markers: [], nMarkers: 0, squares: [], rSelected: [],
+            timeLineFilter: [], filterDate: 0, animation: false, sliceAnim: 0
         };
-        //this.handleChange = this.handleChange.bind(this);
-        this.drawCircles = this.drawCircles.bind(this);
-        this.drawSquares = this.drawSquares.bind(this);
+        this.playAnim = this.playAnim.bind(this);
+        this.stopAnim = this.stopAnim.bind(this);
+        this.continueAnim = this.continueAnim.bind(this);
+        this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
     }
 
-    /*handleChange(marker) {
-        console.log(marker.data)
-    }*/
-
-    drawCircles() {
-        let circleTwo = {
-            strokeColor: "#25DEA0",
-            fillColor: "#25DEA0",
-            strokeOpacity: 0.8,
-            strokeWeight: 1,
-            fillOpacity: 0.2,
-            map: this.map,
-            center: {lat: -33.1, lng: -70.6},
-            radius: 2000
-        };
-        new google.maps.Circle(circleTwo);
+    onRadioBtnClick(rSelected) {
+        this.setState({ rSelected });
     }
 
-    drawSquares() {
-        let myRectangle = {
-            strokeColor: '#0000FF',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#0000FF',
-            fillOpacity: 0.35,
-            map: this.map,
-            bounds: {
-                north: -33.0050000000,
-                south: -32.9600000000,
-                east: -69.9649330000,
-                west: -70.0189330000
-            }
-        };
-        new google.maps.Rectangle(myRectangle);
-    }
-
-    /*closeAllInfoWindows() {
-        let squares = [...this.state.squares];
-        for (let i = 0; i < squares.length; i++) {
-            squares[i].infowindow.close();
-        }
-        this.setState({squares});
-    }*/
-
-    countReports(a, b, c, d) {
-        let count = 0;
-        let markers = [...this.state.markers];
-        let x, y;
-
-        for (let i = 0; i < markers.length; i++) {
-            x = markers[i].getPosition().lat();
-            y = markers[i].getPosition().lng();
-            if (!(x < a || x > c || y < b || y > d)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    meanIntensity(a, b, c, d) {
-        let total = 0;
-        let amount = 0;
-        let markers = [...this.state.markers];
-        let x, y;
-
-        for (let i = 0; i < markers.length; i++) {
-            x = markers[i].getPosition().lat();
-            y = markers[i].getPosition().lng();
-            if (!(x < a || x > c || y < b || y > d) && markers[i].data[2]['res'] != null) {
-                total += markers[i].data[2]['res'];
-                amount += 1;
-            }
-        }
-
-        if (amount === 0) {
-            return 0;
-        }
-        return total / amount;
-    }
-
-    drawSquare(a, b, c, d) {
+    getSquare(a, b, c, d, reports) {
         let info = new google.maps.InfoWindow();
         let centre = {lat: (a + c) / 2, lng: (b + d) / 2};
 
@@ -132,7 +54,9 @@ class MyMap extends React.Component {
             fillColor: '#0000FF',
             fillOpacity: 0.1,
             map: this.map,
+            visible: false,
             infowindow: info,
+            data: [{reports}],
             bounds: {
                 north: a,
                 south: c,
@@ -155,45 +79,15 @@ class MyMap extends React.Component {
         return rectangle;
     }
 
-    getNewSquare(n, p, a, b, c, d) {
-        let info = new google.maps.InfoWindow();
-        let new_lat = (a + c) / 2;
-        let new_lng = (b + d) / 2;
-        let centre = {lat: new_lat, lng: new_lng};
-
-        let myRectangle = {
-            strokeColor: '#0000FF',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#0000FF',
-            fillOpacity: 0.1,
-            map: this.map,
-            infowindow: info,
-            bounds: {
-                north: a,
-                south: c,
-                east: d,
-                west: b
-            }
-        };
-
-        let rectangle = new google.maps.Rectangle(myRectangle);
-        rectangle.addListener('click', function () {
-            info.setPosition(centre);
-            info.setContent("<p>Cantidad de reportes: " + n +
-                "<br />Intensidad promedio: " + Math.round(p) + "</p>");
-            info.open(this.map);
-        });
-
-        rectangle.addListener('mouseout', function () {
-            info.close();
-        });
-        return rectangle;
+    dateToLabel(date){
+        if (date) {
+            return date.toLocaleDateString('es-ES', options);
+        }
     }
 
-    changeInput() {
+    changeInput(reportColor) {
         //Importante dejar por si otro componente demora mucho en terminar para evitar errores.
-        if (this.state.timeLineFilter.length === 0) {
+        if (this.state.squares.length === 0) {
             return;
         }
 
@@ -211,187 +105,188 @@ class MyMap extends React.Component {
             //console.log(new Date(this.state.markers[this.state.value].data[0]['res']));
             filterDate = this.state.timeLineFilter[this.state.value];
         }
-        var nActive = 0;
-        var nInactive = 0;
-        for (let i = 0; i < this.state.markers.length; i++) {
-            let actualMarker = this.state.markers[i];
-            let actualDate = new Date(actualMarker.data[0]['res']);
 
-          if (actualDate < filterDate) {
-                  nActive += 1;
-                  actualMarker.setVisible(true);
-              }
+        for (let i = 0; i < this.state.squares.length; i++) {
+            let actualSquare = this.state.squares[i];
+            let actualDate = new Date(actualSquare.data[0]);
+            let rightSlice = -1;
 
-          else {
-              nInactive +=1 ;
-              actualMarker.setVisible(false);
-          }
-        }
-        console.log("activos");
-        console.log(nActive);
-    }
+            for (let j = 0; j < actualSquare.data[0]['reports'].length; j++) {
+                actualDate = new Date(actualSquare.data[0]['reports'][j]['end_timestamp']);
 
-    createDateArray(){
-      var myEndDateTime = new Date();
-      var MS_PER_MINUTE = 60000;
+                if (actualDate < filterDate) {
+                    rightSlice = j;
+                }
+            }
 
-      var auxArray = [];
-      for (let i = 0; i < 60; i++) {
-        var date = new Date(myEndDateTime - i * 5 * MS_PER_MINUTE);
-        auxArray.push(date);
-      }
-      this.setState({timeLineFilter : auxArray});
+            let reportCount = 0;
+            let reportIntCount = 0;
+            let totalInt = 0;
+            let meanInt = 0;
+            let info = new google.maps.InfoWindow();
+            let a, b, c, d;
 
-      return auxArray;
-    }
-
-    parseReports(reports) {
-        let i;
-        let markers = [...this.state.markers];
-        for (i = 0; i < reports.length; i++) {
-            let x = Number(reports[i]['coordinates']['latitude']);
-            let y = Number(reports[i]['coordinates']['longitude']);
-            let date = reports[i]['created_on'].split("T");
-
-            let marker = new google.maps.Marker({
-                position: {lat: x, lng: y},
-                map: this.map,
-                data: [{
-                    med: 'Fecha',
-                    //String(Math.trunc(Number(date[1])))
-                    res: date[0] + " " + date[1]
-                },
-                    {
-                        med: 'Coordenadas',
-                        res: "Lat: " + String(x) + " Long: " + String(y)
-                    },
-                    {
-                        med: 'Intensidad',
-                        res: reports[i]['intensity']
-                    }]
-            });
-
-            markers.push(marker);
-        }
-        this.setState({markers});
-    }
-
-    drawQuadrants(quadrants) {
-        let a, b, c ,d, i;
-        let squares = [...this.state.squares];
-
-        for (i = 0; i < quadrants.length; i++) {
-            a = Number(quadrants[i]['min_coordinates']['latitude']);
-            b = Number(quadrants[i]['min_coordinates']['longitude']);
-            c = Number(quadrants[i]['max_coordinates']['latitude']);
-            d = Number(quadrants[i]['max_coordinates']['longitude']);
-            let square = this.drawSquare(a, b, c, d);
-            squares.push(square);
-        }
-        this.setState({squares});
-    }
-
-    parseSquare() {
-        let squares = [...this.state.squares];
-        let newInfo = new google.maps.InfoWindow();
-        let a, b, c, d, i;
-        for (i = 0; i < squares.length; i++) {
-            a = squares[i].getBounds().getNorthEast().lat();
-            b = squares[i].getBounds().getSouthWest().lng();
-            c = squares[i].getBounds().getSouthWest().lat();
-            d = squares[i].getBounds().getNorthEast().lng();
-            let reports = this.countReports(a, b, c, d);
-            let mean = this.meanIntensity(a, b, c, d);
+            a = actualSquare.getBounds().getNorthEast().lat();
+            b = actualSquare.getBounds().getSouthWest().lng();
+            c = actualSquare.getBounds().getSouthWest().lat();
+            d = actualSquare.getBounds().getNorthEast().lng();
             let centre = {lat: (a + c) / 2, lng: (b + d) / 2};
 
-            squares[i].addListener('click', function () {
-                newInfo.setPosition(centre);
-                newInfo.setContent("<p>Cantidad de reportes: " + reports +
-                    "<br />Intensidad promedio: " + Math.round(mean) + "</p>");
-                newInfo.open(this.map);
+            for (let k = 0; k <= rightSlice; k++) {
+                reportCount += actualSquare.data[0]['reports'][k]['report_total_count'];
+                reportIntCount += actualSquare.data[0]['reports'][k]['report_w_intensity_count'];
+                totalInt += actualSquare.data[0]['reports'][k]['intensity_sum'];
+            }
+
+            if (reportIntCount !== 0) {
+                meanInt = totalInt / reportIntCount;
+            }
+
+            google.maps.event.clearInstanceListeners(actualSquare);
+            let roundInt = Math.round(meanInt);
+
+            actualSquare.addListener('click', function () {
+                info.setPosition(centre);
+                info.setContent("<p>Cantidad de reportes: " + reportCount +
+                    "<br />Intensidad promedio: " + roundInt + "</p>");
+                info.open(this.map);
+
             });
 
-            squares[i].addListener('mouseout', function () {
-                newInfo.close();
+            actualSquare.addListener('mouseout', function () {
+                info.close();
             });
+
+            let colorIndex = 3;
+
+            if(!reportColor) {
+                if (roundInt !== 0) {
+                    colorIndex = 2;
+                    if (roundInt < 5) { colorIndex = 0; }
+                    else if (roundInt < 9) { colorIndex = 1; }
+                }
+            } else {
+                colorIndex = 2;
+                if (reportCount < 10) { colorIndex = 0; }
+                else if (reportCount < 100) { colorIndex = 1; }
+            }
+
+            actualSquare.setOptions({strokeColor: this.state.intensityColors[colorIndex],
+                fillColor: this.state.intensityColors[colorIndex]});
+
+            if (rightSlice !== -1){
+                actualSquare.setVisible(true)
+            }
+            else {
+                actualSquare.setVisible(false)
+            }
+
         }
     }
 
     parseQuadrants() {
-        let i;
-        let quadrants = [...this.state.quadrants];
         let mySquares = [...this.state.squares];
-        let a, b, c, d;
-        for (i = 0; i < quadrants.length; i++) {
-            a = Number(quadrants[i]['min_coordinates']['latitude']);
-            b = Number(quadrants[i]['min_coordinates']['longitude']);
-            c = Number(quadrants[i]['max_coordinates']['latitude']);
-            d = Number(quadrants[i]['max_coordinates']['longitude']);
-            let num_reports = this.countReports(a, b, c, d);
-            let mean_int = this.meanIntensity(a, b, c, d);
-            let square = this.getNewSquare(num_reports, mean_int, a, b, c, d);
-            this.countReports(square);
+
+        for (let i = 0; i < mySquares.length; i++) {
+            // console.log(i);
+        }
+    }
+
+    parseQuadrantReports(reports) {
+        console.log(reports);
+
+        let mySquares = [...this.state.squares];
+        let a, b, c, d, i;
+
+        for (i = 0; i < reports.length; i++) {
+            a = Number(reports[i]['quadrant_data']['min_coordinates']['latitude']);
+            b = Number(reports[i]['quadrant_data']['min_coordinates']['longitude']);
+            c = Number(reports[i]['quadrant_data']['max_coordinates']['latitude']);
+            d = Number(reports[i]['quadrant_data']['max_coordinates']['longitude']);
+            let square = this.getSquare(a, b, c, d, reports[i]['slices_data']);
             mySquares.push(square);
         }
-        //this.setState({mySquares});
-        console.log("cuadrantes puestos D:")
+        this.setState({squares : mySquares});
+    }
+
+    //Delay viene en horas
+    parseLink(delay) {
+        let current = new Date();
+
+        current.setHours(current.getHours() - delay);
+
+        let minute, hour, day, month;
+
+        if (current.getMonth() < 9) {
+            month = "0" + (current.getMonth() + 1);
+        } else {
+            month = current.getMonth() + 1;
+        }
+
+        if (current.getDate() < 10) {
+            day = "0" + current.getDate();
+        } else {
+            day = current.getDate();
+        }
+
+        if (current.getHours() < 10) {
+            hour = "0" + current.getHours();
+        } else {
+            hour = current.getHours();
+        }
+
+        if (current.getMinutes() < 10) {
+            minute = "0" + current.getMinutes();
+        } else {
+            minute = current.getMinutes();
+        }
+
+        return current.getFullYear() + "-" +
+            month + "-" +
+            day + "T" +
+            hour + "%3A" +
+            minute
     }
 
     drawMap() {
         let self = this;
-            self.map = new google.maps.Map(self.refs.map, {
-                center: {lat: -33.5, lng: -70.63},
-                zoom: 10,
-                mapTypeId: google.maps.MapTypeId.HYBRID
-            });
+        self.map = new google.maps.Map(self.refs.map, {
+            center: {lat: -33.5, lng: -70.63},
+            zoom: 10,
+            mapTypeId: google.maps.MapTypeId.HYBRID
+        });
 
-
-        let fetchLink = "http://wangulen.dgf.uchile.cl:17014/web/reports/?" +
-                "start=2018-06-18T00%3A00&end=2018-06-19T00%3A00";
-
-
-            fetch(fetchLink, {
-                method: "GET",
-                headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
-                }
-            })
-                .then(response => response.json())
-                .then(reports => self.parseReports(reports));
-
-            fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrants?min_lat=-34.01&" +
-                "min_long=-71.02&" +
-                "max_lat=-33.1&" +
-                "max_long=-70.2", {
-                method: "GET",
-                headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
-                }
-            })
-                .then(response => response.json())
-                //.then(reports => self.setState({quadrants: reports}));
-                .then(reports => self.drawQuadrants(reports));
+        fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
+            "min_lat=-34.01&" +
+            "min_long=-71.02&" +
+            "max_lat=-33.1&" +
+            "max_long=-70.2&" +
+            "start_timestamp=" + this.parseLink(1) +
+            "&end_timestamp=" + this.parseLink(0), {
+            method: "GET",
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
+            }
+        })
+            .then(response => response.json())
+            .then(reports => self.parseQuadrantReports(reports));
     }
 
     placeTime(time){
-      let self = this;
-      self.setState({timeLineFilter: time});
-      self.setState({value : time.length -1 })
+        let self = this;
+        self.setState({timeLineFilter: time});
+        self.setState({value : time.length -1 })
     }
 
-    componentWillMount(){
-    }
 
     componentDidMount() {
         this.drawMap();
-        var timeLineDates = this.createDateArray();
-        this.placeTime(timeLineDates.reverse());
+        this.createDateArray(new Date);
 
     }
+
 
     shouldComponentUpdate() {
         return true;
@@ -399,17 +294,61 @@ class MyMap extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log(this.state.timeLineFilter.length);
-        this.changeInput();
-        this.parseSquare();
+        this.changeInput(this.state.rColor);
+        this.parseQuadrants();
     }
 
-    dateToLabel(date){
-      if (date){
-      var string = date.toLocaleDateString('es-ES', options);
-      return string
-      }
-}
+    createDateArray(date){
+        console.log("creando fecha:", date);
+        let myEndDateTime = date;
+        let MS_PER_MINUTE = 60000;
+
+        let auxArray = [];
+        for (let i = 0; i < 60; i++) {
+            let date = new Date(myEndDateTime - i * 5 * MS_PER_MINUTE);
+            auxArray.push(date);
+        }
+
+        let self = this;
+        self.setState({timeLineFilter: auxArray});
+        self.setState({value : auxArray.length -1 });
+        this.placeTime(auxArray.reverse());
+
+    }
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    async playAnim(){
+        this.setState({animation : true});
+        for (let i = 0; i < this.state.timeLineFilter.length; i++) {
+            if (this.state.animation) {
+                console.log("slice actual", i);
+                this.setState({ value: i});
+                let wake = await this.sleep(1000);
+            }
+            else {
+                return
+            }
+        }
+    }
+    stopAnim(){
+        this.setState({animation : false})
+    }
+    async continueAnim() {
+        this.setState({animation : true});
+        for (let i = this.state.value; i < this.state.timeLineFilter.length; i++) {
+            if (this.state.animation) {
+                console.log("slice actual", i);
+                this.setState({ value: i});
+                let wake = await this.sleep(1000);
+            }
+            else {
+                return
+            }
+        }
+    }
+
     render() {
         return (
             <div className="container">
@@ -417,15 +356,104 @@ class MyMap extends React.Component {
                     <div className="col-sm-10" ref="map">
                     </div>
                     <div className="col-sm-2">
-                        <FormGroup>
-                            <Checkbox onChange={this.drawCircles.bind(this)}>Hospitales</Checkbox>{' '}
-                            <Checkbox onChange={this.drawSquares.bind(this)}>Bomberos</Checkbox>
-                        </FormGroup>
+                        <div className="simbols">
+                            Simbología:
+                            <FormGroup>
+                            </FormGroup>
+
+                            <FormGroup>
+                                <Hospital size={24}/> Centros de Salud
+                            </FormGroup>
+                            <FormGroup>
+                                <Water size={24}/> Fuentes de Agua Rurales
+                            </FormGroup>
+                        </div>
+                        <div className="other-whitespace-fromtop">
+                        </div>
+
+                        <Button color="info" size="sm" onClick={() => {this.onRadioBtnClick(1);
+                            this.setState({rColor:false})}}
+                                onChange={() => this.setState({rColor: true})}
+                                active={this.state.rSelected === 1}>Pintar Intensidades</Button>
+
+                        <div className="smaller-whitespace-fromtop">
+                        </div>
+
+                        <div className="simbols">
+                            Escala de Intensidades:
+                            <FormGroup>
+                            </FormGroup>
+
+                            <FormGroup>
+                                <Circle color='#76D7C4'/> I-IV
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#F7DC6F'/> V-VIII
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#E74C3C'/> IX-XII
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#0000FF'/> Reportes sin intensidad
+                            </FormGroup>
+                        </div>
+
+                        <div className="small-whitespace-fromtop">
+                        </div>
+
+                        <Button color="info" size="sm" onClick={() => {this.onRadioBtnClick(2);
+                            this.setState({rColor: true})}}
+                                active={this.state.rSelected === 2}>Pintar Reportes</Button>
+
+                        <div className="smaller-whitespace-fromtop">
+                        </div>
+
+                        <div className="simbols">
+                            Escala de reportes:
+                            <FormGroup>
+                            </FormGroup>
+
+                            <FormGroup>
+                                <Circle color='#76D7C4'/> &lt; 10 reportes
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#F7DC6F'/> &lt; 100 reportes
+                            </FormGroup>
+                            <FormGroup>
+                                <Circle color='#E74C3C'/> &gt; 100 reportes
+                            </FormGroup>
+                        </div>
                     </div>
                 </div>
 
+                <div className='whitespace-fromtop'>
+                </div>
+
                 <div>
+                    <div className="col-sm-4">
+
+                        <DateTimePicker
+                            dropUp
+                            onChange={filterDate => this.createDateArray( filterDate )}
+                        />
+                    </div>
+                    <div className="col-sm-6">
+                        <button onClick={this.playAnim}>
+                            Play
+                        </button>
+                        <button onClick={this.continueAnim}>
+                            Continue
+                        </button>
+                        <button onClick={this.stopAnim}>
+                            Stop
+                        </button>
+                    </div>
+
+                    <div className="whitespace-fromtop">
+                    </div>
+
                     <div className="col-sm-10">
+
                         <InputRange
                             ref={InputRange => {
                                 this.myInput = InputRange;
@@ -436,13 +464,12 @@ class MyMap extends React.Component {
                             value={this.state.value}
                             onChange={value => this.setState({value})}/>
                     </div>
+                    <div className="col-sm-2">
+                    </div>
                 </div>
             </div>
         )
     }
 }
 
-
-// ========================================
-
-export default MyMap;
+export default Map;
