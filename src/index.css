@@ -111,6 +111,10 @@ ol, ul {
   text-align: right;
 }
 
+.smaller-whitespace-fromtop {
+  margin-top: 10px;
+}
+
 .small-whitespace-fromtop {
     margin-top: 20px;
 }

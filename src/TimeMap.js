@@ -1,12 +1,13 @@
 
 import React from 'react';
 import './index.css';
-import 'react-table/react-table.css'
-import {FormGroup} from 'react-bootstrap'
+import 'react-table/react-table.css';
+import {FormGroup} from 'react-bootstrap';
+import {Button, ButtonGroup} from 'reactstrap';
 import 'react-widgets/dist/css/react-widgets.css';
-import 'react-input-range'
-import 'react-input-range/lib/css/index.css'
-import Moment from 'moment'
+import 'react-input-range';
+import 'react-input-range/lib/css/index.css';
+import Moment from 'moment';
 import momentLocalizer from 'react-widgets-moment';
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import InputRange from 'react-input-range';
@@ -31,9 +32,14 @@ class TimeMap extends React.Component {
         this.state = {
             data: [], tableInfo: [], circles: [], rColor: false,
             intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C', '#0000FF'],
-            value: 0, markers: [], nMarkers: 0, squares: [],
+            value: 0, markers: [], nMarkers: 0, squares: [], rSelected: [],
             timeLineFilter: [], filterDate: 0,
         };
+        this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
+    }
+
+    onRadioBtnClick(rSelected) {
+        this.setState({ rSelected });
     }
 
     getSquare(a, b, c, d, reports) {
@@ -290,7 +296,7 @@ class TimeMap extends React.Component {
       this.changeInput(this.state.rColor);
       this.parseQuadrants();
     }
-    
+
     createDateArray(date){
       console.log("creando fecha:", date);
       let myEndDateTime = date;
@@ -331,6 +337,15 @@ class TimeMap extends React.Component {
                         </div>
                         <div className="other-whitespace-fromtop">
                         </div>
+
+                        <Button color="info" size="sm" onClick={() => {this.onRadioBtnClick(1);
+                                                                       this.setState({rColor:false})}}
+                                onChange={() => this.setState({rColor: true})}
+                                active={this.state.rSelected === 1}>Pintar Intensidades</Button>
+
+                        <div className="smaller-whitespace-fromtop">
+                        </div>
+
                         <div className="simbols">
                             Escala de Intensidades:
                             <FormGroup>
@@ -352,6 +367,14 @@ class TimeMap extends React.Component {
 
                         <div className="small-whitespace-fromtop">
                         </div>
+
+                        <Button color="info" size="sm" onClick={() => {this.onRadioBtnClick(2);
+                                                                       this.setState({rColor: true})}}
+                                active={this.state.rSelected === 2}>Pintar Reportes</Button>
+
+                        <div className="smaller-whitespace-fromtop">
+                        </div>
+
                         <div className="simbols">
                             Escala de reportes:
                             <FormGroup>
