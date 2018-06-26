@@ -32,9 +32,14 @@ class TimeMap extends React.Component {
         this.state = {
             data: [], tableInfo: [], circles: [], rColor: false,
             intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C', '#0000FF'],
+            value: 0, markers: [], nMarkers: 0, squares: [],
+            timeLineFilter: [], filterDate: 0, animation: false, sliceAnim: 0
             value: 0, markers: [], nMarkers: 0, squares: [], rSelected: [],
             timeLineFilter: [], filterDate: 0,
         };
+        this.playAnim = this.playAnim.bind(this);
+        this.stopAnim = this.stopAnim.bind(this);
+        this.continueAnim = this.continueAnim.bind(this);
         this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
     }
 
@@ -296,7 +301,7 @@ class TimeMap extends React.Component {
       this.changeInput(this.state.rColor);
       this.parseQuadrants();
     }
-
+    
     createDateArray(date){
       console.log("creando fecha:", date);
       let myEndDateTime = date;
@@ -315,6 +320,38 @@ class TimeMap extends React.Component {
 
     }
 
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    async playAnim(){
+      this.setState({animation : true})
+      for (var i = 0; i < this.state.timeLineFilter.length; i++) {
+        if (this.state.animation) {
+          console.log("slice actual", i);
+          this.setState({ value: i})
+          let wake = await this.sleep(1000);
+        }
+        else {
+          return
+        }
+      }
+    }
+    stopAnim(){
+      this.setState({animation : false})
+    }
+    async continueAnim() {
+      this.setState({animation : true})
+      for (var i = this.state.value; i < this.state.timeLineFilter.length; i++) {
+        if (this.state.animation) {
+          console.log("slice actual", i);
+          this.setState({ value: i})
+          let wake = await this.sleep(1000);
+        }
+        else {
+          return
+        }
+      }
+    }
 
     render() {
         return (
@@ -403,6 +440,17 @@ class TimeMap extends React.Component {
                       dropUp
                       onChange={filterDate => this.createDateArray( filterDate )}
                       />
+                    </div>
+                    <div className="col-sm-6">
+                    <button onClick={this.playAnim}>
+                      Play
+                    </button>
+                    <button onClick={this.continueAnim}>
+                    Continue
+                    </button>
+                    <button onClick={this.stopAnim}>
+                      Stop
+                    </button>
                     </div>
                     <div className="col-sm-10">
 
