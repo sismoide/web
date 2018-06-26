@@ -216,7 +216,8 @@ class Map extends React.Component {
     //Delay viene en horas
     parseLink(delay) {
 
-        let current = new Date();
+        let current = this.state.actualDateForReports;
+        console.log("fecha de fetch", this.state.actualDateForReports)
 
         current.setHours(current.getHours() - delay);
 
@@ -246,6 +247,7 @@ class Map extends React.Component {
             minute = current.getMinutes();
         }
 
+        current.setHours(current.getHours() + delay);
 
         return current.getFullYear() + "-" +
             month + "-" +
@@ -355,8 +357,8 @@ class Map extends React.Component {
             auxArray.push(date);
         }
 
-        self.setState({timeLineFilter: auxArray});
-        self.setState({value : auxArray.length -1 });
+        // self.setState({timeLineFilter: auxArray});
+        // self.setState({value : auxArray.length -1 });
         this.placeTime(auxArray.reverse());
 
     }
