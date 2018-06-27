@@ -15,15 +15,11 @@ class ReportTable extends Component {
         this.state = {
             data: [],
             dateOne: undefined,
-            dateTwo: undefined,
-            dateOneActive: false,
-            dateTwoActive: false
+            dateTwo: undefined
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleDate1 = this.handleDate1.bind(this);
         this.handleDate2 = this.handleDate2.bind(this);
-        this.toggleDate1 = this.toggleDate1.bind(this);
-        this.toggleDate2 = this.toggleDate2.bind(this);
     }
 
     handleChange(newData) {
@@ -67,36 +63,36 @@ class ReportTable extends Component {
     }
 
     handleDate1(date) {
-        let d = new Date(date);
-        //remove time component from date
-        let newDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-        this.setState({dateOne: newDate});
+        if (date === undefined){
+            this.setState({dateOne: undefined});
+        }
+        else {
+            let d = new Date(date);
+            //remove time component from date
+            let newDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            this.setState({dateOne: newDate});
+        }
     }
 
     handleDate2(date) {
-        let d = new Date(date);
-        //remove time component from date
-        let newDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-        this.setState({dateTwo: newDate});
-    }
-
-    toggleDate1() {
-        this.setState({dateOneActive: !this.state.dateOneActive});
-    }
-
-    toggleDate2() {
-        this.setState({dateTwoActive: !this.state.dateTwoActive});
+        if (date === undefined){
+            this.setState({dateTwo: undefined});
+        }
+        else {
+            let d = new Date(date);
+            //remove time component from date
+            let newDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            this.setState({dateTwo: newDate});
+        }
     }
 
     filterByDate(data){
         let filteredData = [];
         let filterStart = this.state.dateOne;
         let filterEnd = this.state.dateTwo;
-        let startActive = this.state.dateOneActive;
-        let endActive = this.state.dateTwoActive;
 
         function isHigherThanStart(date) {
-            if (!startActive || filterStart === undefined) {
+            if (filterStart === undefined) {
                 return true;
             }
             let parsedStart = Date.parse(filterStart);
@@ -104,7 +100,7 @@ class ReportTable extends Component {
         }
 
         function isLowerThanEnd(date) {
-            if (!endActive || filterEnd === undefined) {
+            if (filterEnd === undefined) {
                 return true;
             }
             let parsedEnd = Date.parse(filterEnd);
@@ -342,12 +338,6 @@ class ReportTable extends Component {
                                             <label>Filtros:</label>
                                         </div>
                                         <div className="form-group">
-                                            <input
-                                                type="checkbox"
-                                                onChange={this.toggleDate1}
-                                                style={{
-                                                    marginLeft: "30px"
-                                                }}/>
                                             <span style={{
                                                 margin: "auto 5px"
                                             }}>Fecha inicial:</span>
@@ -366,11 +356,6 @@ class ReportTable extends Component {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <input
-                                            type="checkbox"
-                                            onChange={this.toggleDate2}
-                                            style={{
-                                                marginLeft: "30px"}}/>
                                         <span
                                             style={{
                                                 margin: "auto 5px auto 5px"
