@@ -194,9 +194,9 @@ class Map extends React.Component {
     }
 
     parseQuadrantReports(reports) {
-        console.log(reports);
+        //console.log(reports);
         let mySquares = [...this.state.squares];
-        for (var z = 0; z < mySquares.length; z++) {
+        for (let z = 0; z < mySquares.length; z++) {
           mySquares[z].setMap(null)
         }
 
@@ -211,6 +211,10 @@ class Map extends React.Component {
             mySquares.push(square);
         }
         this.setState({squares : mySquares});
+    }
+
+    parseLandmarks(marks) {
+        console.log(marks);
     }
 
     //Delay viene en horas
@@ -264,7 +268,7 @@ class Map extends React.Component {
             zoom: 10,
             mapTypeId: google.maps.MapTypeId.HYBRID
         });
-        console.log("obteniendo reportes entre", this.parseLink(1), this.parseLink(0))
+        console.log("obteniendo reportes entre", this.parseLink(1), this.parseLink(0));
 
         fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
             "min_lat=-34.01&" +
@@ -282,6 +286,21 @@ class Map extends React.Component {
         })
             .then(response => response.json())
             .then(reports => self.parseQuadrantReports(reports));
+
+        fetch("http://wangulen.dgf.uchile.cl:17014/map/landmarks/?" +
+            "min_lat=-34.01&" +
+            "max_lat=-33.1&" +
+            "min_long=-71.02&" +
+            "max_long=-70.2", {
+            method: "GET",
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
+            }
+        })
+            .then(response => response.json())
+            .then(landmarks => self.parseLandmarks(landmarks));
     }
 
     placeTime(time){
