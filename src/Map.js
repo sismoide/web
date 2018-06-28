@@ -213,8 +213,43 @@ class Map extends React.Component {
         this.setState({squares : mySquares});
     }
 
+    /*address
+        :
+        "Zapadores  1099 Recoleta"
+    coordinates
+        :
+        {latitude: "-33.3872840000", longitude: "-70.6498950000"}
+    id
+        :
+        63
+    name
+        :
+        "Zapadores"
+    type
+        :
+        "SAPU"*/
+
     parseLandmarks(marks) {
         console.log(marks);
+
+        for(let i = 0; i < marks.length; i++) {
+            let info = new google.maps.InfoWindow();
+            let myLatLng = new google.maps.LatLng(marks[i]['coordinates']['latitude'],
+                                                  marks[i]['coordinates']['longitude']);
+            let myMarker = new google.maps.Marker({
+                position: myLatLng,
+                map: this.map,
+                title: marks[i]['name']
+            });
+
+            myMarker.addListener('click', function () {
+                info.setPosition(myLatLng);
+                info.setContent("<p>Nombre: " + marks[i]['name'] +
+                    "<br />Dirección: " + marks[i]['address'] + "</p>");
+                info.open(this.map);
+
+            });
+        }
     }
 
     //Delay viene en horas
