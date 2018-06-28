@@ -11,7 +11,6 @@ import momentLocalizer from 'react-widgets-moment';
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
 import InputRange from 'react-input-range';
 import Hospital from 'react-icons/lib/fa/hospital-o';
-import Water from 'react-icons/lib/fa/tint';
 import Circle from 'react-icons/lib/fa/circle';
 
 Moment.locale('es');
@@ -30,6 +29,8 @@ class Map extends React.Component {
         this.state = {
             data: [], tableInfo: [], circles: [], rColor: false,
             intensityColors: ['#76D7C4', '#F7DC6F', '#E74C3C', '#0000FF'],
+            paths: ["m13.1 29.3v1.4q0 0.3-0.2 0.5t-0.5 0.2h-1.5q-0.3 0-0.5-0.2t-0.2-0.5v-1.4q0-0.3 0.2-0.5t0.5-0.2h1.5q0.2 0 0.5 0.2t0.2 0.5z m0-5.7v1.4q0 0.3-0.2 0.5t-0.5 0.2h-1.5q-0.3 0-0.5-0.2t-0.2-0.5v-1.4q0-0.3 0.2-0.5t0.5-0.2h1.5q0.2 0 0.5 0.2t0.2 0.5z m5.7 0v1.4q0 0.3-0.2 0.5t-0.5 0.2h-1.5q-0.2 0-0.5-0.2t-0.2-0.5v-1.4q0-0.3 0.2-0.5t0.5-0.2h1.5q0.3 0 0.5 0.2t0.2 0.5z m-5.7-5.7v1.4q0 0.3-0.2 0.5t-0.5 0.2h-1.5q-0.3 0-0.5-0.2t-0.2-0.5v-1.4q0-0.3 0.2-0.5t0.5-0.3h1.5q0.2 0 0.5 0.3t0.2 0.5z m17.1 11.4v1.4q0 0.3-0.2 0.5t-0.5 0.2h-1.4q-0.3 0-0.5-0.2t-0.2-0.5v-1.4q0-0.3 0.2-0.5t0.5-0.2h1.4q0.3 0 0.5 0.2t0.2 0.5z m-5.7-5.7v1.4q0 0.3-0.2 0.5t-0.5 0.2h-1.4q-0.3 0-0.5-0.2t-0.3-0.5v-1.4q0-0.3 0.3-0.5t0.5-0.2h1.4q0.3 0 0.5 0.2t0.2 0.5z m-5.7-5.7v1.4q0 0.3-0.2 0.5t-0.5 0.2h-1.5q-0.2 0-0.5-0.2t-0.2-0.5v-1.4q0-0.3 0.2-0.5t0.5-0.3h1.5q0.3 0 0.5 0.3t0.2 0.5z m11.4 5.7v1.4q0 0.3-0.2 0.5t-0.5 0.2h-1.4q-0.3 0-0.5-0.2t-0.2-0.5v-1.4q0-0.3 0.2-0.5t0.5-0.2h1.4q0.3 0 0.5 0.2t0.2 0.5z m-5.7-5.7v1.4q0 0.3-0.2 0.5t-0.5 0.2h-1.4q-0.3 0-0.5-0.2t-0.3-0.5v-1.4q0-0.3 0.3-0.5t0.5-0.3h1.4q0.3 0 0.5 0.3t0.2 0.5z m5.7 0v1.4q0 0.3-0.2 0.5t-0.5 0.2h-1.4q-0.3 0-0.5-0.2t-0.2-0.5v-1.4q0-0.3 0.2-0.5t0.5-0.3h1.4q0.3 0 0.5 0.3t0.2 0.5z m-5.7 19.2h8.6v-25.7h-5.7v0.7q0 0.9-0.7 1.6t-1.5 0.6h-10q-0.9 0-1.5-0.6t-0.6-1.6v-0.7h-5.7v25.7h8.5v-5q0-0.2 0.2-0.5t0.5-0.2h7.2q0.3 0 0.5 0.2t0.2 0.5v5z m0-26.4v-7.1q0-0.3-0.2-0.5t-0.5-0.2h-1.4q-0.3 0-0.5 0.2t-0.3 0.5v2.1h-2.8v-2.1q0-0.3-0.2-0.5t-0.5-0.2h-1.5q-0.2 0-0.5 0.2t-0.2 0.5v7.1q0 0.3 0.2 0.5t0.5 0.2h1.5q0.3 0 0.5-0.2t0.2-0.5v-2.1h2.8v2.1q0 0.3 0.3 0.5t0.5 0.2h1.4q0.3 0 0.5-0.2t0.2-0.5z m11.4-0.7v28.6q0 0.5-0.4 1t-1 0.4h-28.6q-0.6 0-1-0.4t-0.4-1v-28.6q0-0.6 0.4-1t1-0.4h7.2v-6.5q0-0.8 0.6-1.5t1.5-0.6h10q0.9 0 1.5 0.6t0.7 1.5v6.5h7.1q0.6 0 1 0.4t0.4 1z"],
+            romans: ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"],
             value: 0, markers: [], nMarkers: 0, squares: [], rSelected: [],
             timeLineFilter: [], filterDate: 0, animation: false, sliceAnim: 0,
             actualDateForReports: new Date(),
@@ -53,7 +54,7 @@ class Map extends React.Component {
             strokeOpacity: 0.8,
             strokeWeight: 2,
             fillColor: '#0000FF',
-            fillOpacity: 0.1,
+            fillOpacity: 0.3,
             map: this.map,
             visible: false,
             infowindow: info,
@@ -213,25 +214,13 @@ class Map extends React.Component {
         this.setState({squares : mySquares});
     }
 
-    /*address
-        :
-        "Zapadores  1099 Recoleta"
-    coordinates
-        :
-        {latitude: "-33.3872840000", longitude: "-70.6498950000"}
-    id
-        :
-        63
-    name
-        :
-        "Zapadores"
-    type
-        :
-        "SAPU"*/
+    getIconPath(type) {
+        if (type === 'SAPU') {
+            return this.state.paths[0];
+        }
+    }
 
     parseLandmarks(marks) {
-        console.log(marks);
-
         for(let i = 0; i < marks.length; i++) {
             let info = new google.maps.InfoWindow();
             let myLatLng = new google.maps.LatLng(marks[i]['coordinates']['latitude'],
@@ -239,7 +228,15 @@ class Map extends React.Component {
             let myMarker = new google.maps.Marker({
                 position: myLatLng,
                 map: this.map,
-                title: marks[i]['name']
+                title: marks[i]['name'],
+                icon: {
+                    path: this.getIconPath(marks[i]['type']),
+                    scale: 0.35,
+                    strokeWeight: 0.4,
+                    strokeColor: 'black',
+                    strokeOpacity: 1,
+                    fillOpacity: 0.7
+                }
             });
 
             myMarker.addListener('click', function () {
@@ -256,7 +253,7 @@ class Map extends React.Component {
     parseLink(delay) {
 
         let current = this.state.actualDateForReports;
-        console.log("fecha de fetch", this.state.actualDateForReports)
+        console.log("fecha de fetch", this.state.actualDateForReports);
 
         current.setHours(current.getHours() - delay);
 
@@ -400,7 +397,7 @@ class Map extends React.Component {
     createDateArray(date){
         let self = this;
 
-        self.setState({actualDateForReports: date})
+        self.setState({actualDateForReports: date});
 
         let myEndDateTime = date;
         let MS_PER_MINUTE = 60000;
@@ -455,9 +452,6 @@ class Map extends React.Component {
 
                             <FormGroup>
                                 <Hospital size={24}/> Centros de Salud
-                            </FormGroup>
-                            <FormGroup>
-                                <Water size={24}/> Fuentes de Agua Rurales
                             </FormGroup>
                         </div>
                         <div className="other-whitespace-fromtop">
