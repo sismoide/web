@@ -146,11 +146,13 @@ class Map extends React.Component {
 
             google.maps.event.clearInstanceListeners(actualSquare);
             let roundInt = Math.round(meanInt);
+            let roman = 0;
+            if (roundInt !== 0) { roman = this.state.romans[roundInt - 1]; }
 
             actualSquare.addListener('click', function () {
                 info.setPosition(centre);
                 info.setContent("<p>Cantidad de reportes: " + reportCount +
-                    "<br />Intensidad promedio: " + roundInt + "</p>");
+                    "<br />Intensidad promedio: " + roman + "</p>");
                 info.open(this.map);
 
             });
@@ -186,16 +188,7 @@ class Map extends React.Component {
         }
     }
 
-    parseQuadrants() {
-        let mySquares = [...this.state.squares];
-
-        for (let i = 0; i < mySquares.length; i++) {
-            // console.log(i);
-        }
-    }
-
     parseQuadrantReports(reports) {
-        //console.log(reports);
         let mySquares = [...this.state.squares];
         for (let z = 0; z < mySquares.length; z++) {
           mySquares[z].setMap(null)
@@ -355,7 +348,6 @@ class Map extends React.Component {
 
     componentDidUpdate() {
         this.changeInput(this.state.rColor);
-        this.parseQuadrants();
     }
 
 
