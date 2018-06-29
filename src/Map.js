@@ -355,7 +355,7 @@ class Map extends React.Component {
         if (this.state.animation !== prevState.animation) {
           this.animation();
         }
-        if (this.state.actualDateForReports != prevState.actualDateForReports){
+        if (this.state.actualDateForReports !== prevState.actualDateForReports){
           this.fetchReports();
         }
     }
@@ -376,9 +376,9 @@ class Map extends React.Component {
     }
 
    async animation(){
-     if (this.state.animation == "play"){
+     if (this.state.animation === "play"){
        for (let i = 0; i < this.state.timeLineFilter.length; i++) {
-           if (this.state.animation == "play") {
+           if (this.state.animation === "play") {
                console.log("slice actual", i);
                this.setState({ value: i});
                await this.sleep(1000);
@@ -388,12 +388,12 @@ class Map extends React.Component {
            }
        }
      }
-     else if (this.state.animation == "stop"){
+     else if (this.state.animation === "stop"){
        return
      }
      else {
        for (let i = this.state.value; i < this.state.timeLineFilter.length; i++) {
-           if (this.state.animation == "continue") {
+           if (this.state.animation === "continue") {
                console.log("slice actual", i);
                this.setState({ value: i});
                await this.sleep(1000);
