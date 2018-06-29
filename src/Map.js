@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import './index.css';
 import 'react-table/react-table.css';
 import {FormGroup} from 'react-bootstrap';
@@ -231,6 +232,9 @@ class Map extends React.Component {
             });
 
             myMarker.addListener('click', function () {
+                let div = document.createElement('div');
+                //ReactDOM.render( this._renderInfoWindow(), div );
+
                 info.setPosition(myLatLng);
                 info.setContent("<p>Nombre: " + marks[i]['name'] +
                     "<br />Dirección: " + marks[i]['address'] + "</p>");

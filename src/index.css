@@ -63,6 +63,17 @@ ol, ul {
 
 .header-background {
   background: darkcyan;
+  margin-left: 1%;
+  position: sticky;
+  padding: auto;
+  height: 65px;
+  width: 98%;
+}
+
+.header-text {
+  position: absolute;
+  top: -8px;
+  left: 30px;
   font-weight: bold;
   color: white;
 }
