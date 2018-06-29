@@ -199,4 +199,13 @@ ol, ul {
 
 .simbols {
   border: 1px solid #222222;
+  padding: auto;
+}
+
+.info-simbols {
+  border: 1px solid #222222;
+  top: 20px;
+  margin-left: 4px;
+  text-align: center;
+  font-size: 40px;
 }

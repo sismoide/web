@@ -88,6 +88,39 @@ class Map extends React.Component {
         }
     }
 
+    renderInfoWindow(intensity, reportCount, reportIntCount) {
+        return(
+            <div>
+                <div className="row">
+                    <div className="col-sm-4">
+                        Intensidad
+                    </div>
+                    <div className="col-sm-8">
+                        N° Reportes: {reportCount}
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-sm-4">
+                        <div id="2" className="info-simbols">
+                            {intensity}
+                        </div>
+                    </div>
+                    <div className="smaller-whitespace-fromtop">
+                    </div>
+                    <div className="col-sm-8">
+                        <div>
+                            N° Reportes con Intensidad: {reportIntCount}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    /*"<p>Cantidad de reportes: " + reportCount +
+    "<br />Intensidad promedio: " + roman + "</p>"*/
+
     changeInput(reportColor) {
         //Importante dejar por si otro componente demora mucho en terminar para evitar errores.
         if (this.state.squares.length === 0) {
@@ -148,10 +181,12 @@ class Map extends React.Component {
             let roman = 0;
             if (roundInt !== 0) { roman = this.state.romans[roundInt - 1]; }
 
+            let infoDiv = document.createElement('div');
+            ReactDOM.render( this.renderInfoWindow(roman, reportCount, reportIntCount), infoDiv );
+
             actualSquare.addListener('click', function () {
                 info.setPosition(centre);
-                info.setContent("<p>Cantidad de reportes: " + reportCount +
-                    "<br />Intensidad promedio: " + roman + "</p>");
+                info.setContent(infoDiv);
                 info.open(this.map);
 
             });
@@ -232,9 +267,6 @@ class Map extends React.Component {
             });
 
             myMarker.addListener('click', function () {
-                let div = document.createElement('div');
-                //ReactDOM.render( this._renderInfoWindow(), div );
-
                 info.setPosition(myLatLng);
                 info.setContent("<p>Nombre: " + marks[i]['name'] +
                     "<br />Dirección: " + marks[i]['address'] + "</p>");
