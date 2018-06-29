@@ -45,7 +45,6 @@ export default class Login extends Component {
     }})
     .then(function(data){
     localStorage.setItem("token", data["token"]);
-    let text=localStorage.getItem("token");
     ReactDOM.render(
         <App/>,
         document.getElementById("root")
@@ -77,7 +76,7 @@ export default class Login extends Component {
       <div className="Login">
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="username" bsSize="large">
-            <ControlLabel>username</ControlLabel>
+            <ControlLabel>Usuario</ControlLabel>
             <FormControl
               autoFocus
               type="text"
@@ -86,7 +85,7 @@ export default class Login extends Component {
             />
           </FormGroup>
           <FormGroup controlId="password" bsSize="large">
-            <ControlLabel>Password</ControlLabel>
+            <ControlLabel>Contraseña</ControlLabel>
             <FormControl
               value={this.state.password}
               onChange={this.handleChange}
@@ -99,7 +98,7 @@ export default class Login extends Component {
             disabled={!this.validateForm()}
             type="submit"
           >
-            Login
+            Ingresar al sistema
           </Button>
 
         </form>

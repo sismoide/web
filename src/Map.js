@@ -100,12 +100,10 @@ class Map extends React.Component {
 
         if (!dateFilter) {
             let lastIndex = this.state.timeLineFilter.length - 1;
-            //console.log(new Date(this.state.markers[lastIndex].data[0]['res']));
             filterDate = this.state.timeLineFilter[lastIndex];
         }
 
         else {
-            //console.log(new Date(this.state.markers[this.state.value].data[0]['res']));
             filterDate = this.state.timeLineFilter[this.state.value];
         }
 
@@ -250,7 +248,6 @@ class Map extends React.Component {
     parseLink(delay) {
 
         let current = this.state.actualDateForReports;
-        console.log("fecha de fetch", this.state.actualDateForReports);
 
         current.setHours(current.getHours() - delay);
 
@@ -297,20 +294,22 @@ class Map extends React.Component {
             zoom: 10,
             mapTypeId: google.maps.MapTypeId.HYBRID
         });
-        console.log("obteniendo reportes entre", this.parseLink(1), this.parseLink(0));
+        let token = localStorage.getItem("token");
+        token = "Token " + token;
+        console.log(token)
 
         fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
             "min_lat=-34.01&" +
             "min_long=-71.02&" +
             "max_lat=-33.1&" +
             "max_long=-70.2&" +
-            "start_timestamp=" + this.parseLink(1) +
+            "start_timestamp=" + this.parseLink(5) +
             "&end_timestamp=" + this.parseLink(0), {
             method: "GET",
             headers: {
                 'accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
+                'Authorization': token
             }
         })
             .then(response => response.json())
@@ -325,7 +324,7 @@ class Map extends React.Component {
             headers: {
                 'accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
+                'Authorization': token
             }
         })
             .then(response => response.json())
@@ -379,7 +378,6 @@ class Map extends React.Component {
      if (this.state.animation === "play"){
        for (let i = 0; i < this.state.timeLineFilter.length; i++) {
            if (this.state.animation === "play") {
-               console.log("slice actual", i);
                this.setState({ value: i});
                await this.sleep(1000);
            }
@@ -394,7 +392,6 @@ class Map extends React.Component {
      else {
        for (let i = this.state.value; i < this.state.timeLineFilter.length; i++) {
            if (this.state.animation === "continue") {
-               console.log("slice actual", i);
                this.setState({ value: i});
                await this.sleep(1000);
            }
@@ -431,19 +428,21 @@ class Map extends React.Component {
 
     fetchReports(){
       let self = this;
+      let token = localStorage.getItem("token");
+      token = "Token " + token;
 
       fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
         "min_lat=-34.01&" +
         "min_long=-71.02&" +
         "max_lat=-33.1&" +
         "max_long=-70.2&" +
-        "start_timestamp=" + this.parseLink(1) +
+        "start_timestamp=" + this.parseLink(5) +
         "&end_timestamp=" + this.parseLink(0), {
         method: "GET",
         headers: {
             'accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
+            'Authorization': token
           }
       })
         .then(response => response.json())
