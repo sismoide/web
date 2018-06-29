@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import "./Login.css";
-// import React from 'react';
 import ReactDOM from 'react-dom';
 import App from "./App"
 
@@ -47,13 +46,31 @@ export default class Login extends Component {
     .then(function(data){
     localStorage.setItem("token", data["token"]);
     let text=localStorage.getItem("token");
-    console.log(text);
     ReactDOM.render(
         <App/>,
         document.getElementById("root")
     );
     });
   };
+
+  LoginCheck(){
+    console.log(localStorage.getItem("token"))
+    if (localStorage.getItem("token") !== null){
+      return true
+    }
+    else {
+      return false
+    }
+  }
+
+  componentWillMount(){
+    if (this.LoginCheck()){
+      ReactDOM.render(
+          <App/>,
+          document.getElementById("root")
+      );
+    }
+  }
 
   render() {
     return (
