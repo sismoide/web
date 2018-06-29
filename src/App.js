@@ -18,7 +18,10 @@ class App extends Component {
         return (
             <HashRouter>
                 <div className="complete">
-                    <h1 className='header-background'>Sismoide</h1>
+                    <h1 className='header-background'>
+                        <h1 className="header-text">Geoscopio</h1>
+                    </h1>
+
                     <Navbar>
                         <Navbar.Header>
                             <Navbar.Brand>
