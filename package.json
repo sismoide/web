@@ -28,6 +28,7 @@
     "react-widgets": "^4.3.2",
     "react-widgets-globalize": "^5.0.8",
     "react-widgets-moment": "^4.0.15",
+    "reactable": "^1.0.2",
     "reactstrap": "^6.1.0",
     "socket.io": "^2.1.0",
     "sockette": "^2.0.0",

@@ -39,7 +39,9 @@ class App extends Component {
                         <Nav>
                             <NavItem>
                                 <NavLink className="navbar-text" style={{textDecoration: 'none'}} to="/tableView">
-                                    Datos tabulados
+                                    <div>
+                                        Datos tabulados
+                                    </div>
                                 </NavLink>
                             </NavItem>
                         </Nav>

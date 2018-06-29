@@ -19,7 +19,7 @@ ol, ul {
   width: 100%;
 }
 
-.row, .container, .col-sm-10{
+.row, .container, .col-sm-9{
   height: 100%;
 }
 
@@ -85,17 +85,17 @@ ol, ul {
 }
 
 .navbar-init-text {
-  right: 10px;
   position: relative;
+  right: 10px;
   font-weight: bold;
   color: black;
 }
 
 .navbar-text {
-  position: relative;
-  bottom: 15px;
-  font-weight: bold;
-  color: black;
+    position: relative;
+    bottom: 15px;
+    font-weight: bold;
+    color: black;
 }
 
 .divider-vertical {
@@ -162,7 +162,7 @@ ol, ul {
 }
 
 .other-whitespace-fromtop {
-    margin-top: 80px;
+    margin-top: 40px;
 }
 
 .color-box {
@@ -205,7 +205,23 @@ ol, ul {
 .info-simbols {
   border: 1px solid #222222;
   top: 20px;
-  margin-left: 4px;
+    margin-left: 2px;
   text-align: center;
-  font-size: 40px;
+  font-size: 30px;
+}
+
+.header-simbology {
+  position: relative;
+  margin-left: 5px;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.simbology {
+  position: relative;
+  margin-left: 5px;
+}
+
+.my-row {
+    width: 98%;
 }

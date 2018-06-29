@@ -91,26 +91,26 @@ class Map extends React.Component {
     renderInfoWindow(intensity, reportCount, reportIntCount) {
         return(
             <div>
-                <div className="row">
-                    <div className="col-sm-4">
-                        Intensidad
+                <div className="my-row">
+                    <div className="col-sm-5">
+                        Intensidad:
                     </div>
-                    <div className="col-sm-8">
-                        N° Reportes: {reportCount}
+                    <div className="col-sm-7">
+                        Reportes: {reportCount}
                     </div>
                 </div>
 
-                <div className="row">
-                    <div className="col-sm-4">
+                <div className="my-row">
+                    <div className="col-sm-5">
                         <div id="2" className="info-simbols">
                             {intensity}
                         </div>
                     </div>
                     <div className="smaller-whitespace-fromtop">
                     </div>
-                    <div className="col-sm-8">
+                    <div className="col-sm-7">
                         <div>
-                            N° Reportes con Intensidad: {reportIntCount}
+                            Reportes con Intensidad: {reportIntCount}
                         </div>
                     </div>
                 </div>
@@ -328,7 +328,7 @@ class Map extends React.Component {
         });
         let token = localStorage.getItem("token");
         token = "Token " + token;
-        console.log(token)
+        console.log(token);
 
         fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
             "min_lat=-34.01&" +
@@ -486,16 +486,20 @@ class Map extends React.Component {
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col-sm-10" ref="map">
+                    <div className="col-sm-9" ref="map">
                     </div>
-                    <div className="col-sm-2">
+                    <div className="col-sm-3">
                         <div className="simbols">
-                            Simbología:
+
+                            <div className="header-simbology">
+                                Simbología:
+                            </div>
+
                             <FormGroup>
                             </FormGroup>
 
                             <FormGroup>
-                                <Hospital size={24}/> Centros de Salud
+                                <Hospital className="simbology" size={24}/> Centros de Salud
                             </FormGroup>
                         </div>
                         <div className="other-whitespace-fromtop">
@@ -510,21 +514,23 @@ class Map extends React.Component {
                         </div>
 
                         <div className="simbols">
-                            Escala de Intensidades:
+                            <div className="header-simbology">
+                                Escala de Intensidades:
+                            </div>
                             <FormGroup>
                             </FormGroup>
 
                             <FormGroup>
-                                <Circle color='#76D7C4'/> I-IV
+                                <Circle className="simbology" color='#76D7C4'/> I-IV
                             </FormGroup>
                             <FormGroup>
-                                <Circle color='#F7DC6F'/> V-VIII
+                                <Circle className="simbology" color='#F7DC6F'/> V-VIII
                             </FormGroup>
                             <FormGroup>
-                                <Circle color='#E74C3C'/> IX-XII
+                                <Circle className="simbology" color='#E74C3C'/> IX-XII
                             </FormGroup>
                             <FormGroup>
-                                <Circle color='#0000FF'/> Reportes sin intensidad
+                                <Circle className="simbology" color='#0000FF'/> Reportes sin intensidad
                             </FormGroup>
                         </div>
 
@@ -539,18 +545,20 @@ class Map extends React.Component {
                         </div>
 
                         <div className="simbols">
-                            Escala de reportes:
+                            <div className="header-simbology">
+                                Escala de Reportes:
+                            </div>
                             <FormGroup>
                             </FormGroup>
 
                             <FormGroup>
-                                <Circle color='#76D7C4'/> &lt; 10 reportes
+                                <Circle className="simbology" color='#76D7C4'/> &lt; 10 reportes
                             </FormGroup>
                             <FormGroup>
-                                <Circle color='#F7DC6F'/> &lt; 100 reportes
+                                <Circle className="simbology" color='#F7DC6F'/> &lt; 100 reportes
                             </FormGroup>
                             <FormGroup>
-                                <Circle color='#E74C3C'/> &gt; 100 reportes
+                                <Circle className="simbology" color='#E74C3C'/> &gt; 100 reportes
                             </FormGroup>
                         </div>
                     </div>
