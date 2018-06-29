@@ -125,7 +125,7 @@ class ReportTable extends Component {
 
     parseReports(reports) {
         let newData = [];
-        let rowIntensity, date, longitude, latitude, coordinate;
+        let rowIntensity, date, longitude, latitude;
 
         for (let i = 0; i < reports.length; i++) {
             rowIntensity = Number(reports[i]['intensity']);
@@ -133,12 +133,12 @@ class ReportTable extends Component {
                    reports[i]['created_on'].split("T")[1].split(".")[0];
             latitude = reports[i]['coordinates']['latitude'];
             longitude = reports[i]['coordinates']['longitude'];
-            coordinate = "Latitud: " + latitude + ", Longitud: " + longitude;
 
             let appendage = [{
                 int: rowIntensity,
                 fecha: date,
-                coord: coordinate
+                lat: latitude,
+                lon: longitude
             }];
 
             newData.push(appendage[0]);
@@ -303,11 +303,21 @@ class ReportTable extends Component {
                             <div
                                 style={{
                                     textAlign: "left"
-                                }}>Coordenadas</div>
+                                }}>Latitud</div>
                         ),
-                        accessor: 'coord',
+                        accessor: 'lat',
                         sortable: false,
-                        minWidth: 500
+                        minWidth: 200
+                    }, {
+                        Header: () => (
+                            <div
+                                style={{
+                                    textAlign: "left"
+                                }}>Longitud</div>
+                        ),
+                        accessor: 'lon',
+                        sortable: false,
+                        minWidth: 200
                     }
                 ]
             }
@@ -336,11 +346,13 @@ class ReportTable extends Component {
                                     }}>
                                         <div className="form-group">
                                             <label>Filtros:</label>
-                                        </div>
-                                        <div className="form-group">
                                             <span style={{
-                                                margin: "auto 5px"
-                                            }}>Fecha inicial:</span>
+                                                margin: "auto 5px auto 20px"
+                                            }}>
+                                                <label style={{
+                                                    fontWeight: "normal"
+                                                }}>Fecha inicial:</label>
+                                            </span>
                                             <DayPickerInput
                                                 formatDate={formatDate}
                                                 parseDate={parseDate}
@@ -356,10 +368,14 @@ class ReportTable extends Component {
                                             />
                                         </div>
                                         <div className="form-group">
-                                        <span
-                                            style={{
-                                                margin: "auto 5px auto 5px"
-                                            }}>Fecha final:</span>
+                                            <span
+                                                style={{
+                                                    margin: "auto 5px auto 5px"
+                                            }}>
+                                                <label style={{
+                                                    fontWeight: "normal"
+                                                }}>Fecha final</label>
+                                            </span>
                                         <DayPickerInput
                                             formatDate={formatDate}
                                             parseDate={parseDate}
