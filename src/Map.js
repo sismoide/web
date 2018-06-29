@@ -350,45 +350,60 @@ class Map extends React.Component {
         //return this.state.value !== this.state.oldValue;
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         this.changeInput(this.state.rColor);
+        if (this.state.animation !== prevState.animation) {
+          this.animation();
+        }
+        if (this.state.actualDateForReports != prevState.actualDateForReports){
+          this.fetchReports();
+        }
     }
-
 
 
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async playAnim(){
-        this.setState({animation : true});
-        for (let i = 0; i < this.state.timeLineFilter.length; i++) {
-            if (this.state.animation) {
-                console.log("slice actual", i);
-                this.setState({ value: i});
-                await this.sleep(1000);
-            }
-            else {
-                return
-            }
-        }
+    playAnim(){
+        this.setState({animation : "play"});
     }
     stopAnim(){
-        this.setState({animation : false})
+        this.setState({animation : "stop"})
     }
-    async continueAnim() {
-        this.setState({animation : true});
-        for (let i = this.state.value; i < this.state.timeLineFilter.length; i++) {
-            if (this.state.animation) {
-                console.log("slice actual", i);
-                this.setState({ value: i});
-                await this.sleep(1000);
-            }
-            else {
-                return
-            }
-        }
+    continueAnim() {
+        this.setState({animation : "continue"});
     }
+
+   async animation(){
+     if (this.state.animation == "play"){
+       for (let i = 0; i < this.state.timeLineFilter.length; i++) {
+           if (this.state.animation == "play") {
+               console.log("slice actual", i);
+               this.setState({ value: i});
+               await this.sleep(1000);
+           }
+           else {
+               return
+           }
+       }
+     }
+     else if (this.state.animation == "stop"){
+       return
+     }
+     else {
+       for (let i = this.state.value; i < this.state.timeLineFilter.length; i++) {
+           if (this.state.animation == "continue") {
+               console.log("slice actual", i);
+               this.setState({ value: i});
+               await this.sleep(1000);
+           }
+           else {
+               return
+           }
+       }
+     }
+   }
 
     createDateArray(date){
         let self = this;
@@ -412,7 +427,9 @@ class Map extends React.Component {
 
     changeDateofReports(date){
       this.createDateArray( date );
+    }
 
+    fetchReports(){
       let self = this;
 
       fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
@@ -431,8 +448,8 @@ class Map extends React.Component {
       })
         .then(response => response.json())
         .then(reports => self.parseQuadrantReports(reports));
-    }
 
+    }
 
     render() {
         return (
