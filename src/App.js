@@ -22,20 +22,33 @@ class App extends Component {
                         <h1 className="header-text">Geoscopio</h1>
                     </h1>
 
-                    <Navbar>
-                        <Navbar.Header>
-                            <Navbar.Brand>
-                                <NavLink to="/">
-                                    <div className='bold-font'>Inicio</div>
-                                </NavLink>
-                            </Navbar.Brand>
-                        </Navbar.Header>
+                    <Navbar className="navbar-background">
                         <Nav>
                             <NavItem>
-                                <NavLink style={{textDecoration: 'none'}} to="/tableView">Datos tabulados</NavLink>
+                                <NavLink className="navbar-init-text" style={{textDecoration: 'none'}} to="/">
+                                    <div>
+                                        Inicio
+                                    </div>
+                                </NavLink>
                             </NavItem>
                         </Nav>
+
+                        <Nav className="divider-vertical">
+                        </Nav>
+
+                        <Nav>
+                            <NavItem>
+                                <NavLink className="navbar-text" style={{textDecoration: 'none'}} to="/tableView">
+                                    Datos tabulados
+                                </NavLink>
+                            </NavItem>
+                        </Nav>
+
+                        <Nav className="divider-vertical">
+                        </Nav>
+
                     </Navbar>
+
                     <div className="complete">
                         <Route exact path="/" component={MyMap}/>
                         <Route path="/tableView" component={TableView}/>
