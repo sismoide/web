@@ -19,7 +19,7 @@ ol, ul {
   width: 100%;
 }
 
-.row, .container, .col-sm-9{
+.row-map, .container, .col-sm-9{
   height: 100%;
 }
 
@@ -27,9 +27,9 @@ ol, ul {
   width: 16%;
 }
 
-.row {
+/*.row {
   height: 100%;
-}
+}*/
 
 .complete {
   height: 100%;

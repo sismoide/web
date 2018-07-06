@@ -6,7 +6,7 @@ import {FormGroup} from 'react-bootstrap';
 import {Button} from 'reactstrap';
 import 'react-widgets/dist/css/react-widgets.css';
 import 'react-input-range';
-import 'react-input-range/lib/css/index.css';
+import './inputRange.css'
 import Moment from 'moment';
 import momentLocalizer from 'react-widgets-moment';
 import DateTimePicker from 'react-widgets/lib/DateTimePicker';
@@ -485,7 +485,7 @@ class Map extends React.Component {
     render() {
         return (
             <div className="container">
-                <div className="row">
+                <div className="row-map">
                     <div className="col-sm-9" ref="map">
                     </div>
                     <div className="col-sm-3">
@@ -567,7 +567,7 @@ class Map extends React.Component {
                 <div className='whitespace-fromtop'>
                 </div>
 
-                <div>
+                <div className="row">
                     <div className="col-sm-4">
 
                         <DateTimePicker
@@ -586,11 +586,17 @@ class Map extends React.Component {
                             Stop
                         </button>
                     </div>
-
-                    <div className="whitespace-fromtop">
+                    <div className="col-sm-2">
                     </div>
 
-                    <div className="col-sm-10">
+                </div>
+                <div className="row">
+                    <div
+                        className="col-sm-9"
+                        style={{
+                            marginTop: "30px",
+                            marginBottom: "50px"
+                        }}>
 
                         <InputRange
                             ref={InputRange => {
@@ -601,8 +607,6 @@ class Map extends React.Component {
                             formatLabel={value => `${this.dateToLabel(this.state.timeLineFilter[value])}`}
                             value={this.state.value}
                             onChange={value => this.setState({value})}/>
-                    </div>
-                    <div className="col-sm-2">
                     </div>
                 </div>
             </div>
