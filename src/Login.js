@@ -53,7 +53,6 @@ export default class Login extends Component {
   };
 
   LoginCheck(){
-    console.log(localStorage.getItem("token"))
     if (localStorage.getItem("token") !== null){
       return true
     }

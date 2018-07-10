@@ -328,26 +328,9 @@ class Map extends React.Component {
         });
         let token = localStorage.getItem("token");
         token = "Token " + token;
-        console.log(token);
 
-        fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
-            "min_lat=-34.01&" +
-            "min_long=-71.02&" +
-            "max_lat=-33.1&" +
-            "max_long=-70.2&" +
-            "start_timestamp=" + this.parseLink(5) +
-            "&end_timestamp=" + this.parseLink(0), {
-            method: "GET",
-            headers: {
-                'accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        })
-            .then(response => response.json())
-            .then(reports => self.parseQuadrantReports(reports));
 
-        fetch("http://wangulen.dgf.uchile.cl:17014/map/landmarks/?" +
+        fetch("http://server-geoscopio.dgf.uchile.cl/map/landmarks/?" +
             "min_lat=-34.01&" +
             "max_lat=-33.1&" +
             "min_long=-71.02&" +
@@ -463,7 +446,7 @@ class Map extends React.Component {
       let token = localStorage.getItem("token");
       token = "Token " + token;
 
-      fetch("http://wangulen.dgf.uchile.cl:17014/map/quadrant_reports/?" +
+      fetch("http://server-geoscopio.dgf.uchile.cl/map/quadrant_reports/?" +
         "min_lat=-34.01&" +
         "min_long=-71.02&" +
         "max_lat=-33.1&" +
@@ -568,26 +551,24 @@ class Map extends React.Component {
                 </div>
 
                 <div className="row">
-                    <div className="col-sm-4">
+                </div>
+                <div className="col-sm-6">
+                <button onClick={this.playAnim}>
+                Reproducir
+                </button>
+                <button onClick={this.continueAnim}>
+                Continuar
+                </button>
+                <button onClick={this.stopAnim}>
+                Detener
+                </button>
+                </div>
+                  <div className="col-sm-4">
 
-                        <DateTimePicker
-                            dropUp
-                            onChange={filterDate => this.changeDateofReports( filterDate )}
-                        />
-                    </div>
-                    <div className="col-sm-6">
-                        <button onClick={this.playAnim}>
-                            Play
-                        </button>
-                        <button onClick={this.continueAnim}>
-                            Continue
-                        </button>
-                        <button onClick={this.stopAnim}>
-                            Stop
-                        </button>
-                    </div>
-                    <div className="col-sm-2">
-                    </div>
+                      <DateTimePicker
+                          dropUp
+                          onChange={filterDate => this.changeDateofReports( filterDate )}
+                      />
 
                 </div>
                 <div className="row">

@@ -187,9 +187,9 @@ class ReportTable extends Component {
     }
 
     componentDidMount() {
-        let fetchLink = "server-geoscopio.dgf.uchile.cl/web/reports/?start=" +
-                            this.parseLink(1440) + "&end=" +
-                            this.parseLink(0);
+        let fetchLink = "http://server-geoscopio.dgf.uchile.cl/web/reports/?start=" +
+                            this.parseLink(100) + "&end=" +
+                            this.parseLink(-4);
 
         fetch(fetchLink, {
             headers: {
