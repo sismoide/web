@@ -276,12 +276,13 @@ class Map extends React.Component {
         }
     }
 
-    //Delay viene en horas
-    parseLink(delay) {
+    //Delay viene en horas, minuteDelay en minutos
+    parseLink(delay, minuteDelay) {
 
         let current = this.state.actualDateForReports;
 
         current.setHours(current.getHours() - delay);
+        current.setMinutes(current.getMinutes() - minuteDelay);
 
         let minute, hour, day, month;
 
@@ -451,8 +452,8 @@ class Map extends React.Component {
         "min_long=-71.02&" +
         "max_lat=-33.1&" +
         "max_long=-70.2&" +
-        "start_timestamp=" + this.parseLink(1) +
-        "&end_timestamp=" + this.parseLink(-4), {
+        "start_timestamp=" + this.parseLink(1, 0) +
+        "&end_timestamp=" + this.parseLink(-4, -15), {
         method: "GET",
         headers: {
             'accept': 'application/json',
