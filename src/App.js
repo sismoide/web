@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import MyMap from "./Map";
 import TableView from "./TableView";
+import favicon from "./assets/favicon.ico"
 //import Login from "./Login"
 
 class App extends Component {

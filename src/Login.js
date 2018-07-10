@@ -3,6 +3,8 @@ import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import "./Login.css";
 import ReactDOM from 'react-dom';
 import App from "./App"
+import logoprs from './assets/logoprs.png';
+import logodgf from './assets/logo_dgf_150px.png';
 
 export default class Login extends Component {
   constructor(props) {
@@ -72,7 +74,13 @@ export default class Login extends Component {
 
   render() {
     return (
+
       <div className="Login">
+      <div align="center">
+
+        <img src={logoprs} width="150" height="150" />
+        <img src={logodgf} width="150" height="150" />
+      </div>
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="username" bsSize="large">
             <ControlLabel>Usuario</ControlLabel>
