@@ -26,7 +26,7 @@ export default class Login extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    fetch("http://172.17.71.14:7171/web/get_token", {
+    fetch("server-geoscopio.dgf.uchile.cl/web/get_token", {
       method: "POST",
       headers: {
         'accept': 'application/json',
@@ -40,7 +40,7 @@ export default class Login extends Component {
     } else {
       return res.json()
         .then(function(err) {
-          throw new Error("There's an error upstream and it says " + err.message);
+          throw new Error("Hay un problema con el login " + err.message);
         });
     }})
     .then(function(data){
