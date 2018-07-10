@@ -26,7 +26,7 @@ export default class Login extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    fetch("server-geoscopio.dgf.uchile.cl/web/get_token", {
+    fetch("http://server-geoscopio.dgf.uchile.cl/web/get_token", {
       method: "POST",
       headers: {
         'accept': 'application/json',

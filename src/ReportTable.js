@@ -191,11 +191,14 @@ class ReportTable extends Component {
                             this.parseLink(100) + "&end=" +
                             this.parseLink(-4);
 
+        let token = localStorage.getItem("token");
+        token = "Token " + token;
+
         fetch(fetchLink, {
             headers: {
                 'accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Token 3a79acb1431d2118960e50e5d09bdb5bc58ee2af'
+                'Authorization': token
             }
         })
         .then(response => response.json())
