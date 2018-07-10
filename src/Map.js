@@ -468,8 +468,8 @@ class Map extends React.Component {
         "min_long=-71.02&" +
         "max_lat=-33.1&" +
         "max_long=-70.2&" +
-        "start_timestamp=" + this.parseLink(9) +
-        "&end_timestamp=" + this.parseLink(4), {
+        "start_timestamp=" + this.parseLink(1) +
+        "&end_timestamp=" + this.parseLink(-4), {
         method: "GET",
         headers: {
             'accept': 'application/json',
