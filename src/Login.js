@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import App from "./App"
 import logoprs from './assets/logoprs.png';
 import logodgf from './assets/logo_dgf_150px.png';
+import Favicon from 'react-favicon';
 
 export default class Login extends Component {
   constructor(props) {
@@ -64,6 +65,7 @@ export default class Login extends Component {
   }
 
   componentWillMount(){
+    document.title = "Geoscopio"
     if (this.LoginCheck()){
       ReactDOM.render(
           <App/>,
@@ -76,6 +78,9 @@ export default class Login extends Component {
     return (
 
       <div className="Login">
+      <div>
+        <Favicon url="" />
+      </div>
       <div align="center">
 
         <img src={logoprs} width="150" height="150" />
